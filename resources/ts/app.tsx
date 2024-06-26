@@ -4,7 +4,6 @@
  * building robust, powerful web applications using React + Laravel.
  */
 
-import './bootstrap';
 
 /**
  * Next, we will create a fresh React component instance and attach it to
@@ -18,6 +17,7 @@ import { render } from 'react-dom';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './components/Home';
 import About from './components/About';
+import { UserContextProvider } from "./UserContext";
 
 function App() {
     return (
@@ -30,9 +30,11 @@ function App() {
     );
 }
 
-const root = ReactDOM.createRoot(document.getElementById("app"));
+const root = ReactDOM.createRoot(document.getElementById("app") as HTMLElement);
 root.render(
     <React.StrictMode>
-        <App />
+        <UserContextProvider>
+            <App />
+        </UserContextProvider>
     </React.StrictMode>
 );
