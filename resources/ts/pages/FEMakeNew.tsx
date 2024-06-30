@@ -1,18 +1,7 @@
 import React, { FormEventHandler, useState } from 'react'
 import FESidebar from '../components/FESidebar';
+import type { Stacks } from '../types/stacks';
 
-export interface Stacks {
-    php: boolean,
-    laravel: boolean,
-    javascript: boolean,
-    typescript: boolean,
-    nodejs: boolean,
-    reactjs: boolean,
-    vuejs: boolean,
-    python: boolean,
-    django: boolean,
-    nextjs: boolean,
-}
 const initStacks = {
     php: false,
     laravel: false,

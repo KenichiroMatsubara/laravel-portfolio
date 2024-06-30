@@ -1,23 +1,6 @@
 import React, { FC } from 'react'
+import { ProductInfo } from '../types/productInfo'
 
-export interface ProductInfo {
-    title: string,
-    stacks: {
-        php: boolean,
-        laravel: boolean,
-        javascript: boolean,
-        typescript: boolean,
-        nodejs: boolean,
-        reactjs: boolean,
-        vuejs: boolean,
-        python: boolean,
-        django: boolean,
-        nextjs: boolean,
-    },
-    explain: string,
-    githubURL: string,
-    deployURL: string,
-}
 
 const Product: FC<{productId: number}> = ({productId}) => {
     const productInfo: ProductInfo = {

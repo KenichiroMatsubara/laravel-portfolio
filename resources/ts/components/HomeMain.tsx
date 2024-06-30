@@ -1,15 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import Conma from './Conma';
-
-export interface EngineerInfo {
-    engineerName: string,
-    engineerId: number,
-    engieerExperience: number,
-    favoriteLangs: string[],
-    workAt: string[],
-    profileImg: string,
-}
+import type { EngineerInfo } from '../types/engineerInfo';
 
 const HomeMain = () => {
     const year: number = 0;

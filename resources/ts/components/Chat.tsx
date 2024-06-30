@@ -1,11 +1,5 @@
 import React, { FC, useState } from 'react'
-
-export interface Chat {
-    text: string,
-    createdAt: string,
-    from: string
-    read: boolean
-}
+import type { Chat } from '../types/chat';
 
 const [on,setOn] = useState<boolean>(false);
 

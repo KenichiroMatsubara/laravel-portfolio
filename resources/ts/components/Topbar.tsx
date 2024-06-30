@@ -1,21 +1,20 @@
 import React from 'react'
 import SearchIcon from '@mui/icons-material/Search';
-import MenuIcon from '@mui/icons-material/Menu';
 
 const Topbar = () => {
     return (
-        <div className='bg-orange-300 flex items-center w-full  h-16 sticky'>
-            <div className='bg-orange-100 ml-auto mr-auto w-11/12 flex items-center justify-center mt-2 mb-2 p-2 rounded-full'>
+        <div className='sticky flex items-center w-full h-16 bg-orange-300'>
+            <div className='flex items-center justify-center w-11/12 p-2 mt-2 mb-2 ml-auto mr-auto bg-orange-100 rounded-full'>
                 <input
-                    className='bg-transparent outline-none ml-2 w-10/12'
+                    className='w-10/12 ml-2 bg-transparent outline-none'
                 />
                 <SearchIcon
-                    className='cursor-pointer duration-300 hover:text-gray-600'
+                    className='duration-300 cursor-pointer hover:text-gray-600'
                 />
             </div>
             {/* <div className='pr-5'>
                 <MenuIcon
-                    className='cursor-pointer duration-300 hover:text-gray-600'
+                    className='duration-300 cursor-pointer hover:text-gray-600'
                 />
             </div> */}
         </div>

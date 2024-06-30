@@ -1,15 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import Conma from './Conma';
-
-export interface EngineerInfo {
-    engineerName: string,
-    engineerId: number,
-    engieerExperience: number,
-    favoriteLangs: string[],
-    workAt: string[],
-    profileImg: string,
-}
+import type { EngineerInfo } from '../types/engineerInfo';
 
 const SearchMain = () => {
     const year: number = 0;
@@ -40,10 +32,10 @@ const SearchMain = () => {
             <ul className='h-full'>
                 {engineerInfos.map((engineerInfo: EngineerInfo) => (
                     <Link to={`/profile/${engineerInfo.engineerName}`}>
-                        <li className='flex items-center py-5 border-b border-orange-300 hover:bg-orange-100 duration-300'>
+                        <li className='flex items-center py-5 duration-300 border-b border-orange-300 hover:bg-orange-100'>
                             <div className='flex flex-col items-center justify-center'>
                                 <img src={engineerInfo.profileImg}
-                                    className='h-16 w-16 object-cover rounded-full'
+                                    className='object-cover w-16 h-16 rounded-full'
                                 />
                                 <span className=''>{engineerInfo.engineerName}</span>
                             </div>
