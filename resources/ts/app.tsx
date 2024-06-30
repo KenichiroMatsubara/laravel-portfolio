@@ -15,16 +15,25 @@ import ReactDOM from "react-dom/client";
 import React from 'react';
 import { render } from 'react-dom';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Home from './components/Home';
-import About from './components/About';
-import { UserContextProvider } from "./UserContext";
+import Home from './pages/Home';
+import { UserContextProvider,useUserContext } from "./UserContext";
+import Profile from "./pages/Profile";
+import Favorite from "./pages/Favorite";
+import FECompanyList from "./pages/FECompanyList";
+import FEMakeNew from "./pages/FEMakeNew";
+import FEHome from "./pages/FEHome";
 
 function App() {
+    const { userContext: { userType,id,token }, dispatcher: { setUserType, setId,setToken } } = useUserContext();
     return (
         <BrowserRouter>
             <Routes>
                 <Route path='/' element={<Home />} />
-                <Route path='/about' element={<About />} />
+                <Route path="/profile/:engineername" element={<Profile />} />
+                <Route path="/favorite/" element={<Favorite />} />
+                <Route path='/engineer/' element={<FEHome />} />
+                <Route path="/engineer/make_new/" element={<FEMakeNew />} />
+                <Route path="/engineer/companylist" element={<FECompanyList />} />
             </Routes>
         </BrowserRouter>
     );

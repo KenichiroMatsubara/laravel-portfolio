@@ -4,7 +4,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 const Topbar = () => {
     return (
-        <div className='bg-orange-300 flex items-center'>
+        <div className='bg-orange-300 flex items-center w-full  h-16 sticky'>
             <div className='bg-orange-100 ml-auto mr-auto w-11/12 flex items-center justify-center mt-2 mb-2 p-2 rounded-full'>
                 <input
                     className='bg-transparent outline-none ml-2 w-10/12'

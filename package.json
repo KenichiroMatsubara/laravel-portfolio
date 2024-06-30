@@ -27,6 +27,7 @@
         "@emotion/styled": "^11.11.5",
         "@mui/icons-material": "^5.15.20",
         "@mui/material": "^5.15.20",
+        "react-form-hook": "^0.0.1",
         "react-router-dom": "^6.24.0"
     }
 }

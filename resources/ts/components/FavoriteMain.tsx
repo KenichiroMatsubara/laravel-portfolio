@@ -11,7 +11,7 @@ export interface EngineerInfo {
     profileImg: string,
 }
 
-const HomeMain = () => {
+const FavoriteMain = () => {
     const year: number = 0;
     const name1: string = "名前1";
     const name2: string = "名前2";
@@ -61,4 +61,4 @@ const HomeMain = () => {
     )
 }
 
-export default HomeMain
+export default FavoriteMain
