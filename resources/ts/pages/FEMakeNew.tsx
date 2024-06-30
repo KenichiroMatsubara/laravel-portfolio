@@ -1,4 +1,5 @@
 import React, { FormEventHandler, useState } from 'react'
+import FESidebar from '../components/FESidebar';
 
 export interface Stacks {
     php: boolean,
@@ -40,8 +41,9 @@ const FEMakeNew = () => {
     }
 
     return (
-        <div>
-            <form className='flex flex-col m-5'>
+        <div className='flex'>
+            <FESidebar />
+            <form className='flex flex-col w-9/12 m-5'>
                 <span className='mb-8 text-3xl text-orange-600 underline'>新しく制作物を追加する</span>
                 <div className='flex flex-col'>
                     <span className='text-2xl'>タイトル</span>

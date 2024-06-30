@@ -1,8 +1,14 @@
 import React from 'react'
+import FESidebar from '../components/FESidebar'
 
 const FECompanyList = () => {
     return (
-        <div>FECompanyList</div>
+        <div className='flex'>
+            <FESidebar />
+            <div>
+                a
+            </div>
+        </div>
     )
 }
 
