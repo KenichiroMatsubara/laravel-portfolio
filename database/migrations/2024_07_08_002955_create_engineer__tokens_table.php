@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('engineer__tokens', function (Blueprint $table) {
             $table->id();
+            $table->integer("engineer_id");
             $table->string("token");
             $table->timestamps();
         });

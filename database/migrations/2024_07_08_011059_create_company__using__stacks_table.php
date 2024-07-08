@@ -13,10 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('company__tokens', function (Blueprint $table) {
+        Schema::create('company__using__stacks', function (Blueprint $table) {
             $table->id();
             $table->integer("company_id");
-            $table->string("token");
+            $table->string("stack");
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('company__tokens');
+        Schema::dropIfExists('company__using__stacks');
     }
 };

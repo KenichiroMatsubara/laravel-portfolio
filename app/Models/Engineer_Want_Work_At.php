@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Engineer_Token extends Model
+class Engineer_Want_Work_At extends Model
 {
     use HasFactory;
-    protected $fillable = ['engineer_id','token'];
+    protected $fillable = ['engineer_id','place'];
     public function engineers()
     {
-        $this->belongsTo(Engineer::class);
+        return $this->belongsTo(Engineer::class);
     }
 }
