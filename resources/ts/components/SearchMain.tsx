@@ -31,7 +31,7 @@ const SearchMain = () => {
         <div className='flex flex-col w-9/12'>
             <ul className='h-full'>
                 {engineerInfos.map((engineerInfo: EngineerInfo) => (
-                    <Link to={`/profile/${engineerInfo.engineerName}`}>
+                    <Link to={`/profile/${engineerInfo.engineerId}`}>
                         <li className='flex items-center py-5 duration-300 border-b border-orange-300 hover:bg-orange-100'>
                             <div className='flex flex-col items-center justify-center'>
                                 <img src={engineerInfo.profileImg}

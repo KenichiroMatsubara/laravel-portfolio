@@ -4,11 +4,11 @@ import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
 import SearchMain from '../components/SearchMain';
 
-const Profile = () => {
+const Search = () => {
     return (
-        <div className='h-full flex-1'>
+        <div className='flex-1 h-full'>
             <Topbar />
-            <div className='flex flex-1 h-full w-full -z-10'>
+            <div className='flex flex-1 w-full h-full -z-10'>
                 <Sidebar />
                 <SearchMain />
             </div>
@@ -16,4 +16,4 @@ const Profile = () => {
     )
 }
 
-export default Profile
+export default Search

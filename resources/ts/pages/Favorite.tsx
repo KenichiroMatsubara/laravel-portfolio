@@ -5,9 +5,8 @@ import FavoriteMain from '../components/FavoriteMain'
 
 const Favorite = () => {
     return (
-    <div className='h-full flex-1'>
-        <Topbar />
-        <div className='flex flex-1 h-full w-full -z-10'>
+    <div className='flex-1 h-full'>
+        <div className='flex flex-1 w-full h-full -z-10'>
             <Sidebar />
             <FavoriteMain />
         </div>

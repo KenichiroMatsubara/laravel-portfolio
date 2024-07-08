@@ -1,4 +1,3 @@
-
 export type Chat = {
     text: string,
     createdAt: string,

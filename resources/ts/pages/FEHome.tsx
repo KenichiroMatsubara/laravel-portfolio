@@ -11,12 +11,12 @@ const FEHome = () => {
     const langs: string[] = ["php","laravel","react","typescript","nodejs"];
     const places: string[] = ["愛知県"];
     const engineerId: number = 1;
-    const productIds: number[] = [1];
+    const productIds: number[] = [1,1];
     return (
         <div className='flex'>
             <FESidebar />
             <div className='flex flex-col w-9/12'>
-                <div className='w-full py-5'>
+                <div className='w-full py-5 border-b'>
                     <div className='flex'>
                         <div className='flex flex-col items-center justify-center'>
                             <img src='https://kohacu.com/wp-content/uploads/2018/06/kohacu.com_001312_20180615.png'

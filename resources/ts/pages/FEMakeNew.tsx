@@ -26,7 +26,12 @@ const FEMakeNew = () => {
         const explain: FormDataEntryValue = form.get("explain") || "";
         const githubURL: FormDataEntryValue = form.get("githubURL") || "";
         const deployURL: FormDataEntryValue = form.get("deployURL") || "";
+    }
 
+    const handleChangeStacks = (key:string) => {
+        const newStacks = {...stacks};
+        newStacks[key] = !newStacks[key];
+        setStacks(newStacks);
     }
 
     return (
@@ -51,11 +56,7 @@ const FEMakeNew = () => {
                                     <input
                                         type="checkbox"
                                         checked={stacks[key]}
-                                        onChange={() => {
-                                            const newStacks = {...stacks};
-                                            newStacks[key] = !newStacks[key];
-                                            setStacks(newStacks);
-                                        }}
+                                        onChange={() => handleChangeStacks(key)}
                                         className='w-5 h-5 p-1 border rounded'
                                     />
                                 </div>

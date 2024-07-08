@@ -1,15 +1,12 @@
-import React from 'react'
+import React, { FC } from 'react'
 import FESidebar from '../components/FESidebar'
 
-const FECompanyList = () => {
+const FESearch: FC = () => {
     return (
         <div className='flex'>
             <FESidebar />
-            <div>
-                a
-            </div>
         </div>
     )
 }
 
-export default FECompanyList
+export default FESearch

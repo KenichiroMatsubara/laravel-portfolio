@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react'
 import type { Chat } from '../types/chat';
 import CloseIcon from '@mui/icons-material/Close';
-import { ChatProps } from '../types/chatProps';
+import { FEChatProps } from '../types/fEChatProps';
 import SendIcon from '@mui/icons-material/Send';
 
 const chats: Chat[] =[
@@ -43,13 +43,13 @@ const chats: Chat[] =[
     },
 ];
 
-const Chat: FC<ChatProps> = ({engineerId,companyId,setOnModal}) => {
+const FEChat: FC<FEChatProps> = ({engineerId,companyId,setOnModal,setOnAnyModals}) => {
 
     const [sendText,setSendText] = useState<string>("");
 
     const closeThisModal = () => {
         setOnModal(false);
-        console.log(setOnModal);
+        setOnAnyModals(false);
     }
 
     const handleSendText = () => {
@@ -59,11 +59,11 @@ const Chat: FC<ChatProps> = ({engineerId,companyId,setOnModal}) => {
         <div className='absolute top-0 bottom-0 left-0 right-0 z-50 mt-20 ml-auto mr-auto bg-orange-100 border w-80 h-96 flex flex-col'>
             <CloseIcon
                 className='absolute top-0 right-0 p-1 ml-auto text-white duration-300 bg-red-500 hover:bg-red-300'
-                onClick={() => setOnModal(false)}
+                onClick={() => closeThisModal()}
             />
             <div className='bg-orange-100 flex flex-col overflow-y-scroll'>
                 {chats.map((chat) => (
-                <div className={"company"==chat.from ?'ml-4 mr-1 rounded-xl bg-white my-2 py-5 px-2':'mr-4 ml-1 rounded-xl bg-pink-300 my-2 py-5 px-2'}>
+                <div className={"Engineer"==chat.from ?'ml-4 mr-1 rounded-xl bg-white my-2 py-5 px-2':'mr-4 ml-1 rounded-xl bg-pink-300 my-2 py-5 px-2'}>
                     <span className=''>{chat.text}</span>
                     <span className='text-xs text-gray-500'>{chat.createdAt}</span>
                 </div>))}
@@ -83,4 +83,4 @@ const Chat: FC<ChatProps> = ({engineerId,companyId,setOnModal}) => {
     )
 }
 
-export default Chat
+export default FEChat
