@@ -23,4 +23,16 @@ class Company extends Model
     {
         return $this->hasMany(Company_Token::class);
     }
+    public function favorite_from_companies()
+    {
+        return $this->hasMany(Favorite_From_Company::class);
+    }
+    public function company_using_stacks()
+    {
+        return $this->hasMany(Company_Using_Stack::class);
+    }
+    public function chats()
+    {
+        return $this->hasMany(Chat::class);
+    }
 }
