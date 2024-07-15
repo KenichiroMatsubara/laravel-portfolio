@@ -18,9 +18,10 @@ return new class extends Migration
             $table->string("name");
             $table->string("address");
             $table->string("email");
+            $table->longText("explain");
+            $table->string("imgURL");
             $table->string("homepageURL");
             $table->string("password");
-            $table->string("token");
             $table->timestamps();
         });
     }

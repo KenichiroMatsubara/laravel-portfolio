@@ -88,11 +88,12 @@ const FEMakeNew = () => {
                         className='w-64 p-2 border border-gray-500 rounded '
                     />
                 </div>
-                <button
+                <input
+                    type='submit'
                     className='w-32 p-2 mt-5 text-white duration-300 bg-orange-600 rounded hover:bg-orange-400'
-                >
-                    送信
-                </button>
+                    value={"送信"}
+                />
+
             </form>
         </div>
     )

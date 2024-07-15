@@ -19,13 +19,17 @@ import Home from './pages/Home';
 import { UserContextProvider,useUserContext } from "./UserContext";
 import Profile from "./pages/Profile";
 import Favorite from "./pages/Favorite";
-import FECompanyList from "./pages/FECompanyProfiles";
 import FEMakeNew from "./pages/FEMakeNew";
 import FEHome from "./pages/FEHome";
 import FESearch from "./pages/FESearch";
 import EditHome from "./pages/EditHome";
 import Search from "./pages/Search";
 import FECompanyProfiles from "./pages/FECompanyProfiles";
+import Account from "./pages/Account";
+import FESignIn from "./pages/FESignIn";
+import FCSignIn from "./pages/FCSignIn";
+import FERegister from "./pages/FERegister";
+import FCRegister from "./pages/FCRegister";
 
 function App() {
     const { userContext: { userType,id,token }, dispatcher: { setUserType, setId,setToken } } = useUserContext();
@@ -33,14 +37,19 @@ function App() {
         <BrowserRouter>
             <Routes>
                 <Route path='/' element={<Home />} />
-                <Route path='/search' element={<Search />} />
-                <Route path="/profile/:engineername" element={<Profile />} />
-                <Route path="/favorite/" element={<Favorite />} />
-                <Route path="/edit_home/" element={<EditHome />} />
+                <Route path='/account/' element={<Account />} />
+                <Route path='/account/signin_for_engineer/' element={<FESignIn />} />
+                <Route path='/account/signin_for_company/' element={<FCSignIn />} />
+                <Route path='/account/register_for_engineer' element={<FERegister />} />
+                <Route path='/account/register_for_company' element={<FCRegister />} />
+                <Route path='/search/' element={<Search />} />
+                <Route path='/profile/:engineername' element={<Profile />} />
+                <Route path='/favorite/' element={<Favorite />} />
+                <Route path='/edit_home/' element={<EditHome />} />
                 <Route path='/engineer/' element={<FEHome />} />
-                <Route path="/engineer/make_new/" element={<FEMakeNew />} />
-                <Route path="/engineer/companylist" element={<FECompanyProfiles />} />
-                <Route path="/engineer/search" element={<FESearch />} />
+                <Route path='/engineer/make_new/' element={<FEMakeNew />} />
+                <Route path='/engineer/companylist/' element={<FECompanyProfiles />} />
+                <Route path='/engineer/search/' element={<FESearch />} />
             </Routes>
         </BrowserRouter>
     );

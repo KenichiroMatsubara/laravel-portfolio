@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('portfolios', function (Blueprint $table) {
             $table->id();
             $table->integer("engineer_id");
-            $table->string("explain");
+            $table->longText("explain");
             $table->string("githubURL");
             $table->string("deployURL");
             $table->timestamps();

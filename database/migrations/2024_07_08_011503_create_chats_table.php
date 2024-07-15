@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer("company_id");
             $table->integer("engineer_id");
             $table->string("type");
-            $table->string("text");
+            $table->longText("text");
             $table->timestamps();
         });
     }
