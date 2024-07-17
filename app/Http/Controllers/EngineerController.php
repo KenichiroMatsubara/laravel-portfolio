@@ -27,10 +27,13 @@ class EngineerController extends Controller
 
         $functions = new \App\Library\Functions;
         $pepper = $_ENV["PEPPER"];
-        Engineer::create([
+        $new_engineer = Engineer::create([
             "name" => $validated['name'],
             "email" => $validated['email'],
             "password" => $functions->p_hash($validated['password'], $pepper),
+        ]);
+        return response()->json([
+            "new engineer"=>$new_engineer
         ]);
     }
 
