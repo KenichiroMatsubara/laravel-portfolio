@@ -17,7 +17,21 @@ class TestController extends Controller
     {
         $engineer = Engineer::all();
         return response()->json([
+            "engineer"=>$engineer,
             "result"=>"test success"
+        ]);
+    }
+    public function req_test(Request $request)
+    {
+        $validated = $request->validate([
+            "name"=>"required",
+            "email"=>"required",
+            "password"=>"required",
+        ]);
+        return response()->json([
+            "name"=>$validated["name"],
+            "email"=>$validated["email"],
+            "password"=>$validated["password"],
         ]);
     }
 }

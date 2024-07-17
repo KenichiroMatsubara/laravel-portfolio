@@ -17,18 +17,19 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-$a = "App\Http\Controllers";
+$test = "App\Http\Controllers\TestController@";
+$engineer = "App\Http\Controllers\EngineerController@";
 
-Route::get("/",$a."\TestController@test");
+Route::get("/",$test."test");
+Route::post("/req_test",$test."req_test");
 
-Route::post("/create_engineer_account",$a."\EngineerController@create_engineer_account");
-Route::post("/signin_engineer_account_by_password",$a."\EngineerController@signin_engineer_account_by_password");
-Route::post("/create_engineer_account",$a."\EngineerController@signin_engineer_account_by_token");
-Route::post("/create_engineer_account",$a."\EngineerController@get_engineer_info");
-Route::post("/create_engineer_account",$a."\EngineerController@update_engineer_account");
-Route::post("/create_engineer_account",$a."\EngineerController@destroy_engineer_account");
+Route::post("/create_engineer_account",$engineer."create_engineer_account");
+Route::post("/signin_engineer_account_by_password",$engineer."signin_engineer_account_by_password");
+// Route::post("/create_engineer_account",$engineer."signin_engineer_account_by_token");
+// Route::post("/create_engineer_account",$engineer."get_engineer_info");
+// Route::post("/create_engineer_account",$engineer."update_engineer_account");
+// Route::post("/create_engineer_account",$engineer."destroy_engineer_account");
 
-Route::post("/create_engineer_account",$a."\EngineerController@");
 
 
 
