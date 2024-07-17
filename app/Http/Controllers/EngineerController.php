@@ -25,12 +25,11 @@ class EngineerController extends Controller
             'password' => 'required',
         ]);
 
-        $functions = new \App\Library\Functions;
         $pepper = $_ENV["PEPPER"];
         $new_engineer = Engineer::create([
             "name" => $validated['name'],
             "email" => $validated['email'],
-            "password" => $functions->p_hash($validated['password'], $pepper),
+            "password" => p_hash($validated['password'], $pepper),
         ]);
         return response()->json([
             "new engineer"=>$new_engineer
@@ -45,13 +44,12 @@ class EngineerController extends Controller
             'autoSignin' => 'required',
         ]);
 
-        $functions = new \App\Library\Functions;
         $pepper = $_ENV["PEPPER"];
         $engineer = Engineer::where("email", $validated['email'])->first();
-        if ($functions->pcompare($validated['password'], $engineer->password, $pepper)) {
+        if (p_compare_password($validated['password'], $engineer->password, $pepper)) {
             if ($validated['autoSignin']) {
                 $token = Engineer_Token::create([
-                    "token" => hash("sha224", $functions->randstr(20)),
+                    "token" => hash("sha224", randstr(20)),
                     "engineer_id" => $engineer->id,
                 ]);
                 return response()->json([
@@ -72,12 +70,11 @@ class EngineerController extends Controller
             'email' => 'required',
             'token' => 'required',
         ]);
-        $functions = new \App\Library\Functions;
         $engineer = Engineer::where("email", $validated['email'])->first();
         $token = Engineer_Token::find($engineer->id);
         if ($token->token == $validated['token']) {
             $token->update([
-                "token" => hash("sha224", $functions->randstr(20)),
+                "token" => hash("sha224", randstr(20)),
             ]);
 
             return response()->json([

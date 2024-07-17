@@ -17,12 +17,11 @@ class CompanyController extends Controller
             'password' => 'required',
         ]);
 
-        $functions = new \App\Library\Functions;
         $pepper = $_ENV["PEPPER"];
         Company::create([
             "name" => $validated['name'],
             "email" => $validated['email'],
-            "password" => $functions->p_hash($validated['password'], $pepper),
+            "password" => p_hash($validated['password'], $pepper),
         ]);
     }
 
@@ -33,16 +32,15 @@ class CompanyController extends Controller
             'password' => 'required',
         ]);
 
-        $functions = new \App\Library\Functions;
         $pepper = $_ENV["PEPPER"];
         $company = Company::where("email", $validated['email'])->first();
-        if ($functions->pcompare($validated['password'], $company->password, $pepper)) {
+        if (p_compare_password($validated['password'], $company->password, $pepper)) {
             // ３０日以上前に作られたトークンを削除
             $deleteToken = Company_Token::where("created_at","<",now()->subDays(30))->where("company_id",1);
             $deleteToken->delete();
             // 新たにトークンを発行
             $token = Company_Token::create([
-                "token"=>$functions->make_token(),
+                "token"=>make_token(),
                 "company_id" => $company->id,
             ]);
             return response()->json([
@@ -58,13 +56,12 @@ class CompanyController extends Controller
             'email' => 'required',
             'token' => 'required',
         ]);
-        $functions = new \App\Library\Functions;
         $company = Company::where("email", $validated['email'])->first();
         $tokens = Company_Token::where("company_id", $company->id)->get();
         foreach ($tokens as $token) {
             if ($token->token == $validated['token']) {
                 $token->update([
-                    "token" => $functions->make_token(),
+                    "token" => make_token(),
                 ]);
 
                 return response()->json([

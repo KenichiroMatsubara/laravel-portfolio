@@ -1,31 +1,31 @@
 <?php
-namespace App\Library;
 
-use Faker\Core\Number;
-
-class Functions
-{
+if (!(
+    function_exists("randstr")
+    ||function_exists("make_token")
+    ||function_exists("p_hash")
+    ||function_exists("p_compare_password")
+)){
     // ランダムな文字列を出力するだけの関数
-    public static function randstr($length)
+    function randstr($length)
     {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!#%&-=^~|@:*;+,<.>?';
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $str = "";
         for($i=0;$i<$length;$i++){
             $str .= $characters[mt_rand(0,strlen($characters))-1];
         }
         return $str;
     }
+
     // トークン作成関数
-    public static function make_token()
+    function make_token($data=null)
     {
-        $functions = new \App\Library\Functions;
-        return hash("sha224",$functions->randstr(20));
+        return hash("sha224",randstr(20)).hash("sha224",randstr(20));
     }
     // 本題のハッシュ化関数
-    public static function p_hash($password,$pepper)
+    function p_hash($password,$pepper)
     {
-        $functions = new \App\Library\Functions;
-        $salt = $functions->randstr(20);
+        $salt = randstr(20);
         // ペッパーとソルトをハッシュ化で融合させる
         $realsalt = hash("sha224",$pepper.$salt);
         $strech_num=10;
@@ -37,8 +37,8 @@ class Functions
         $password = "$"."p$".strval($strech_num).$salt."$".$password;
         return $password;
     }
-    // 照合するための関数
-    public static function pcompare($password,$hashed_password,$pepper)
+    // ハッシュ化の比較関数
+    function p_compare_password($password,$hashed_password,$pepper)
     {
         preg_match('/\$(.*?)\$(.*?)\$(.*?)\$(.*)/', $hashed_password, $matches);
         $kind = $matches[1];
