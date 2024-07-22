@@ -1,40 +1,64 @@
-import React, { FormEventHandler, useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { FormEventHandler, MutableRefObject, useRef, useState } from 'react'
+import { Link } from 'react-router-dom';
+import sha256 from 'crypto-js/sha256';
+import axios from "axios";
+import { useCookies } from 'react-cookie';
+import { useUserContext } from '../UserContext';
 
 const FESignIn = () => {
-    const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
-        e.preventDefault()
+    const [cookies,setCookies,removeCookies] = useCookies();
+    const { userContext: { userType,id,token,state }, dispatcher: { setUserType, setId,setToken,setState } } = useUserContext();
+
+    const [autoLogin,setAutoLogin] = useState<boolean>(!(token===""));//tokenがからの時はautoLoginを実行しない
+    const [alreadyUsed,setAlreadyUsed] = useState<boolean>(false);
+
+    const email:MutableRefObject<string> = useRef("email");
+    const password:MutableRefObject<string> = useRef("password");
+    const baseURL:string = "http://127.0.0.1:8000/api";
+
+    const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
+        e.preventDefault();
+        const sendData = {
+            "email":email,
+            "password": sha256(password).toString(),
+        }
+        try {
+            const data = await axios.post(`${baseURL}/signin_engineer_account_by_password`,sendData);
+
+
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    const [autoLogin,setAutoLogin] = useState<boolean>(false);
 
     return (
         <div className='flex'>
-            <div className='w-1/2 flex flex-col items-center justify-center'>
+            <div className='flex flex-col items-center justify-center w-1/2'>
                 <Link to={"/account/"}>
                     <span className='text-3xl font-bold text-amber-700'>DUCTION</span>
                 </Link>
-                <span className='text-xl font-bold mt-10'>市場価値を楽に伝える</span>
+                <span className='mt-10 text-xl font-bold'>市場価値を楽に伝える</span>
             </div>
-            <div className='flex flex-col w-1/2 items-center justify-center px-10 py-16 border m-16 rounded-3xl bg-orange-100'>
-                <span className='text-xl font-bold mb-5'>エンジニア</span>
+            <div className='flex flex-col items-center justify-center w-1/2 px-10 py-16 m-16 bg-orange-100 border rounded-3xl'>
+                <span className='mb-5 text-xl font-bold'>エンジニア</span>
                 <form onSubmit={handleSubmit} className='flex flex-col mb-5'>
                     <input
                         type="text"
                         name='email'
                         placeholder='email'
-                        className='py-1 px-2 rounded mb-5'
+                        className='px-2 py-1 mb-5 rounded'
                     />
                     <input
                         type="password"
                         name='password'
                         placeholder='password'
-                        className='py-1 px-2 rounded mb-5'
+                        className='px-2 py-1 mb-5 rounded'
                     />
                     <input
                         type="submit"
                         value={"ログイン"}
-                        className='font-bold bg-orange-500 hover:bg-orange-300 duration-300 text-white py-1 px-3 rounded'
+                        className='px-3 py-1 font-bold text-white duration-300 bg-orange-500 rounded hover:bg-orange-300'
                     />
                 </form>
                 <div className='flex items-center mb-2'>
@@ -43,11 +67,11 @@ const FESignIn = () => {
                         type="checkbox"
                         checked={autoLogin}
                         onChange={() => setAutoLogin(!autoLogin)}
-                        className='h-4 w-4 ml-2'
+                        className='w-4 h-4 ml-2'
                     />
                 </div>
                 <Link to={"/account/register_for_engineer/"}>
-                    <span className='font-bold text-gray-900 cursor-pointer hover:text-gray-500 duration-300'>
+                    <span className='font-bold text-gray-900 duration-300 cursor-pointer hover:text-gray-500'>
                         新規登録はこちらから
                     </span>
                 </Link>

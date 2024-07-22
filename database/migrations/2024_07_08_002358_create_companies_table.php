@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string("name");
             $table->string("address");
-            $table->string("email");
+            $table->string("email")->unique();
             $table->longText("explain");
             $table->string("imgURL");
             $table->string("homepageURL");

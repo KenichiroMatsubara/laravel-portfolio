@@ -13,7 +13,7 @@ class Portfolio extends Model
     {
         return $this->belongsTo(Engineer::class);
     }
-    public function portfolio_use_stacks()
+    public function portfolio_using_stacks()
     {
         return $this->hasMany(Portfolio_Using_Stack::class);
     }

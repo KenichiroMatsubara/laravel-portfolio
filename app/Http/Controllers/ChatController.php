@@ -53,7 +53,7 @@ class ChatController extends Controller
             "result"=>"successfully destroyed!"
         ]);
     }
-    public function get_company_id_which_send(Request $request)
+    public function get_company_id_by_engineer_id(Request $request)
     {
         $validated = $request->validate([
             "engineer_id"=>"required",
@@ -64,7 +64,7 @@ class ChatController extends Controller
             "company_id"=>$company_ids
         ]);
     }
-    public function get_engineer_id_which_company_send(Request $request)
+    public function get_engineer_id_by_company_id(Request $request)
     {
         $validated = $request->validate([
             "company_id"=>"required",

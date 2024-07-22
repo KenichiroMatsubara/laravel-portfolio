@@ -8,28 +8,20 @@ use App\Models\Engineer_Token;
 use App\Models\Engineer_Want_Work_At;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
-use Dotenv\Dotenv;
-
-require __DIR__ . '/vendor/autoload.php';
-$dotenv = Dotenv::createImmutable(__DIR__);
-$dotenv->load();
-
 
 class EngineerController extends Controller
 {
     public function create_engineer_account(Request $request)
     {
-        $validated = $request->validated([
+        $validated = $request->validate([
             'name' => 'required',
-            'email' => 'required',
+            'email' => 'required|unique:enineers',
             'password' => 'required',
         ]);
-
-        $pepper = $_ENV["PEPPER"];
         $new_engineer = Engineer::create([
             "name" => $validated['name'],
             "email" => $validated['email'],
-            "password" => p_hash($validated['password'], $pepper),
+            "password" => p_hash($validated['password']),
         ]);
         return response()->json([
             "new engineer"=>$new_engineer
@@ -38,15 +30,13 @@ class EngineerController extends Controller
 
     public function signin_engineer_account_by_password(Request $request)
     {
-        $validated = $request->validated([
+        $validated = $request->validate([
             'email' => 'required',
             'password' => 'required',
             'autoSignin' => 'required',
         ]);
-
-        $pepper = $_ENV["PEPPER"];
         $engineer = Engineer::where("email", $validated['email'])->first();
-        if (p_compare_password($validated['password'], $engineer->password, $pepper)) {
+        if (p_compare_password($validated['password'], $engineer->password)) {
             if ($validated['autoSignin']) {
                 $token = Engineer_Token::create([
                     "token" => hash("sha224", randstr(20)),
@@ -55,6 +45,7 @@ class EngineerController extends Controller
                 return response()->json([
                     "result" => "pass",
                     "token" => $token->token,
+                    "id"=>$engineer->id,
                 ]);
             } else {
                 return response()->json([
@@ -66,7 +57,7 @@ class EngineerController extends Controller
     }
     public function signin_engineer_account_by_token(Request $request)
     {
-        $validated = $request->validated([
+        $validated = $request->validate([
             'email' => 'required',
             'token' => 'required',
         ]);
@@ -80,12 +71,13 @@ class EngineerController extends Controller
             return response()->json([
                 "result" => "pass",
                 "token" => $token->token,
+                "id"=>$engineer->id,
             ]);
         }
     }
     public function get_engineer_info(Request $request)
     {
-        $validated = $request->validated([
+        $validated = $request->validate([
             'id' => 'required',
         ]);
         $engineer = Engineer::find($validated['id']);
@@ -100,7 +92,7 @@ class EngineerController extends Controller
 
     public function update_engineer_account(Request $request)
     {
-        $validated = $request->validated([
+        $validated = $request->validate([
             'id' => 'required|numeric',
             'name' => 'required',
             "stacks" => 'required',
@@ -139,7 +131,7 @@ class EngineerController extends Controller
     }
     public function destroy_engineer_account(Request $request)
     {
-        $validated = $request->validated([
+        $validated = $request->validate([
             'id' => 'required|numeric',
             'name' => 'required',
             "email" => 'required',

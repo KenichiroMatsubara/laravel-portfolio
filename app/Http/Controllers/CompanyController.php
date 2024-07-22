@@ -11,30 +11,25 @@ class CompanyController extends Controller
 {
     public function create_company_account(Request $request)
     {
-        $validated = $request->validated([
+        $validated = $request->validate([
             'name' => 'required',
-            'email' => 'required',
+            'email' => 'required|unique:companies',
             'password' => 'required',
         ]);
-
-        $pepper = $_ENV["PEPPER"];
         Company::create([
             "name" => $validated['name'],
-            "email" => $validated['email'],
-            "password" => p_hash($validated['password'], $pepper),
+            "password" => p_hash($validated['password']),
         ]);
     }
 
     public function signin_company_account_by_password(Request $request)
     {
-        $validated = $request->validated([
+        $validated = $request->validate([
             'email' => 'required',
             'password' => 'required',
         ]);
-
-        $pepper = $_ENV["PEPPER"];
         $company = Company::where("email", $validated['email'])->first();
-        if (p_compare_password($validated['password'], $company->password, $pepper)) {
+        if (p_compare_password($validated['password'], $company->password)) {
             // ３０日以上前に作られたトークンを削除
             $deleteToken = Company_Token::where("created_at","<",now()->subDays(30))->where("company_id",1);
             $deleteToken->delete();
@@ -52,7 +47,7 @@ class CompanyController extends Controller
     }
     public function signin_company_account_by_token(Request $request)
     {
-        $validated = $request->validated([
+        $validated = $request->validate([
             'email' => 'required',
             'token' => 'required',
         ]);
@@ -74,7 +69,7 @@ class CompanyController extends Controller
     }
     public function get_company_info(Request $request)
     {
-        $validated = $request->validated([
+        $validated = $request->validate([
             "id" => "required",
         ]);
         $company = Company::find($validated['id']);
@@ -87,7 +82,7 @@ class CompanyController extends Controller
 
     public function update_company_account(Request $request)
     {
-        $validated = $request->validated([
+        $validated = $request->validate([
             'id' => 'required|numeric',
             'name' => 'required',
             'email' => 'required',
@@ -122,7 +117,7 @@ class CompanyController extends Controller
     }
     public function destroy_company_account(Request $request)
     {
-        $validated = $request->validated([
+        $validated = $request->validate([
             'id' => 'required|numeric',
             'name' => 'required',
             "email" => 'required',

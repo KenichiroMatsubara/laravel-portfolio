@@ -19,17 +19,43 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 $test = "App\Http\Controllers\TestController@";
 $engineer = "App\Http\Controllers\EngineerController@";
+$company = "App\Http\Controllers\CompanyController@";
+$chat = "App\Http\Controllers\ChatController@";
+$favorite = "App\Http\Controllers\Favorite_From_Company_Controller@";
+$portfolio = "App\Http\Controllers\PortfolioController@";
 
 Route::get("/",$test."test");
 Route::post("/req_test",$test."req_test");
 
 Route::post("/create_engineer_account",$engineer."create_engineer_account");
 Route::post("/signin_engineer_account_by_password",$engineer."signin_engineer_account_by_password");
-// Route::post("/create_engineer_account",$engineer."signin_engineer_account_by_token");
-// Route::post("/create_engineer_account",$engineer."get_engineer_info");
-// Route::post("/create_engineer_account",$engineer."update_engineer_account");
-// Route::post("/create_engineer_account",$engineer."destroy_engineer_account");
+Route::post("/signin_engineer_account_by_token",$engineer."signin_engineer_account_by_token");
+Route::post("/get_engineer_info",$engineer."get_engineer_info");
+Route::put("/update_engineer_account",$engineer."update_engineer_account");
+Route::post("/destroy_engineer_account",$engineer."destroy_engineer_account");
 
 
+Route::post("/create_company_account",$company."create_company_account");
+Route::post("/signin_company_account_by_password",$company."signin_company_account_by_password");
+Route::post("/signin_company_account_by_token",$company."signin_company_account_by_token");
+Route::post("/get_company_info",$company."get_company_info");
+Route::put("/update_company_account",$company."update_company_account");
+Route::post("/destroy_company_account",$company."destroy_company_account");
 
 
+Route::post("/create_chat",$chat."create_chat");
+Route::put("/update_chat",$chat."update_chat");
+Route::post("/destroy_chat",$chat."destry_chat");
+Route::post("/get_company_id_by_engineer_id",$chat."get_company_id_by_engineer_id");
+Route::post("/get_engineer_id_by_company_id",$chat."get_engineer_id_by_company_id");
+Route::post("/get_chat",$chat."get_chat");
+
+Route::post("/on_favorite",$favorite."on_favorite");
+Route::post("/off_favorite",$favorite."off_favorite");
+Route::post("/get_favorite_from_company",$favorite."get_favorite_from_company");
+Route::post("/get_engineer_company_favorite",$favorite."get_engineer_company_favorite");
+
+Route::post("/get_portfolio_info",$favorite."get_portfolio_info");
+Route::post("/create_portfolio",$favorite."create_portfolio");
+Route::put("/update_portfolio",$favorite."update_portfolio");
+Route::post("/destroy_portfolio",$favorite."destroy_portfolio");

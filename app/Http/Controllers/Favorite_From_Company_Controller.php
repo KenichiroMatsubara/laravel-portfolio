@@ -47,7 +47,7 @@ class Favorite_From_Company_Controller extends Controller
             "count"=>$count,
         ]);
     }
-    public function get_who_company_favorite(Request $request)
+    public function get_engineer_company_favorite(Request $request)
     {
         $validated = $request->validate([
             "engineer_id"=>"required"

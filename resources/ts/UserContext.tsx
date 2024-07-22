@@ -2,9 +2,19 @@ import React from 'react';
 import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from 'react';
 
 // 型定義
-export type UserContext = { userType: string,id: number; token: string };
+export type UserContext = {
+    state: string,
+    userType: string,
+    id: number,
+    token: string,
+};
 type UserContextType = { userContext: UserContext; setUserContext: Dispatch<SetStateAction<UserContext>> };
-const initUserContext: UserContext = { userType: "company",id: 1, token: "da"  };
+const initUserContext: UserContext = {
+    state: "none",
+    userType: "none",
+    id: -1,
+    token: ""||"",
+};
 
 // Context定義
 // exportしないことで、context関連のロジックをこのファイルに閉じ込める。
@@ -22,7 +32,8 @@ export const UserContextProvider = (props: { children: ReactNode }) => {
 export const useUserContext = () => {
     const { userContext, setUserContext } = useContext(UserContext);
     const dispatcher = {
-        setUserType: (nextUserType: number) => setUserContext((pre) => ({ ...pre, id: nextUserType })),
+        setState: (nextState: string) => setUserContext((pre)=> ({...pre,state: nextState})),
+        setUserType: (nextUserType: string) => setUserContext((pre) => ({ ...pre, userType: nextUserType })),
         setId: (nextId: number) => setUserContext((pre) => ({ ...pre, id: nextId })),
         setToken: (nextToken: string) => setUserContext((pre) => ({ ...pre, token: nextToken })),
     };
