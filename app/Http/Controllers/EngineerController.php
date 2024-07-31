@@ -14,8 +14,8 @@ class EngineerController extends Controller
     public function create_engineer_account(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required',
-            'email' => 'required|unique:enineers',
+            'name' => 'required|unique:engineers',
+            'email' => 'required|unique:engineers',
             'password' => 'required',
         ]);
         $new_engineer = Engineer::create([
@@ -33,13 +33,13 @@ class EngineerController extends Controller
         $validated = $request->validate([
             'email' => 'required',
             'password' => 'required',
-            'autoSignin' => 'required',
+            'autoSignin' => 'required|boolean',
         ]);
         $engineer = Engineer::where("email", $validated['email'])->first();
         if (p_compare_password($validated['password'], $engineer->password)) {
-            if ($validated['autoSignin']) {
+            if ($validated['autoSignin']==true) {
                 $token = Engineer_Token::create([
-                    "token" => hash("sha224", randstr(20)),
+                    "token" => make_token(),
                     "engineer_id" => $engineer->id,
                 ]);
                 return response()->json([
@@ -51,8 +51,14 @@ class EngineerController extends Controller
                 return response()->json([
                     "result" => "pass",
                     "token" => "none",
+                    "id"=>$engineer->id
                 ]);
             }
+        }
+        else {
+            return response()->json([
+                "result"=>"password is wrong"
+            ]);
         }
     }
     public function signin_engineer_account_by_token(Request $request)

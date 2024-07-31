@@ -29,6 +29,7 @@
         "@mui/material": "^5.15.20",
         "crypto-js": "^4.2.0",
         "dotenv": "^16.4.5",
+        "js-cookie": "^3.0.5",
         "react-cookie": "^7.1.4",
         "react-form-hook": "^0.0.1",
         "react-router-dom": "^6.24.0",

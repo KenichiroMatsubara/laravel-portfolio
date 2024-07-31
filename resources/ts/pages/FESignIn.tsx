@@ -1,32 +1,81 @@
-import React, { FormEventHandler, MutableRefObject, useRef, useState } from 'react'
-import { Link } from 'react-router-dom';
+import React, { FormEventHandler, MutableRefObject, useEffect, useRef, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
 import sha256 from 'crypto-js/sha256';
 import axios from "axios";
-import { useCookies } from 'react-cookie';
 import { useUserContext } from '../UserContext';
+import Cookies from 'js-cookie'
 
 const FESignIn = () => {
-    const [cookies,setCookies,removeCookies] = useCookies();
     const { userContext: { userType,id,token,state }, dispatcher: { setUserType, setId,setToken,setState } } = useUserContext();
+    const navigate = useNavigate();
 
-    const [autoLogin,setAutoLogin] = useState<boolean>(!(token===""));//tokenがからの時はautoLoginを実行しない
-    const [alreadyUsed,setAlreadyUsed] = useState<boolean>(false);
+    const [autoSignin,setAutoSignin] = useState<boolean>(!(token==="none"));//tokenがからの時はautoSigninを実行しない
+    const [authFailed, setAuthFailed] = useState<boolean>(false);
 
-    const email:MutableRefObject<string> = useRef("email");
-    const password:MutableRefObject<string> = useRef("password");
-    const baseURL:string = "http://127.0.0.1:8000/api";
+    const email = useRef<HTMLInputElement>(null);
+    const password = useRef<HTMLInputElement>(null);
+
+    const baseURL:string = "http://127.0.0.1:8000";
+
+    useEffect(()=> {
+        // token emailがクッキー上に保存していない場合処理を終了させる
+        if(Cookies.get("token")===undefined && Cookies.get("email")===undefined){
+            console.log({token: Cookies.get("token"), email: Cookies.get("email")})
+            return;
+        };
+        const autoSigninFunc = async () => {
+            const sendData = {
+                token: Cookies.get("token"),
+                email: Cookies.get("email"),
+            }
+            await axios.post(`${baseURL}/api/signin_engineer_account_by_token`,sendData)
+                .then(response => {
+                    Cookies.set("token",response.data.token);
+                    Cookies.set("email",response.data.email);
+                    setUserType("engineer");
+                    setToken(response.data.token);
+                    console.log(response.data);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
+        autoSigninFunc();
+    },[])
 
     const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault();
         const sendData = {
-            "email":email,
-            "password": sha256(password).toString(),
+            "email":email.current?.value||"",
+            "password": sha256(password.current?.value).toString(),
+            "autoSignin": autoSignin,
         }
+        console.log(sendData);
         try {
-            const data = await axios.post(`${baseURL}/signin_engineer_account_by_password`,sendData);
-
-
+            const response = await axios.post(`${baseURL}/api/signin_engineer_account_by_password`,sendData);
+            if(response.data.result="password is wrong"){
+                setAuthFailed(true);
+                console.log(response.data);
+            }
+            else {
+                if(autoSignin===true){
+                    Cookies.set("token",response.data.token);
+                    Cookies.set("email",response.data.email);
+                }
+                else{
+                    Cookies.remove("email");
+                    Cookies.remove("token");
+                }
+                Cookies.set("userType","engineer");
+                setId(response.data.id);
+                setState("signin");
+                setToken(response.data.token);
+                setUserType("engineer");
+                console.log(response.data);
+                console.log({userType,token,state,id});
+            }
         } catch (error) {
+            setAuthFailed(true);
             console.log(error)
         }
     }
@@ -45,13 +94,13 @@ const FESignIn = () => {
                 <form onSubmit={handleSubmit} className='flex flex-col mb-5'>
                     <input
                         type="text"
-                        name='email'
+                        ref={email}
                         placeholder='email'
                         className='px-2 py-1 mb-5 rounded'
                     />
                     <input
                         type="password"
-                        name='password'
+                        ref={password}
                         placeholder='password'
                         className='px-2 py-1 mb-5 rounded'
                     />
@@ -61,12 +110,13 @@ const FESignIn = () => {
                         className='px-3 py-1 font-bold text-white duration-300 bg-orange-500 rounded hover:bg-orange-300'
                     />
                 </form>
+                <span className='mb-2 text-xs text-red-500'>{authFailed ? "ログインに失敗しました":"　"}</span>
                 <div className='flex items-center mb-2'>
                     <span>次回から自動ログイン</span>
                     <input
                         type="checkbox"
-                        checked={autoLogin}
-                        onChange={() => setAutoLogin(!autoLogin)}
+                        checked={autoSignin}
+                        onChange={() => setAutoSignin(!autoSignin)}
                         className='w-4 h-4 ml-2'
                     />
                 </div>

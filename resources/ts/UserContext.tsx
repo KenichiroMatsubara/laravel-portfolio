@@ -1,5 +1,6 @@
 import React from 'react';
 import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from 'react';
+import Cookies from 'js-cookie'
 
 // 型定義
 export type UserContext = {
@@ -10,10 +11,10 @@ export type UserContext = {
 };
 type UserContextType = { userContext: UserContext; setUserContext: Dispatch<SetStateAction<UserContext>> };
 const initUserContext: UserContext = {
-    state: "none",
-    userType: "none",
+    state: "signout",
+    userType: Cookies.get("userType"),
     id: -1,
-    token: ""||"",
+    token: Cookies.get("token")||"",
 };
 
 // Context定義

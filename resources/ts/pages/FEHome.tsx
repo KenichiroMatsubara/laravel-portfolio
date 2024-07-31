@@ -20,7 +20,7 @@ const FEHome = () => {
                     <div className='flex'>
                         <div className='flex flex-col items-center justify-center'>
                             <img src='https://kohacu.com/wp-content/uploads/2018/06/kohacu.com_001312_20180615.png'
-                                className='object-cover w-16 h-16 rounded-full'
+                                className='object-contain w-16 h-16 rounded-full'
                             />
                             <span className=''>{engineername}</span>
                         </div>
