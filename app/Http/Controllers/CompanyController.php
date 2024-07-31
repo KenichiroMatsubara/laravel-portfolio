@@ -12,7 +12,6 @@ class CompanyController extends Controller
     public function create_company_account(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|unique:companies',
             'email' => 'required|unique:companies',
             'password' => 'required',
         ]);

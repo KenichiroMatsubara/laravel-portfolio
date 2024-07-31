@@ -14,7 +14,6 @@ class EngineerController extends Controller
     public function create_engineer_account(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|unique:engineers',
             'email' => 'required|unique:engineers',
             'password' => 'required',
         ]);
