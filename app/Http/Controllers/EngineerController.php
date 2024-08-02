@@ -18,7 +18,7 @@ class EngineerController extends Controller
             'password' => 'required',
         ]);
         $new_engineer = Engineer::create([
-            "name" => $validated['name'],
+            "name" => "",
             "email" => $validated['email'],
             "password" => p_hash($validated['password']),
         ]);
@@ -35,28 +35,43 @@ class EngineerController extends Controller
             'autoSignin' => 'required|boolean',
         ]);
         $engineer = Engineer::where("email", $validated['email'])->first();
+        // パスワード認証
         if (p_compare_password($validated['password'], $engineer->password)) {
             if ($validated['autoSignin']==true) {
+                // ３０日以上前に作られたトークンを削除
+                $deleteToken = Engineer_Token::where("created_at","<",now()->subDays(30))->where("engineer_id",1);
+                $deleteToken->delete();
+                // 新たにトークンを発行
+                $token = Engineer_Token::create([
+                    "token"=>make_token(),
+                    "engineer" => $engineer->id,
+                ]);
                 $token = Engineer_Token::create([
                     "token" => make_token(),
                     "engineer_id" => $engineer->id,
                 ]);
+
                 return response()->json([
                     "result" => "pass",
                     "token" => $token->token,
                     "id"=>$engineer->id,
+                    "email" => $engineer->email
                 ]);
-            } else {
+            }
+            // オートログインなし
+            else {
                 return response()->json([
                     "result" => "pass",
+                    "email" => $engineer->email,
                     "token" => "none",
                     "id"=>$engineer->id
                 ]);
             }
         }
+        // パスワードが間違っているときの処理
         else {
             return response()->json([
-                "result"=>"password is wrong"
+                "result"=>"password is wrong",
             ]);
         }
     }
@@ -67,17 +82,19 @@ class EngineerController extends Controller
             'token' => 'required',
         ]);
         $engineer = Engineer::where("email", $validated['email'])->first();
-        $token = Engineer_Token::find($engineer->id);
-        if ($token->token == $validated['token']) {
-            $token->update([
-                "token" => hash("sha224", randstr(20)),
-            ]);
+        $tokens = Engineer_Token::where($engineer->id)->get();
+        foreach($tokens as $token){
+            if ($token->token == $validated['token']) {
+                $token->update([
+                    "token" => hash("sha224", randstr(20)),
+                ]);
 
-            return response()->json([
-                "result" => "pass",
-                "token" => $token->token,
-                "id"=>$engineer->id,
-            ]);
+                return response()->json([
+                    "result" => "pass",
+                    "token" => $token->token,
+                    "id"=>$engineer->id,
+                ]);
+            }
         }
     }
     public function get_engineer_info(Request $request)

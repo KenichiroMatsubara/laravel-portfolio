@@ -1,5 +1,5 @@
 import React, { FormEventHandler, MutableRefObject, useEffect, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import sha256 from 'crypto-js/sha256';
 import axios from "axios";
 import { useUserContext } from '../UserContext';
@@ -7,7 +7,6 @@ import Cookies from 'js-cookie'
 
 const FESignIn = () => {
     const { userContext: { userType,id,token,state }, dispatcher: { setUserType, setId,setToken,setState } } = useUserContext();
-    const navigate = useNavigate();
 
     const [autoSignin,setAutoSignin] = useState<boolean>(!(token==="none"));//tokenがからの時はautoSigninを実行しない
     const [authFailed, setAuthFailed] = useState<boolean>(false);
@@ -17,10 +16,16 @@ const FESignIn = () => {
 
     const baseURL:string = "http://127.0.0.1:8000";
 
+    // 自動クッキーログイン機能
     useEffect(()=> {
         // token emailがクッキー上に保存していない場合処理を終了させる
-        if(Cookies.get("token")===undefined && Cookies.get("email")===undefined){
-            console.log({token: Cookies.get("token"), email: Cookies.get("email")})
+        if(Cookies.get("token")===undefined || Cookies.get("email")===undefined || Cookies.get("userType")!=="engineer"){
+            console.log({
+                data:"this data is cookie",
+                token: Cookies.get("token"),
+                email: Cookies.get("email"),
+                userType: Cookies.get("userType")
+            })
             return;
         };
         const autoSigninFunc = async () => {
@@ -31,18 +36,22 @@ const FESignIn = () => {
             await axios.post(`${baseURL}/api/signin_engineer_account_by_token`,sendData)
                 .then(response => {
                     Cookies.set("token",response.data.token);
-                    Cookies.set("email",response.data.email);
                     setUserType("engineer");
                     setToken(response.data.token);
+                    setState("signin")
+                    console.log({this_is_senddata: sendData});
                     console.log(response.data);
+                    console.log("auto login successed!!!");
                 })
                 .catch(error => {
+                    console.log({this_is_senddata: sendData});
                     console.log(error);
                 });
         }
         autoSigninFunc();
     },[])
 
+    // ログイン機能
     const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault();
         const sendData = {
@@ -53,7 +62,7 @@ const FESignIn = () => {
         console.log(sendData);
         try {
             const response = await axios.post(`${baseURL}/api/signin_engineer_account_by_password`,sendData);
-            if(response.data.result="password is wrong"){
+            if(response.data.result==="password is wrong"){
                 setAuthFailed(true);
                 console.log(response.data);
             }
@@ -73,6 +82,11 @@ const FESignIn = () => {
                 setUserType("engineer");
                 console.log(response.data);
                 console.log({userType,token,state,id});
+                console.log({Cookie_data: {
+                    email: Cookies.get("email"),
+                    token: Cookies.get("token"),
+                    userType: Cookies.get("userType")
+                }})
             }
         } catch (error) {
             setAuthFailed(true);

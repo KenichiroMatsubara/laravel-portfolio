@@ -15,9 +15,17 @@ class CompanyController extends Controller
             'email' => 'required|unique:companies',
             'password' => 'required',
         ]);
-        Company::create([
-            "name" => $validated['name'],
+        $new_company = Company::create([
+            "name" => "",
+            "address" => "",
+            "explain" => "",
+            "imgURL" => "",
+            "homepageURL" => "",
+            "email" => $validated['email'],
             "password" => p_hash($validated['password']),
+        ]);
+        return response()->json([
+            "new_account"=>$new_company,
         ]);
     }
 
@@ -26,21 +34,41 @@ class CompanyController extends Controller
         $validated = $request->validate([
             'email' => 'required',
             'password' => 'required',
+            'autoSignin' => 'required|boolean'
         ]);
         $company = Company::where("email", $validated['email'])->first();
+        // パスワード認証
         if (p_compare_password($validated['password'], $company->password)) {
-            // ３０日以上前に作られたトークンを削除
-            $deleteToken = Company_Token::where("created_at","<",now()->subDays(30))->where("company_id",1);
-            $deleteToken->delete();
-            // 新たにトークンを発行
-            $token = Company_Token::create([
-                "token"=>make_token(),
-                "company_id" => $company->id,
-            ]);
+            if($validated["autoSignin"]==true){
+                // ３０日以上前に作られたトークンを削除
+                $deleteToken = Company_Token::where("created_at","<",now()->subDays(30))->where("company_id",1);
+                $deleteToken->delete();
+                // 新たにトークンを発行
+                $token = Company_Token::create([
+                    "token"=>make_token(),
+                    "company_id" => $company->id,
+                ]);
+                return response()->json([
+                    "result"=>"pass",
+                    "token"=>$token->token,
+                    "email" => $company->email,
+                    "data"=>$company,
+                ]);
+            }
+            // オートログインをしないとき
+            else {
+                return response()->json([
+                    "result" => "pass",
+                    "email" => $company->email,
+                    "token" => "none",
+                    "id" => $company->id,
+                ]);
+            }
+        }
+        // パスワードが間違っているときの処理
+        else {
             return response()->json([
-                "result"=>"pass",
-                "token"=>$token->token,
-                "data"=>$company,
+                "result" => "passsword is wrong"
             ]);
         }
     }
@@ -60,11 +88,15 @@ class CompanyController extends Controller
 
                 return response()->json([
                     "result" => "pass",
-                    "data" => $company,
+                    "id" => $company->id,
                     "token" => $token->token,
                 ]);
             }
         }
+        return response()->json([
+            "status"=>500,
+            "result"=>"failed signinfc by token"
+        ]);
     }
     public function get_company_info(Request $request)
     {

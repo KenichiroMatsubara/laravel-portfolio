@@ -20,7 +20,7 @@ if (!(
     // トークン作成関数
     function make_token($data = null)
     {
-        return hash("sha224", randstr(20)) . hash("sha224", randstr(20));
+        return hash("sha256", randstr(20));
     }
     // 本題のハッシュ化関数
     function p_hash($password)
