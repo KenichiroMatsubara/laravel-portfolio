@@ -12,7 +12,7 @@ export type UserContext = {
 type UserContextType = { userContext: UserContext; setUserContext: Dispatch<SetStateAction<UserContext>> };
 const initUserContext: UserContext = {
     state: "signout",
-    userType: Cookies.get("userType"),
+    userType: Cookies.get("userType")||"",
     id: -1,
     token: Cookies.get("token")||"",
 };

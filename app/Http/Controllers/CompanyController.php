@@ -41,8 +41,7 @@ class CompanyController extends Controller
         if (p_compare_password($validated['password'], $company->password)) {
             if($validated["autoSignin"]==true){
                 // ３０日以上前に作られたトークンを削除
-                $deleteToken = Company_Token::where("created_at","<",now()->subDays(30))->where("company_id",1);
-                $deleteToken->delete();
+                Company_Token::where("created_at","<",now()->subDays(30))->delete();
                 // 新たにトークンを発行
                 $token = Company_Token::create([
                     "token"=>make_token(),
@@ -78,6 +77,9 @@ class CompanyController extends Controller
             'email' => 'required',
             'token' => 'required',
         ]);
+        // ３０日以上前に作られたトークンを削除
+        Company_Token::where("created_at","<",now()->subDays(30))->delete();
+
         $company = Company::where("email", $validated['email'])->first();
         $tokens = Company_Token::where("company_id", $company->id)->get();
         foreach ($tokens as $token) {

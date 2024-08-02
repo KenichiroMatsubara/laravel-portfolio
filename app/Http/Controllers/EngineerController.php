@@ -39,18 +39,12 @@ class EngineerController extends Controller
         if (p_compare_password($validated['password'], $engineer->password)) {
             if ($validated['autoSignin']==true) {
                 // ３０日以上前に作られたトークンを削除
-                $deleteToken = Engineer_Token::where("created_at","<",now()->subDays(30))->where("engineer_id",1);
-                $deleteToken->delete();
+                Engineer_Token::where("created_at","<",now()->subDays(30))->delete();
                 // 新たにトークンを発行
                 $token = Engineer_Token::create([
                     "token"=>make_token(),
-                    "engineer" => $engineer->id,
-                ]);
-                $token = Engineer_Token::create([
-                    "token" => make_token(),
                     "engineer_id" => $engineer->id,
                 ]);
-
                 return response()->json([
                     "result" => "pass",
                     "token" => $token->token,
@@ -81,6 +75,8 @@ class EngineerController extends Controller
             'email' => 'required',
             'token' => 'required',
         ]);
+        // ３０日以上前に作られたトークンを削除
+        Engineer_Token::where("created_at","<",now()->subDays(30))->delete();
         $engineer = Engineer::where("email", $validated['email'])->first();
         $tokens = Engineer_Token::where($engineer->id)->get();
         foreach($tokens as $token){
