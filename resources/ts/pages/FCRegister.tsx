@@ -1,9 +1,10 @@
-import React, { FormEventHandler, MutableRefObject, useEffect, useRef, useState } from 'react'
+import React, { FormEventHandler, MutableRefObject, useContext, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom';
 import sha256 from 'crypto-js/sha256';
 import axios from "axios";
 import { useUserContext } from '../UserContext';
 import Cookies from 'js-cookie'
+import { BaseURLContext } from '../app';
 
 
 const FCRegister = () => {
@@ -16,7 +17,7 @@ const FCRegister = () => {
     const password = useRef<HTMLInputElement>(null);
     const passwordConfirmation = useRef<HTMLInputElement>(null);
 
-    const baseURL:string = "http://127.0.0.1:8000";
+    const baseURL:string = useContext(BaseURLContext);
 
     // 自動クッキーログイン機能
     useEffect(()=> {

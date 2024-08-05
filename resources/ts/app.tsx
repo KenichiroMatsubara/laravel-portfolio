@@ -12,12 +12,15 @@
  */
 
 import ReactDOM from "react-dom/client";
-import React from 'react';
+import React, { createContext } from 'react';
 import { render } from 'react-dom';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import { UserContextProvider,useUserContext } from "./UserContext";
 import Routings from "./Routings";
+import Test from "./pages/Test";
+
+export const BaseURLContext = createContext("http://127.0.0.1:8000");
 
 function App() {
     const { userContext: { userType,id,token }, dispatcher: { setUserType, setId,setToken } } = useUserContext();
@@ -80,6 +83,10 @@ function App() {
                     path='/engineer/search/'
                     element={<Routings path="/engineer/search/" />}
                 />
+                <Route
+                    path="/test"
+                    element={<Test />}
+                />
             </Routes>
         </BrowserRouter>
     );
@@ -88,8 +95,10 @@ function App() {
 const root = ReactDOM.createRoot(document.getElementById("app") as HTMLElement);
 root.render(
     <React.StrictMode>
-        <UserContextProvider>
-            <App />
-        </UserContextProvider>
+        <BaseURLContext.Provider value={"http://127.0.0.1:8000"}>
+            <UserContextProvider>
+                <App />
+            </UserContextProvider>
+        </BaseURLContext.Provider>
     </React.StrictMode>
 );

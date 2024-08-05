@@ -1,17 +1,40 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Conma from '../components/Conma';
 import FESidebar from '../components/FESidebar';
 import Product from '../components/Product';
+import axios from 'axios';
+import { useUserContext } from '../UserContext';
+import { BaseURLContext } from '../app';
 
 const FEHome = () => {
+    const { userContext: { userType,id,token,state }, dispatcher: { setUserType, setId,setToken,setState } } = useUserContext();
+
     const engineername = useParams().engineername;
+
     const year: number = 0;
     const [user,setUser] = useState<{id: number,token: string}>({id:0,token:""});
     const langs: string[] = ["php","laravel","react","typescript","nodejs"];
     const places: string[] = ["愛知県"];
     const engineerId: number = 1;
     const productIds: number[] = [1,1];
+
+    const baseURL: string = useContext(BaseURLContext);
+
+    useEffect(() => {
+        const getPortfolios = async() => {
+            const sendData = {
+                engineer_id: engineerId
+            };
+            console.log(sendData);
+            try {
+                const response = await axios.post(`${baseURL}/api/get_portfolio_info`,sendData);
+            } catch (error) {
+
+            }
+        }
+    },[]);
+
     return (
         <div className='flex'>
             <FESidebar />
