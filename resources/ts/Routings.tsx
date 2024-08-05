@@ -84,7 +84,7 @@ const Routings: FC<{path:string}> = ({path}) => {
     }
 
 
-    else if(path==='/account/register_for_engineer/'){
+    else if(path==='/account/register_for_company/'){
         if(state==="signin"){
             return (
                 <Navigate to={`/`} />

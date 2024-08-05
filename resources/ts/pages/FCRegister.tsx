@@ -14,6 +14,7 @@ const FCRegister = () => {
 
     const email = useRef<HTMLInputElement>(null);
     const password = useRef<HTMLInputElement>(null);
+    const passwordConfirmation = useRef<HTMLInputElement>(null);
 
     const baseURL:string = "http://127.0.0.1:8000";
 
@@ -53,7 +54,7 @@ const FCRegister = () => {
         autoSigninFunc();
     },[])
 
-    // ログイン機能
+    // 新規登録機能　TODOまだログイン機能であるので新規登録機能に変更しておく
     const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault();
         const sendData = {
@@ -109,20 +110,20 @@ const FCRegister = () => {
                 <form onSubmit={handleSubmit} className='flex flex-col mb-5'>
                     <input
                         type="text"
-                        name='email'
+                        ref={email}
                         placeholder='email'
                         className='px-2 py-1 mb-5 rounded'
                     />
                     <input
                         type="password"
-                        name='password'
+                        ref={password}
                         placeholder='password'
                         className='px-2 py-1 mb-5 rounded'
                     />
                     <input
                         type="password"
-                        name='passwordComfirmation'
-                        placeholder='passwordComfirmation'
+                        ref={passwordConfirmation}
+                        placeholder='passwordConfirmation'
                         className='px-2 py-1 mb-5 rounded'
                     />
                     <input
