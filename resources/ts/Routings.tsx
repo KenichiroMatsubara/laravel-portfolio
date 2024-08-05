@@ -110,7 +110,7 @@ const Routings: FC<{path:string}> = ({path}) => {
         }
     }
 
-    else if(path==='/search'){
+    else if(path==='/search/'){
         if(state==="signin"){
             return(
                 <Search />
@@ -178,7 +178,7 @@ const Routings: FC<{path:string}> = ({path}) => {
     }
 
 
-    else if(path==='/engineer/make_new'){
+    else if(path==='/engineer/make_new/'){
         if(state==="signin"){
             return(
                 <FEMakeNew />
@@ -192,7 +192,7 @@ const Routings: FC<{path:string}> = ({path}) => {
     }
 
 
-    else if(path==='/engineer/companylist'){
+    else if(path==='/engineer/companylist/'){
         if(state==="signin"){
             return(
                 <FECompanyProfiles />

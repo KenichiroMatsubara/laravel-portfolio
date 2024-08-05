@@ -81,7 +81,7 @@ class CompanyController extends Controller
         Company_Token::where("created_at","<",now()->subDays(30))->delete();
 
         $company = Company::where("email", $validated['email'])->first();
-        $tokens = Company_Token::where("company_id", $company->id)->get();
+        $tokens = $company->company_tokens();
         foreach ($tokens as $token) {
             if ($token->token == $validated['token']) {
                 $token->update([

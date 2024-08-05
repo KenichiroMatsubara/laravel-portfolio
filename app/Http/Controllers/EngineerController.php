@@ -78,7 +78,7 @@ class EngineerController extends Controller
         // ３０日以上前に作られたトークンを削除
         Engineer_Token::where("created_at","<",now()->subDays(30))->delete();
         $engineer = Engineer::where("email", $validated['email'])->first();
-        $tokens = Engineer_Token::where($engineer->id)->get();
+        $tokens = $engineer->engineer_tokens();
         foreach($tokens as $token){
             if ($token->token == $validated['token']) {
                 $token->update([
