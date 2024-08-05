@@ -9,8 +9,8 @@ import Cookies from 'js-cookie'
 const FCRegister = () => {
     const { userContext: { userType,id,token,state }, dispatcher: { setUserType, setId,setToken,setState } } = useUserContext();
 
-    const [autoSignin,setAutoSignin] = useState<boolean>(!(token==="none"));//tokenがからの時はautoSigninを実行しない
     const [authFailed, setAuthFailed] = useState<boolean>(false);
+    const [passwordMatch,setPasswordMatch] = useState<boolean>(false);
 
     const email = useRef<HTMLInputElement>(null);
     const password = useRef<HTMLInputElement>(null);
@@ -54,43 +54,29 @@ const FCRegister = () => {
         autoSigninFunc();
     },[])
 
-    // 新規登録機能　TODOまだログイン機能であるので新規登録機能に変更しておく
+    // 新規登録機能
     const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault();
+        if(password.current?.value!==passwordConfirmation.current?.value){
+            setPasswordMatch(true);
+            console.log("password is not match");
+            console.log(password.current?.value);
+            console.log(passwordConfirmation.current?.value);
+            return;
+        }
         const sendData = {
             "email":email.current?.value||"",
             "password": sha256(password.current?.value).toString(),
-            "autoSignin": autoSignin,
         }
         console.log(sendData);
         try {
-            const response = await axios.post(`${baseURL}/api/signin_company_account_by_password`,sendData);
-            if(response.data.result==="password is wrong"){
-                setAuthFailed(true);
-                console.log(response.data);
-            }
-            else {
-                if(autoSignin===true){
-                    Cookies.set("token",response.data.token);
-                    Cookies.set("email",response.data.email);
-                }
-                else{
-                    Cookies.remove("email");
-                    Cookies.remove("token");
-                }
-                Cookies.set("userType","company");
-                setId(response.data.id);
-                setState("signin");
-                setToken(response.data.token);
-                setUserType("company");
-                console.log(response.data);
-                console.log({userType,token,state,id});
-                console.log({Cookie_data: {
-                    email: Cookies.get("email"),
-                    token: Cookies.get("token"),
-                    userType: Cookies.get("userType")
-                }})
-            }
+            const response = await axios.post(`${baseURL}/api/create_company_account`,sendData);
+            setId(response.data.id);
+            setState("signin");
+            setToken(response.data.token);
+            setUserType("company");
+            console.log(response.data);
+            console.log({userType,token,state,id});
         } catch (error) {
             setAuthFailed(true);
             console.log(error)
@@ -109,7 +95,7 @@ const FCRegister = () => {
                 <span className='mb-5 text-xl font-bold'>採用担当者</span>
                 <form onSubmit={handleSubmit} className='flex flex-col mb-5'>
                     <input
-                        type="text"
+                        type="email"
                         ref={email}
                         placeholder='email'
                         className='px-2 py-1 mb-5 rounded'
@@ -132,15 +118,10 @@ const FCRegister = () => {
                         className='px-3 py-1 font-bold text-white duration-300 bg-orange-500 rounded hover:bg-orange-300'
                     />
                 </form>
-                <div className='flex items-center mb-2'>
-                    <span>次回から自動ログイン</span>
-                    <input
-                        type="checkbox"
-                        checked={autoSignin}
-                        onChange={() => setAutoSignin(!autoSignin)}
-                        className='w-4 h-4 ml-2'
-                    />
-                </div>
+                {passwordMatch &&
+                <span className='px-5 py-1 mb-2 text-sm text-white bg-red-500 rounded'>
+                    パスワードが一致していません
+                </span>}
                 <Link to={"/account/signin_for_company/"}>
                     <span className='font-bold text-gray-900 duration-300 cursor-pointer hover:text-gray-500'>
                         サインインはこちらから
