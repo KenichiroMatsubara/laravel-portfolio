@@ -10,24 +10,7 @@ const Product: FC<{productId: number}> = ({productId}) => {
 
     const [productInfo, setProductInfo] = useState<ProductInfo>();
 
-    // const productInfo: ProductInfo = {
-    //     name: "リアルSNS",
-    //     stacks: {
-    //         php: false,
-    //         laravel: false,
-    //         javascript: false,
-    //         typescript: false,
-    //         nodejs: true,
-    //         reactjs: true,
-    //         vuejs: false,
-    //         python: false,
-    //         django: false,
-    //         nextjs: false,
-    //     },
-    //     explain: "とても面白いアプリです。使用技術はフロントエンドにはreactjs、バックエンドにはNodejsのExpressを使用しています。",
-    //     githubURL: "https://github.com/KenichiroMatsubara/real-sns-frontend/blob/main/src/pages/Profile.jsx",
-    //     deployURL: "https://github.com/Ken  ichiroMatsubara/real-sns-frontend/blob/main/src/pages/Profile.jsx",
-    // }
+    const [stacks,setStacks] = useState<string>("");
 
     // ある一つのポートフォリオを取得
     useEffect(() => {
@@ -44,23 +27,20 @@ const Product: FC<{productId: number}> = ({productId}) => {
                     explain: response.data.portfolio.explain,
                     githubURL: response.data.portfolio.githubURL,
                     deployURL: response.data.portfolio.deployURL,
-                    stacks: {
-                        php: false,
-                        laravel: false,
-                        javascript: false,
-                        typescript: false,
-                        nodejs: false,
-                        reactjs: false,
-                        vuejs: false,
-                        python: false,
-                        django: false,
-                        nextjs: false,
-                    },
                 };
                 console.log(newProductInfo);
-                response.data.stacks.forEach((stack) => {
-                    newProductInfo.stacks[stack.stack]=true;
+                let newStacks = ""
+                response.data.stacks.forEach((stack,index) => {
+                    console.log(newStacks);
+                    console.log(stack.stack);
+                    if(index === 0) {
+                        newStacks = stack.stack;
+                    }
+                    else {
+                        newStacks += "," + stack.stack;
+                    }
                 });
+                setStacks(newStacks);
                 console.log(newProductInfo);
                 setProductInfo(newProductInfo);
             } catch (error) {
@@ -77,12 +57,8 @@ const Product: FC<{productId: number}> = ({productId}) => {
                     <span>{productInfo.name}</span>
                     <div>
                         <span>使用技術</span>
-                        <div className='grid grid-cols-3'>
-                            {Object.keys(productInfo.stacks).map((stack) => (
-                                productInfo.stacks[stack]==true && (
-                                    <span className='mx-1'>{stack}</span>
-                                )
-                            ))}
+                        <div className='break-words '>
+                            {stacks}
                         </div>
                     </div>
                     <div className='font-bold text-blue-500'>
@@ -90,7 +66,7 @@ const Product: FC<{productId: number}> = ({productId}) => {
                         <p><a href={productInfo.deployURL}>deployURL</a></p>
                     </div>
                 </div>
-                <div className=''>
+                <div className='break-words '>
                     {productInfo.explain}
                 </div>
             </div>
