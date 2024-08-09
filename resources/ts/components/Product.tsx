@@ -53,7 +53,7 @@ const Product: FC<{productId: number}> = ({productId}) => {
     if(productInfo){
     return (
             <div className='grid w-full grid-cols-2 p-5 border-b'>
-                <div className='flex flex-col'>
+                <div className='flex flex-col gap-1'>
                     <span>{productInfo.name}</span>
                     <div>
                         <span>使用技術</span>

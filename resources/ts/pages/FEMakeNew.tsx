@@ -26,6 +26,13 @@ const FEMakeNew = () => {
         const explain: FormDataEntryValue = form.get("explain") || "";
         const githubURL: FormDataEntryValue = form.get("githubURL") || "";
         const deployURL: FormDataEntryValue = form.get("deployURL") || "";
+        const usingStacks:string[] = [];
+        Object.keys(stacks).forEach((stack) => {
+            if(stacks[stack] === true) {
+                usingStacks.push(stack);
+            }
+        });
+        console.log({title,explain,githubURL,deployURL,usingStacks});
     }
 
     const handleChangeStacks = (key:string) => {
@@ -37,7 +44,7 @@ const FEMakeNew = () => {
     return (
         <div className='flex'>
             <FESidebar />
-            <form className='flex flex-col w-9/12 m-5'>
+            <form className='flex flex-col w-9/12 m-5' onSubmit={handleSubmit}>
                 <span className='mb-8 text-3xl text-orange-600 underline'>新しく制作物を追加する</span>
                 <div className='flex flex-col'>
                     <span className='text-2xl'>タイトル</span>
