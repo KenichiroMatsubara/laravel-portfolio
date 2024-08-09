@@ -96,9 +96,9 @@ class CompanyController extends Controller
             }
         }
         return response()->json([
-            "status"=>500,
-            "result"=>"failed signinfc by token"
-        ]);
+            "result" => false,
+            "messages"=>"failed signin company account by token",
+        ],404);
     }
     public function get_company_info(Request $request)
     {
