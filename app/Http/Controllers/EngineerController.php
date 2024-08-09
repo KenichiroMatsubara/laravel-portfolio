@@ -77,13 +77,13 @@ class EngineerController extends Controller
         ]);
         // ３０日以上前に作られたトークンを削除
         Engineer_Token::where("created_at","<",now()->subDays(30))->delete();
-        $engineer = Engineer::where("email", $validated['email'])->first();
-        $tokens = $engineer->engineer_tokens();
+        $engineer = Engineer::where("email",$validated["email"])->first();
+        $tokens = Engineer_Token::where("engineer_id",$engineer->id)->get();
         foreach($tokens as $token){
             if ($token->token == $validated['token']) {
-                $token->update([
-                    "token" => hash("sha224", randstr(20)),
-                ]);
+                // $token->update([
+                //     "token" => make_token(),
+                // ]);
 
                 return response()->json([
                     "result" => "pass",

@@ -21,44 +21,45 @@ const FCRegister = () => {
 
     // 自動クッキーログイン機能
     useEffect(()=> {
-        // token emailがクッキー上に保存していない場合処理を終了させる
-        if(Cookies.get("token")==="undefined" || Cookies.get("email")===undefined || Cookies.get("userType")!=="company"){
-            console.log({
-                data:"this data is cookie",
-                token: Cookies.get("token"),
-                email: Cookies.get("email"),
-                userType: Cookies.get("userType")
-            })
-            return;
-        };
         const autoSigninFunc = async () => {
+            // token emailがクッキー上に保存していない場合処理を終了させる
+            if(Cookies.get("token")==="undefined" || Cookies.get("email")===undefined || Cookies.get("userType")!=="company"){
+                console.log({
+                    data:"this data is cookie",
+                    token: Cookies.get("token"),
+                    email: Cookies.get("email"),
+                    userType: Cookies.get("userType")
+                })
+                return;
+            };
             const sendData = {
                 token: Cookies.get("token"),
                 email: Cookies.get("email"),
             }
             console.log(Cookies.get("token")===undefined);
-            await axios.post(`${baseURL}/api/signin_company_account_by_token`,sendData)
-                .then(response => {
-                    Cookies.set("token",response.data.token);
-                    setUserType("company");
-                    setToken(response.data.token);
-                    setState("signin")
-                    console.log({this_is_senddata: sendData});
-                    console.log(response);
-                    console.log("auto login successed!!!");
-                })
-                .catch(error => {
-                    console.log({this_is_senddata: sendData});
-                    setUserType("");
-                    setState("signout");
-                    setId(-1);
-                    setToken("undefined");
-                    Cookies.remove("token");
-                    Cookies.remove("email");
-                    Cookies.remove("userType");
-                    console.log({userType,state,id,token});
-                    console.log(error);
-                });
+            try {
+                const response = await axios.post(`${baseURL}/api/signin_company_account_by_token`,sendData);
+                Cookies.set("token",response.data.token);
+                setUserType("company");
+                setToken(response.data.token);
+                setState("signin")
+                console.log({this_is_senddata: sendData});
+                console.log(response.data);
+                console.log({userType,token,state});
+                console.log("auto login successed!!!");
+            } catch (error) {
+                console.log({this_is_senddata: sendData});
+                console.log("token signin is failed")
+                setUserType("");
+                setState("signout");
+                setId(-1);
+                setToken("undefined");
+                Cookies.remove("token");
+                Cookies.remove("email");
+                Cookies.remove("userType");
+                console.log({userType,state,id,token});
+                console.log(error);
+            }
         }
         autoSigninFunc();
     },[])

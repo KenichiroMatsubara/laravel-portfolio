@@ -80,13 +80,14 @@ class CompanyController extends Controller
         // ３０日以上前に作られたトークンを削除
         Company_Token::where("created_at","<",now()->subDays(30))->delete();
 
-        $company = Company::where("email", $validated['email'])->first();
-        $tokens = $company->company_tokens();
+
+        $company = Company::where("email",$validated["email"])->first();
+        $tokens = Company_Token::where("company_id",$company->id)->get();
         foreach ($tokens as $token) {
             if ($token->token == $validated['token']) {
-                $token->update([
-                    "token" => make_token(),
-                ]);
+                // $token->update([
+                //     "token" => make_token(),
+                // ]);
 
                 return response()->json([
                     "result" => "pass",

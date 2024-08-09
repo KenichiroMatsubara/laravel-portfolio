@@ -62,9 +62,9 @@ const FEHome = () => {
                         </div>
                     </div>
                 </div>
-                {productIds.map((productId) => (
+                {/* {productIds.map((productId) => (
                     <Product key={Math.random()} productId={productId} />
-                ))}
+                ))} */}
             </div>
         </div>
     )
