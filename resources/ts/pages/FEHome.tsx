@@ -26,7 +26,6 @@ const FEHome = () => {
             const sendData = {
                 engineer_id: engineerId
             };
-            console.log({this_is_sendData:sendData});
             try {
                 const response = await axios.post(`${baseURL}/api/get_portfolio_ids`,sendData);
                 setProductIds(response.data.product_ids);
@@ -62,9 +61,9 @@ const FEHome = () => {
                         </div>
                     </div>
                 </div>
-                {/* {productIds.map((productId) => (
+                {productIds.map((productId) => (
                     <Product key={Math.random()} productId={productId} />
-                ))} */}
+                ))}
             </div>
         </div>
     )

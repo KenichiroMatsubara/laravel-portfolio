@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Portfolio extends Model
 {
     use HasFactory;
-    protected $fillable = ["engineer_id","explain","githubURL","deployURL"];
+    protected $fillable = ["name","engineer_id","explain","githubURL","deployURL"];
     public function engineers()
     {
         return $this->belongsTo(Engineer::class);

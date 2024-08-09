@@ -1,4 +1,5 @@
 export type ProductInfo = {
+    name: string,
     title: string,
     stacks: {
         php: boolean,
