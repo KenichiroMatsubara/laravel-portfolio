@@ -43,11 +43,12 @@ class PortfolioController extends Controller
     {
         $validated = $request->validate([
             "name"=>"required",
-            "engineer_id"=>"required",
+            "engineer_id"=>"required|numeric",
             "explain"=>"required",
             "githubURL"=>"required",
             "deployURL"=>"required",
-            "using_stacks"=>"required",
+            "using_stacks"=>"required|array",
+            "using_stacks.*"=> "required|string"
         ]);
         $new_portfolio = Portfolio::create([
             "name" => $validated["name"],
@@ -62,7 +63,7 @@ class PortfolioController extends Controller
                 "stack"=>$using_stack,
             ]);
         }
-        $new_using_stacks = $new_portfolio->portfolio_using_stacks();
+            $new_using_stacks = Portfolio_Using_Stack::where("portfolio_id",$new_portfolio->id)->get();
         return response()->json([
             "new_portfolio"=>$new_portfolio,
             "using_stacks"=>$new_using_stacks,

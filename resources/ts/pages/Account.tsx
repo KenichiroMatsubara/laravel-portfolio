@@ -32,6 +32,7 @@ const Account = () => {
             try {
                 const response = await axios.post(`${baseURL}/api/signin_company_account_by_token`,sendData);
                 Cookies.set("token",response.data.token);
+                setId(response.data.id);
                 setUserType("company");
                 setToken(response.data.token);
                 setState("signin")
@@ -72,6 +73,7 @@ const Account = () => {
             try {
                 const response = await axios.post(`${baseURL}/api/signin_engineer_account_by_token`,sendData);
                 Cookies.set("token",response.data.token);
+                setId(response.data.id);
                 setUserType("engineer");
                 setToken(response.data.token);
                 setState("signin")

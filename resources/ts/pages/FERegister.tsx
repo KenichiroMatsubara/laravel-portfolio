@@ -38,6 +38,7 @@ const FERegister = () => {
             try {
                 const response = await axios.post(`${baseURL}/api/signin_engineer_account_by_token`,sendData);
                 Cookies.set("token",response.data.token);
+                setId(response.data.id);
                 setUserType("engineer");
                 setToken(response.data.token);
                 setState("signin")

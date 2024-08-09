@@ -1,6 +1,9 @@
-import React, { FormEventHandler, useState } from 'react'
+import React, { FormEventHandler, useContext, useState } from 'react'
 import FESidebar from '../components/FESidebar';
 import type { Stacks } from '../types/stacks';
+import { useUserContext } from '../UserContext';
+import axios from 'axios';
+import { BaseURLContext } from '../app';
 
 const initStacks = {
     php: false,
@@ -18,11 +21,14 @@ const initStacks = {
 
 const FEMakeNew = () => {
     const [stacks,setStacks] = useState<Stacks>(initStacks);
+    const { userContext: { id } } = useUserContext();
 
-    const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+    const baseURL:string = useContext(BaseURLContext);
+
+    const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault();
         const form = new FormData(e.currentTarget);
-        const title: FormDataEntryValue = form.get("title") || "";
+        const name: FormDataEntryValue = form.get("name") || "";
         const explain: FormDataEntryValue = form.get("explain") || "";
         const githubURL: FormDataEntryValue = form.get("githubURL") || "";
         const deployURL: FormDataEntryValue = form.get("deployURL") || "";
@@ -32,7 +38,25 @@ const FEMakeNew = () => {
                 usingStacks.push(stack);
             }
         });
-        console.log({title,explain,githubURL,deployURL,usingStacks});
+        console.log({name,explain,githubURL,deployURL,usingStacks});
+        const sendData = {
+            name: name,
+            engineer_id: id,
+            explain: explain,
+            githubURL: githubURL,
+            deployURL: deployURL,
+            using_stacks: usingStacks,
+        };
+
+        // ここからがapi
+        try {
+            const response = await axios.post(`http://127.0.0.1:8000/api/create_portfolio`);
+            console.log({sendData});
+            console.log(response.data);
+        } catch (error) {
+            console.log({sendData});
+            console.log(error);
+        }
     }
 
     const handleChangeStacks = (key:string) => {
@@ -50,7 +74,7 @@ const FEMakeNew = () => {
                     <span className='text-2xl'>タイトル</span>
                     <input
                         type="text"
-                        name='title'
+                        name='name'
                         className='w-64 p-2 border border-gray-500 rounded '
                     />
                 </div>
