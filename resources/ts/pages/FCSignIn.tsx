@@ -20,7 +20,7 @@ const FCSignIn = () => {
     // 自動クッキーログイン機能
     useEffect(()=> {
         // token emailがクッキー上に保存していない場合処理を終了させる
-        if(Cookies.get("token")===undefined || Cookies.get("email")===undefined || Cookies.get("userType")!=="company"){
+        if(Cookies.get("token")==="undefined" || Cookies.get("email")===undefined || Cookies.get("userType")!=="company"){
             console.log({
                 data:"this data is cookie",
                 token: Cookies.get("token"),
@@ -47,6 +47,14 @@ const FCSignIn = () => {
                 })
                 .catch(error => {
                     console.log({this_is_senddata: sendData});
+                    setUserType("");
+                    setState("signout");
+                    setId(-1);
+                    setToken("undefined");
+                    Cookies.remove("token");
+                    Cookies.remove("email");
+                    Cookies.remove("userType");
+                    console.log({userType,state,id,token});
                     console.log(error);
                 });
         }

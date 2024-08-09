@@ -55,7 +55,8 @@ Route::post("/off_favorite",$favorite."off_favorite");
 Route::post("/get_favorite_from_company",$favorite."get_favorite_from_company");
 Route::post("/get_engineer_company_favorite",$favorite."get_engineer_company_favorite");
 
-Route::post("/get_portfolio_info",$favorite."get_portfolio_info");
-Route::post("/create_portfolio",$favorite."create_portfolio");
-Route::put("/update_portfolio",$favorite."update_portfolio");
-Route::post("/destroy_portfolio",$favorite."destroy_portfolio");
+Route::post("/get_portfolio_info",$portfolio."get_portfolio_info");
+Route::post("/get_portfolio_ids",$portfolio."get_portfolio_ids");
+Route::post("/create_portfolio",$portfolio."create_portfolio");
+Route::put("/update_portfolio",$portfolio."update_portfolio");
+Route::post("/destroy_portfolio",$portfolio."destroy_portfolio");

@@ -92,6 +92,10 @@ class EngineerController extends Controller
                 ]);
             }
         }
+        return response()->json([
+            "result" => false,
+            "message" => "token auth failed",
+        ],404);
     }
     public function get_engineer_info(Request $request)
     {

@@ -13,23 +13,36 @@ class PortfolioController extends Controller
     public function get_portfolio_info(Request $request)
     {
         $validated = $request->validate([
+            "portfolio_id" => "required|numeric",
+        ]);
+        $portfolio = Portfolio::find($validated["portfolio_id"]);
+        $stacks = Portfolio_Using_Stack::where("portfolio_id",$portfolio->id)->get();
+
+        return response()->json([
+            "portfolio" => $portfolio,
+            "stacks" => $stacks,
+        ]);
+    }
+    public function get_portfolio_ids(Request $request)
+    {
+        $validated = $request->validate([
             "engineer_id" => "required|numeric",
         ]);
 
-        $portfolios = Engineer::find($validated["engineer_id"])->portfolios();
-        $portfolios_using_stacks = [];
+        $portfolios = Portfolio::where("engineer_id",$validated["engineer_id"])->get();
+        $all_portfolios = Portfolio::get();
+        $portfolio_ids = [];
         foreach($portfolios as $portfolio){
-            $portfolio_using_stacks = $portfolio->portfolio_using_stacks();
-            array_push($portfolios_using_stacks,$portfolio_using_stacks);
+            $portfolio_ids[] = $portfolio->id;
         }
         return response()->json([
-            "portfolios" => $portfolios,
-            "portfolios_using_stacks" => $portfolios_using_stacks,
+            "product_ids" => $portfolio_ids,
         ]);
     }
     public function create_portfolio(Request $request)
     {
         $validated = $request->validate([
+            "name"=>"required",
             "engineer_id"=>"required",
             "explain"=>"required",
             "githubURL"=>"required",
@@ -37,6 +50,7 @@ class PortfolioController extends Controller
             "using_stacks"=>"required",
         ]);
         $new_portfolio = Portfolio::create([
+            "name" => $validated["name"],
             "engineer_id"=>$validated["engineer_id"],
             "explain"=>$validated["explain"],
             "githubURL"=>$validated["githubURL"],
@@ -58,6 +72,7 @@ class PortfolioController extends Controller
     {
         $validated = $request->validate([
             "id"=>"required|numeric",
+            "name" => "required",
             "engineer_id"=>"required",
             "explain"=>"required",
             "githubURL"=>"required",
@@ -66,6 +81,7 @@ class PortfolioController extends Controller
         ]);
         $updated_portfolio = Portfolio::find($validated["id"]);
         $updated_portfolio->update([
+            "name"=>$validated["name"],
             "engineer_id"=>$validated["engineer_id"],
             "explain"=>$validated["explain"],
             "githubURL"=>$validated["githubURL"],

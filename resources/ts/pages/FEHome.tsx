@@ -17,7 +17,7 @@ const FEHome = () => {
     const langs: string[] = ["php","laravel","react","typescript","nodejs"];
     const places: string[] = ["愛知県"];
     const engineerId: number = 1;
-    const productIds: number[] = [1,1];
+    const [productIds,setProductIds] = useState<number[]>([]);
 
     const baseURL: string = useContext(BaseURLContext);
 
@@ -26,13 +26,16 @@ const FEHome = () => {
             const sendData = {
                 engineer_id: engineerId
             };
-            console.log(sendData);
+            console.log({this_is_sendData:sendData});
             try {
-                const response = await axios.post(`${baseURL}/api/get_portfolio_info`,sendData);
+                const response = await axios.post(`${baseURL}/api/get_portfolio_ids`,sendData);
+                setProductIds(response.data.product_ids);
+                console.log(response);
             } catch (error) {
-
+                console.log(error);
             }
         }
+        getPortfolios();
     },[]);
 
     return (
@@ -60,7 +63,7 @@ const FEHome = () => {
                     </div>
                 </div>
                 {productIds.map((productId) => (
-                    <Product productId={productId} />
+                    <Product key={Math.random()} productId={productId} />
                 ))}
             </div>
         </div>

@@ -110,57 +110,105 @@ class initSeeder extends Seeder
         DB::table('portfolios')->insert([
             [
                 'engineer_id' => 1,
+                'name' => Str::random(rand(5,10)),
                 'explain' => Str::random(rand(50,100)),
                 'githubURL' => Str::random(10),
                 'deployURL' => Str::random(10),
             ],
             [
                 'engineer_id' => 1,
+                'name' => Str::random(rand(5,10)),
                 'explain' => Str::random(rand(50,100)),
                 'githubURL' => Str::random(10),
                 'deployURL' => Str::random(10),
             ],
             [
                 'engineer_id' => 1,
+                'name' => Str::random(rand(5,10)),
                 'explain' => Str::random(rand(50,100)),
                 'githubURL' => Str::random(10),
                 'deployURL' => Str::random(10),
             ],
             [
                 'engineer_id' => 2,
+                'name' => Str::random(rand(5,10)),
                 'explain' => Str::random(rand(50,100)),
                 'githubURL' => Str::random(10),
                 'deployURL' => Str::random(10),
             ],
             [
                 'engineer_id' => 2,
+                'name' => Str::random(rand(5,10)),
                 'explain' => Str::random(rand(50,100)),
                 'githubURL' => Str::random(10),
                 'deployURL' => Str::random(10),
             ],
             [
                 'engineer_id' => 2,
+                'name' => Str::random(rand(5,10)),
                 'explain' => Str::random(rand(50,100)),
                 'githubURL' => Str::random(10),
                 'deployURL' => Str::random(10),
             ],
             [
                 'engineer_id' => 3,
+                'name' => Str::random(rand(5,10)),
                 'explain' => Str::random(rand(50,100)),
                 'githubURL' => Str::random(10),
                 'deployURL' => Str::random(10),
             ],
             [
                 'engineer_id' => 3,
+                'name' => Str::random(rand(5,10)),
                 'explain' => Str::random(rand(50,100)),
                 'githubURL' => Str::random(10),
                 'deployURL' => Str::random(10),
             ],
             [
                 'engineer_id' => 3,
+                'name' => Str::random(rand(5,10)),
                 'explain' => Str::random(rand(50,100)),
                 'githubURL' => Str::random(10),
                 'deployURL' => Str::random(10),
+            ],
+        ]);
+
+        DB::table('portfolio__using__stacks')->insert([
+            [
+                'portfolio_id' => 1,
+                'stack' => "laravel"
+            ],
+            [
+                'portfolio_id' => 1,
+                'stack' => "react"
+            ],
+            [
+                'portfolio_id' => 1,
+                'stack' => "heroku"
+            ],
+            [
+                'portfolio_id' => 2,
+                'stack' => "django"
+            ],
+            [
+                'portfolio_id' => 2,
+                'stack' => "react"
+            ],
+            [
+                'portfolio_id' => 2,
+                'stack' => "heroku"
+            ],
+            [
+                'portfolio_id' => 3,
+                'stack' => "nodejs"
+            ],
+            [
+                'portfolio_id' => 3,
+                'stack' => "react"
+            ],
+            [
+                'portfolio_id' => 3,
+                'stack' => "heroku"
             ],
         ]);
 

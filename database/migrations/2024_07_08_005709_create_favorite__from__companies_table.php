@@ -13,13 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('portfolios', function (Blueprint $table) {
+        Schema::create('favorite__from__companies', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
+            $table->integer("company_id");
             $table->integer("engineer_id");
-            $table->longText("explain");
-            $table->string("githubURL");
-            $table->string("deployURL");
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('portfolios');
+        Schema::dropIfExists('favorite__from__companies');
     }
 };
