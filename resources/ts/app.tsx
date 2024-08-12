@@ -67,6 +67,8 @@ function App() {
                     path='/edit_home/'
                     element={<Routings path="/edit_home/" />}
                 />
+
+
                 <Route
                     path='/engineer/'
                     element={<Routings path="/engineer/" />}
@@ -83,6 +85,12 @@ function App() {
                     path='/engineer/search/'
                     element={<Routings path="/engineer/search/" />}
                 />
+                <Route
+                    path='/engineer/edit_portfolio/:productId/'
+                    element={<Routings path="/engineer/edit_portfolio/:productId/" />}
+                />
+
+
                 <Route
                     path="/test"
                     element={<Test />}

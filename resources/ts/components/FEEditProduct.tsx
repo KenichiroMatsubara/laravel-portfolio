@@ -1,9 +1,10 @@
-import React, { FormEventHandler, useContext, useState } from 'react'
+import React, { FormEventHandler, useContext, useEffect, useState } from 'react'
 import FESidebar from '../components/FESidebar';
 import type { Stacks } from '../types/stacks';
 import { useUserContext } from '../UserContext';
 import axios from 'axios';
 import { BaseURLContext } from '../app';
+import { useParams } from 'react-router-dom';
 
 const initStacks = {
     php: false,
@@ -19,11 +20,42 @@ const initStacks = {
 }
 
 
-const FEMakeNew = () => {
+const FEEditProduct = () => {
     const [stacks,setStacks] = useState<Stacks>(initStacks);
     const { userContext: { id } } = useUserContext();
-
+    const { productId } = useParams();
     const baseURL:string = useContext(BaseURLContext);
+
+    const [defaultName, setDefaultName] = useState<string>("");
+    const [defaultExplain, setDefaultExplain] = useState<string>("");
+    const [defaultGithubURL, setDefaultGithubURL] = useState<string>("");
+    const [defaultDeployURL, setDefaultDeployURL] = useState<string>("");
+
+    // これはポートフォリオの編集をするコンポーネントなのでまず、初期値（今のポートフォリオの情報）を取得する
+    useEffect(() => {
+        const getPortfolioInfo = async () => {
+            const sendData = {
+                "portfolio_id": Number(productId),
+            }
+            try {
+                const response = await axios.post(`${baseURL}/api/get_portfolio_info`,sendData);
+                setDefaultName(response.data.portfolio.name);
+                setDefaultExplain(response.data.portfolio.explain);
+                setDefaultGithubURL(response.data.portfolio.githubURL);
+                setDefaultDeployURL(response.data.portfolio.deployURL);
+                const newStacks = {...stacks};
+                response.data.stacks.forEach(stack => {
+                    newStacks[stack.stack]=true;
+                });
+                setStacks(newStacks);
+                console.log(response.data);
+            } catch (error) {
+                console.log(sendData);
+                console.log(error);
+            }
+        }
+        getPortfolioInfo();
+    },[]);
 
     const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault();
@@ -38,8 +70,8 @@ const FEMakeNew = () => {
                 usingStacks.push(stack);
             }
         });
-        console.log({name,explain,githubURL,deployURL,usingStacks});
         const sendData = {
+            "id": Number(productId),
             "name": name,
             "engineer_id": id,
             "explain": explain,
@@ -50,10 +82,10 @@ const FEMakeNew = () => {
 
         // ここからがapi
         try {
-            const response = await axios.post(`${baseURL}/api/create_portfolio`,sendData);
+            const response = await axios.put(`${baseURL}/api/update_portfolio`,sendData);
             console.log(sendData);
             console.log(response.data);
-            window.location.reload();
+            window.location.assign(`${baseURL}/engineer/`);
         } catch (error) {
             console.log(sendData);
             console.log(error);
@@ -76,6 +108,7 @@ const FEMakeNew = () => {
                     <input
                         type="text"
                         name='name'
+                        defaultValue={defaultName}
                         className='w-64 p-2 border border-gray-500 rounded '
                     />
                 </div>
@@ -101,6 +134,7 @@ const FEMakeNew = () => {
                         rows={10}
                         cols={60}
                         className="h-64 p-2 my-2 border border-gray-500 rounded"
+                        defaultValue={defaultExplain}
                         name='explain'
                     />
                 </div>
@@ -109,6 +143,7 @@ const FEMakeNew = () => {
                     <input
                         type="text"
                         name='githubURL'
+                        defaultValue={defaultGithubURL}
                         className='w-64 p-2 border border-gray-500 rounded '
                     />
                 </div>
@@ -123,6 +158,7 @@ const FEMakeNew = () => {
                 <input
                     type='submit'
                     className='w-32 p-2 mt-5 text-white duration-300 bg-orange-600 rounded hover:bg-orange-400'
+                    defaultValue={defaultDeployURL}
                     value={"送信"}
                 />
 
@@ -131,4 +167,4 @@ const FEMakeNew = () => {
     )
 }
 
-export default FEMakeNew
+export default FEEditProduct

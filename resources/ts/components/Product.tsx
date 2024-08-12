@@ -7,6 +7,7 @@ import type { ProductProps } from "../types/productProps";
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import { Link } from 'react-router-dom';
 
 
 const Product: FC<ProductProps> = ({productId}) => {
@@ -128,12 +129,13 @@ const Product: FC<ProductProps> = ({productId}) => {
                         <DeleteIcon />
                         <span>削除する</span>
                     </div>
-                    <div
+                    <Link
+                        to={`${baseURL}/engineer/edit_portfolio/${productId}`}
                         className='flex gap-3 mt-3 ml-3 mb-3 hover:text-gray-500 duration-300 cursor-pointer'
                     >
                         <EditIcon />
                         <span>編集する</span>
-                    </div>
+                    </Link>
                     {deleteConfirmation===true &&
                     <div className='flex flex-col gap-2 p-3 absolute top-5 right-3 w-48 items-center bg-white border border-gray-600 z-20'>
                         <span>本当に削除しますか？</span>
