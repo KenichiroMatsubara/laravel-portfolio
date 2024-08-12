@@ -111,13 +111,15 @@ class PortfolioController extends Controller
             "id"=>"required|numeric",
         ]);
         $destroyed_portfolio = Portfolio::find($validated["id"]);
-        $destroyed_using_stacks = $destroyed_portfolio->portfolio_using_stacks();
+        $destroyed_using_stacks = Portfolio_Using_Stack::where("portfolio_id",$validated["id"])->get();
         foreach($destroyed_using_stacks as $destroyed_using_stack){
             $destroyed_using_stack->delete();
         }
         $destroyed_portfolio->delete();
         return response()->json([
             "result"=>"successfully destroyed!",
+            "portfolio" => $destroyed_portfolio,
+            "using_stacks" => $destroyed_using_stacks,
         ]);
     }
 }
