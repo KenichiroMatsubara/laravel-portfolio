@@ -53,6 +53,7 @@ const FEMakeNew = () => {
             const response = await axios.post(`${baseURL}/api/create_portfolio`,sendData);
             console.log(sendData);
             console.log(response.data);
+            window.location.reload();
         } catch (error) {
             console.log(sendData);
             console.log(error);

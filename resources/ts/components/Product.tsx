@@ -107,7 +107,7 @@ const Product: FC<ProductProps> = ({productId}) => {
                         <p><a href={productInfo.deployURL}>deployURL</a></p>
                     </div>
                 </div>
-                <div className='break-words w-8/12 px-5'>
+                <div className='break-words whitespace-pre-wrap w-8/12 px-5'>
                     {productInfo.explain}
                 </div>
                 <MoreVertIcon
