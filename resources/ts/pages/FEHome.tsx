@@ -24,7 +24,7 @@ const FEHome = () => {
     useEffect(() => {
         const getPortfolios = async() => {
             const sendData = {
-                engineer_id: engineerId
+                "engineer_id": engineerId
             };
             try {
                 const response = await axios.post(`${baseURL}/api/get_portfolio_ids`,sendData);

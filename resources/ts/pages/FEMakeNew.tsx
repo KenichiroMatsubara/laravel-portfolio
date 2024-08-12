@@ -40,21 +40,21 @@ const FEMakeNew = () => {
         });
         console.log({name,explain,githubURL,deployURL,usingStacks});
         const sendData = {
-            name: name,
-            engineer_id: id,
-            explain: explain,
-            githubURL: githubURL,
-            deployURL: deployURL,
-            using_stacks: usingStacks,
+            "name": name,
+            "engineer_id": id,
+            "explain": explain,
+            "githubURL": githubURL,
+            "deployURL": deployURL,
+            "using_stacks": usingStacks,
         };
 
         // ここからがapi
         try {
-            const response = await axios.post(`http://127.0.0.1:8000/api/create_portfolio`);
-            console.log({sendData});
+            const response = await axios.post(`${baseURL}/api/create_portfolio`,sendData);
+            console.log(sendData);
             console.log(response.data);
         } catch (error) {
-            console.log({sendData});
+            console.log(sendData);
             console.log(error);
         }
     }

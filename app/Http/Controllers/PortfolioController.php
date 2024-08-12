@@ -63,10 +63,11 @@ class PortfolioController extends Controller
                 "stack"=>$using_stack,
             ]);
         }
-            $new_using_stacks = Portfolio_Using_Stack::where("portfolio_id",$new_portfolio->id)->get();
+        $new_using_stacks = Portfolio_Using_Stack::where("portfolio_id",$new_portfolio->id)->get();
         return response()->json([
-            "new_portfolio"=>$new_portfolio,
-            "using_stacks"=>$new_using_stacks,
+            "result" => true,
+            "new portfolio" => $new_portfolio,
+            "new using stacks" => $new_using_stacks,
         ]);
     }
     public function update_potfolio(Request $request)
