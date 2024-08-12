@@ -70,18 +70,18 @@ class PortfolioController extends Controller
             "new using stacks" => $new_using_stacks,
         ]);
     }
-    public function update_potfolio(Request $request)
+    public function update_portfolio(Request $request)
     {
         $validated = $request->validate([
-            "id"=>"required|numeric",
+            "portfolio_id"=>"required|numeric",
             "name" => "required",
-            "engineer_id"=>"required",
-            "explain"=>"required",
-            "githubURL"=>"required",
-            "deployURL"=>"required",
-            "using_stacks"=>"required",
+            "engineer_id"=>"required|numeric",
+            "explain"=>"nullable",
+            "githubURL"=>"nullable",
+            "deployURL"=>"nullable",
+            "using_stacks"=>"required|array",
         ]);
-        $updated_portfolio = Portfolio::find($validated["id"]);
+        $updated_portfolio = Portfolio::find($validated["portfolio_id"]);
         $updated_portfolio->update([
             "name"=>$validated["name"],
             "engineer_id"=>$validated["engineer_id"],
@@ -89,7 +89,7 @@ class PortfolioController extends Controller
             "githubURL"=>$validated["githubURL"],
             "deployURL"=>$validated["deployURL"],
         ]);
-        $destroyed_stacks = $updated_portfolio->portfolio_using_stacks();
+        $destroyed_stacks = Portfolio_Using_Stack::where("portfolio_id",$validated["portfolio_id"])->get();
         foreach($destroyed_stacks as $destroyed_stack){
             $destroyed_stack->delete();
         }
@@ -99,11 +99,13 @@ class PortfolioController extends Controller
                 "stack"=>$using_stack,
             ]);
         }
-        $updated_using_stacks = $updated_portfolio->portfolio_using_stacks();
+        $updated_using_stacks = Portfolio_Using_Stack::where("portfolio_id",$validated["portfolio_id"])->get();
         return response()->json([
-            "updated_portfolio"=>$updated_portfolio,
-            "using_stacks"=>$updated_using_stacks,
+            "result" => true,
+            "updated_portfolio" => $updated_portfolio,
+            "updated_using_stacks" => $updated_using_stacks,
         ]);
+
     }
     public function destroy_portfolio(Request $request)
     {

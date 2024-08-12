@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             $table->string("name");
             $table->integer("engineer_id");
-            $table->longText("explain");
-            $table->string("githubURL");
-            $table->string("deployURL");
+            $table->longText("explain")->nullable();
+            $table->string("githubURL")->nullable();
+            $table->string("deployURL")->nullable();
             $table->timestamps();
         });
     }

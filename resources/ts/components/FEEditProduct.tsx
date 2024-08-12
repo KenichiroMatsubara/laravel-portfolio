@@ -71,7 +71,7 @@ const FEEditProduct = () => {
             }
         });
         const sendData = {
-            "id": Number(productId),
+            "portfolio_id": Number(productId),
             "name": name,
             "engineer_id": id,
             "explain": explain,
@@ -82,11 +82,12 @@ const FEEditProduct = () => {
 
         // ここからがapi
         try {
-            const response = await axios.put(`${baseURL}/api/update_portfolio`,sendData);
+            const response = await axios.post(`${baseURL}/api/update_portfolio`,sendData);
             console.log(sendData);
             console.log(response.data);
             window.location.assign(`${baseURL}/engineer/`);
         } catch (error) {
+            console.log("error occur!")
             console.log(sendData);
             console.log(error);
         }
