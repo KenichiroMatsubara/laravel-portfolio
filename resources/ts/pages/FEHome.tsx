@@ -10,7 +10,7 @@ import { BaseURLContext } from '../app';
 const FEHome = () => {
     const { userContext: { userType,id,token,state }, dispatcher: { setUserType, setId,setToken,setState } } = useUserContext();
 
-    const engineername = useParams().engineername;
+    const [engineerName,setEngineerName] = useState<string>("");
 
     const year: number = 0;
     const [user,setUser] = useState<{id: number,token: string}>({id:0,token:""});
@@ -47,9 +47,9 @@ const FEHome = () => {
                             <img src='https://kohacu.com/wp-content/uploads/2018/06/kohacu.com_001312_20180615.png'
                                 className='object-contain w-16 h-16 rounded-full'
                             />
-                            <span className=''>{engineername}</span>
+                            <span className=''>{engineerName}</span>
                         </div>
-                        <div className='flex'>
+                        <div className=''>
                             <div className='flex flex-col ml-10'>
                                 <span>実務経験{year}年</span>
                                 <span>得意言語・フレームワーク</span>
