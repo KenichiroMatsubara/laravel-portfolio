@@ -100,7 +100,7 @@ class EngineerController extends Controller
     public function get_engineer_info(Request $request)
     {
         $validated = $request->validate([
-            'id' => 'required',
+            'engineer_id' => 'required',
         ]);
         $engineer = Engineer::find($validated['id']);
         $engineer_good_ats = $engineer->engineer_good_at();

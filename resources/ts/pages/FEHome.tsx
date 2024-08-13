@@ -14,8 +14,8 @@ const FEHome = () => {
 
     const year: number = 0;
     const [user,setUser] = useState<{id: number,token: string}>({id:0,token:""});
-    const langs: string[] = ["php","laravel","react","typescript","nodejs"];
-    const places: string[] = ["愛知県"];
+    const [langs,setLangs] = useState<string[]>(["未設定"]);
+    const [places,setPlacess] = useState<string[]>(["未設定"]);
     const engineerId: number = 1;
     const [productIds,setProductIds] = useState<number[]>([]);
 
@@ -35,6 +35,19 @@ const FEHome = () => {
             }
         }
         getPortfolios();
+        const getEngineerInfo = async() => {
+            const sendData = {
+                "engineer_id": engineerId
+            }
+            try {
+                const response = await axios.post(`${baseURL}/api/get_engineer_info`,sendData);
+
+                console.log(response);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        getEngineerInfo();
     },[]);
 
     return (
