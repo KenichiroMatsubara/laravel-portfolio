@@ -73,39 +73,64 @@ class PortfolioController extends Controller
     public function update_portfolio(Request $request)
     {
         $validated = $request->validate([
-            "portfolio_id"=>"required|numeric",
+            "portfolio_id" => "required|numeric",
             "name" => "required",
-            "engineer_id"=>"required|numeric",
-            "explain"=>"nullable",
-            "githubURL"=>"nullable",
-            "deployURL"=>"nullable",
-            "using_stacks"=>"required|array",
+            "engineer_id" => "required|numeric",
+            "explain" => "nullable",
+            "githubURL" => "nullable",
+            "deployURL" => "nullable",
+            "using_stacks" => "required|array",
         ]);
+
         $updated_portfolio = Portfolio::find($validated["portfolio_id"]);
-        $updated_portfolio->update([
-            "name"=>$validated["name"],
-            "engineer_id"=>$validated["engineer_id"],
-            "explain"=>$validated["explain"],
-            "githubURL"=>$validated["githubURL"],
-            "deployURL"=>$validated["deployURL"],
-        ]);
-        $destroyed_stacks = Portfolio_Using_Stack::where("portfolio_id",$validated["portfolio_id"])->get();
-        foreach($destroyed_stacks as $destroyed_stack){
-            $destroyed_stack->delete();
+
+        $updated_data = [
+            "name" => $validated["name"],
+            "engineer_id" => $validated["engineer_id"],
+        ];
+
+        // Nullable fields
+        if (isset($validated["explain"])) {
+            $updated_data["explain"] = $validated["explain"];
         }
-        foreach($validated["using_stacks"] as $using_stack){
-            $updated_using_stack = Portfolio_Using_Stack::create([
-                "portfolio_id"=>$updated_portfolio->id,
-                "stack"=>$using_stack,
-            ]);
+        else {
+            $updated_data["explain"] = "blank";
         }
-        $updated_using_stacks = Portfolio_Using_Stack::where("portfolio_id",$validated["portfolio_id"])->get();
+        if (isset($validated["githubURL"])) {
+            $updated_data["githubURL"] = $validated["githubURL"];
+        }
+        else {
+            $updated_data["githubURL"] = "blank";
+        }
+        if (isset($validated["deployURL"])) {
+            $updated_data["deployURL"] = $validated["deployURL"];
+        }
+        else {
+            $updated_data["deployURL"] = "blank";
+        }
+
+        $updated_portfolio->update($updated_data);
+
+        // Remove existing stacks
+        Portfolio_Using_Stack::where("portfolio_id", $validated["portfolio_id"])->delete();
+
+        // Add new stacks
+        if (!empty($validated["using_stacks"])) {
+            foreach ($validated["using_stacks"] as $using_stack) {
+                Portfolio_Using_Stack::create([
+                    "portfolio_id" => $updated_portfolio->id,
+                    "stack" => $using_stack,
+                ]);
+            }
+        }
+
+        $updated_using_stacks = Portfolio_Using_Stack::where("portfolio_id", $validated["portfolio_id"])->get();
+
         return response()->json([
             "result" => true,
             "updated_portfolio" => $updated_portfolio,
             "updated_using_stacks" => $updated_using_stacks,
         ]);
-
     }
     public function destroy_portfolio(Request $request)
     {
