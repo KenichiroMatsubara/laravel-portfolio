@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Favorite_From_Company extends Model
+class FavoriteFromCompany extends Model
 {
     use HasFactory;
     protected $fillable = ["company_id","engineer_id"];

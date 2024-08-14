@@ -202,7 +202,7 @@ class initSeeder extends Seeder
             ],
         ]);
 
-        DB::table('portfolio__using__stacks')->insert([
+        DB::table('portfolio_using_stacks')->insert([
             [
                 'portfolio_id' => 1,
                 'stack' => "laravel"
@@ -242,7 +242,7 @@ class initSeeder extends Seeder
         ]);
 
 
-        DB::table(('favorite__from__companies'))->insert([
+        DB::table(('favorite_from_companies'))->insert([
             [
                 'company_id' => 1,
                 'engineer_id' => 1,

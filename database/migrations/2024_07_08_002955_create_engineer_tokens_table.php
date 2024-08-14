@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('company__tokens', function (Blueprint $table) {
+        Schema::create('engineer_tokens', function (Blueprint $table) {
             $table->id();
-            $table->integer("company_id");
+            $table->integer("engineer_id");
             $table->string("token");
             $table->timestamps();
         });
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('company__tokens');
+        Schema::dropIfExists('engineer_tokens');
     }
 };

@@ -13,10 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('engineer__good__ats', function (Blueprint $table) {
+        Schema::create('engineer_want_work_ats', function (Blueprint $table) {
             $table->id();
             $table->integer("engineer_id");
-            $table->string("stack");
+            $table->string("place");
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('engineer__good__ats');
+        Schema::dropIfExists('engineer_want_work_ats');
     }
 };

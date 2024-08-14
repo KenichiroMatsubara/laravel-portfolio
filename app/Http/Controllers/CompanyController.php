@@ -2,8 +2,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
-use App\Models\Company_Token;
-use App\Models\Company_Using_Stack;
+use App\Models\CompanyToken;
+use App\Models\CompanyUsingStack;
 use App\Models\CompanyProfile;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -37,9 +37,9 @@ class CompanyController extends Controller
         if (p_compare_password($validated['password'], $company->password)) {
             if($validated["autoSignin"]==true){
                 // ３０日以上前に作られたトークンを削除
-                Company_Token::where("created_at","<",now()->subDays(30))->delete();
+                CompanyToken::where("created_at","<",now()->subDays(30))->delete();
                 // 新たにトークンを発行
-                $token = Company_Token::create([
+                $token = CompanyToken::create([
                     "token"=>make_token(),
                     "company_id" => $company->id,
                 ]);
@@ -74,11 +74,11 @@ class CompanyController extends Controller
             'token' => 'required',
         ]);
         // ３０日以上前に作られたトークンを削除
-        Company_Token::where("created_at","<",now()->subDays(30))->delete();
+        CompanyToken::where("created_at","<",now()->subDays(30))->delete();
 
 
         $company = Company::where("email",$validated["email"])->first();
-        $tokens = Company_Token::where("company_id",$company->id)->get();
+        $tokens = CompanyToken::where("company_id",$company->id)->get();
         foreach ($tokens as $token) {
             if ($token->token == $validated['token']) {
                 // $token->update([
@@ -104,7 +104,7 @@ class CompanyController extends Controller
         ]);
         $company = Company::find($validated['id']);
         $company_profile = CompanyProfile::where("company_id",$validated["id"])->first();
-        $company_using_stacks = Company_Using_Stack::where("company_id",$validated["id"])->get();
+        $company_using_stacks = CompanyUsingStack::where("company_id",$validated["id"])->get();
         return response()->json([
             "company_data" => $company,
             "company_profile" => $company_profile,
@@ -144,16 +144,16 @@ class CompanyController extends Controller
 
 
         // スタックを削除してから追加
-        Company_Using_Stack::where("company_id", $validated["id"])->delete();
+        CompanyUsingStack::where("company_id", $validated["id"])->delete();
 
         foreach ($validated['stacks'] as $stack) {
-            Company_Using_Stack::create([
+            CompanyUsingStack::create([
                 "company_id" => $validated["id"],
                 "stack" => $stack,
             ]);
         }
 
-        $company_using_stacks = Company_Using_Stack::where("company_id", $validated["id"])->get();
+        $company_using_stacks = CompanyUsingStack::where("company_id", $validated["id"])->get();
 
         return response()->json([
             "updated_data" => $new_company_profile,
@@ -169,7 +169,7 @@ class CompanyController extends Controller
         $company = Company::find($validated['id']);
         $company_profile = CompanyProfile::where("company_id",$validated["id"])->first();
         $company_profile->delete();
-        $company_using_stacks = Company_Using_Stack::where("company_id",$company->id)->get();
+        $company_using_stacks = CompanyUsingStack::where("company_id",$company->id)->get();
         $company_using_stacks->each->delete();
         $company->delete();
         return response()->json([

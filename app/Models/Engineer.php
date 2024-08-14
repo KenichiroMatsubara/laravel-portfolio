@@ -18,7 +18,7 @@ class Engineer extends Model
 
     public function engineer_tokens()
     {
-        return $this->hasMany(Engineer_Token::class);
+        return $this->hasMany(EngineerToken::class);
     }
     public function portfolios()
     {
@@ -26,11 +26,11 @@ class Engineer extends Model
     }
     public function engineer_want_work_at()
     {
-        return $this->hasMany(Engineer_Want_Work_At::class);
+        return $this->hasMany(EngineerWantWorkAt::class);
     }
     public function engineer_good_at()
     {
-        return $this->hasMany(Engineer_Good_At::class);
+        return $this->hasMany(EngineerGoodAt::class);
     }
     public function chats()
     {

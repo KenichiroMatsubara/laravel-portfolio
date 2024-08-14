@@ -13,10 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('favorite__from__companies', function (Blueprint $table) {
+        Schema::create('company_tokens', function (Blueprint $table) {
             $table->id();
             $table->integer("company_id");
-            $table->integer("engineer_id");
+            $table->string("token");
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('favorite__from__companies');
+        Schema::dropIfExists('company_tokens');
     }
 };

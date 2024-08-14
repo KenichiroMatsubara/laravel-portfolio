@@ -15,6 +15,6 @@ class Portfolio extends Model
     }
     public function portfolio_using_stacks()
     {
-        return $this->hasMany(Portfolio_Using_Stack::class);
+        return $this->hasMany(PortfolioUsingStack::class);
     }
 }

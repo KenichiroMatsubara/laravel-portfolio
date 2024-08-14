@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Engineer;
-use App\Models\Engineer_Good_At;
-use App\Models\Engineer_Token;
-use App\Models\Engineer_Want_Work_At;
+use App\Models\EngineerGoodAt;
+use App\Models\EngineerToken;
+use App\Models\EngineerWantWorkAt;
 use App\Models\EngineerProfile;
 use App\Models\Portfolio;
 use Illuminate\Routing\Controller;
@@ -40,9 +40,9 @@ class EngineerController extends Controller
         if (p_compare_password($validated['password'], $engineer->password)) {
             if ($validated['autoSignin']==true) {
                 // ３０日以上前に作られたトークンを削除
-                Engineer_Token::where("created_at","<",now()->subDays(30))->delete();
+                EngineerToken::where("created_at","<",now()->subDays(30))->delete();
                 // 新たにトークンを発行
-                $token = Engineer_Token::create([
+                $token = EngineerToken::create([
                     "token"=>make_token(),
                     "engineer_id" => $engineer->id,
                 ]);
@@ -77,9 +77,9 @@ class EngineerController extends Controller
             'token' => 'required',
         ]);
         // ３０日以上前に作られたトークンを削除
-        Engineer_Token::where("created_at","<",now()->subDays(30))->delete();
+        EngineerToken::where("created_at","<",now()->subDays(30))->delete();
         $engineer = Engineer::where("email",$validated["email"])->first();
-        $tokens = Engineer_Token::where("engineer_id",$engineer->id)->get();
+        $tokens = EngineerToken::where("engineer_id",$engineer->id)->get();
         foreach($tokens as $token){
             if ($token->token == $validated['token']) {
                 // $token->update([
@@ -105,7 +105,7 @@ class EngineerController extends Controller
         ]);
         $engineer = Engineer::find($validated['id']);
         $engineer_profile = EngineerProfile::where("engineer_id",$validated["engineer_id"])->first();
-        $engineer_good_ats = Engineer_Good_At::where("engineer_id",$validated["engineer_id"])->get();
+        $engineer_good_ats = EngineerGoodAt::where("engineer_id",$validated["engineer_id"])->get();
         $portfolio = Portfolio::where("engineer_id",$validated["engineer_id"])->get();
         return response()->json([
             "engineer_profile" => $engineer_profile,
@@ -137,20 +137,20 @@ class EngineerController extends Controller
             $new_engieer_profile = EngineerProfile::create($update_data);
         }
         // エンジニアの得意技術、働きたい場所をすべて取ってきていったん消す
-        $engineer_good_at = Engineer_Good_At::where("engineer_id",$validated["id"])->get();
-        $engineer_want_work_at = Engineer_Want_Work_At::where("engineer_id",$validated["id"])->get();
+        $engineer_good_at = EngineerGoodAt::where("engineer_id",$validated["id"])->get();
+        $engineer_want_work_at = EngineerWantWorkAt::where("engineer_id",$validated["id"])->get();
 
         $engineer_good_at->each->delete();
         $engineer_want_work_at->each->delete();
 
         foreach ($validated["stacks"] as $stack) {
-            Engineer_Good_At::create([
+            EngineerGoodAt::create([
                 "engineer_id" => $engineer->id,
                 "stack"=>$stack,
             ]);
         }
         foreach ($validated["want_work_ats"] as $want_work_at) {
-            Engineer_Want_Work_At::create([
+            EngineerWantWorkAt::create([
                 "engineer_id" => $engineer->id,
                 "place"=>$want_work_at,
             ]);
@@ -169,8 +169,8 @@ class EngineerController extends Controller
         ]);
         $engineer = Engineer::find($validated['id']);
         $engineer_profile = EngineerProfile::where("engineer_id",$validated["id"])->first();
-        $engineer_good_at = Engineer_Good_At::where("engineer_id",$validated["id"])->get();
-        $engineer_want_work_at = Engineer_Want_Work_At::where("engineer_id",$validated["id"])->get();
+        $engineer_good_at = EngineerGoodAt::where("engineer_id",$validated["id"])->get();
+        $engineer_want_work_at = EngineerWantWorkAt::where("engineer_id",$validated["id"])->get();
         $portfolio = Portfolio::where("engineer_id",$validated["id"])->get();
 
         $engineer_profile->delete();

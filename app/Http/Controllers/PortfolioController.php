@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Engineer;
 use App\Models\Portfolio;
-use App\Models\Portfolio_Using_Stack;
+use App\Models\PortfolioUsingStack;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
@@ -16,7 +16,7 @@ class PortfolioController extends Controller
             "portfolio_id" => "required|numeric",
         ]);
         $portfolio = Portfolio::find($validated["portfolio_id"]);
-        $stacks = Portfolio_Using_Stack::where("portfolio_id",$portfolio->id)->get();
+        $stacks = PortfolioUsingStack::where("portfolio_id",$portfolio->id)->get();
 
         return response()->json([
             "portfolio" => $portfolio,
@@ -58,12 +58,12 @@ class PortfolioController extends Controller
             "deployURL"=>$validated["deployURL"],
         ]);
         foreach($validated["using_stacks"] as $using_stack){
-            $new_using_stack = Portfolio_Using_Stack::create([
+            $new_using_stack = PortfolioUsingStack::create([
                 "portfolio_id"=>$new_portfolio->id,
                 "stack"=>$using_stack,
             ]);
         }
-        $new_using_stacks = Portfolio_Using_Stack::where("portfolio_id",$new_portfolio->id)->get();
+        $new_using_stacks = PortfolioUsingStack::where("portfolio_id",$new_portfolio->id)->get();
         return response()->json([
             "result" => true,
             "new portfolio" => $new_portfolio,
@@ -112,19 +112,19 @@ class PortfolioController extends Controller
         $updated_portfolio->update($updated_data);
 
         // Remove existing stacks
-        Portfolio_Using_Stack::where("portfolio_id", $validated["portfolio_id"])->delete();
+        PortfolioUsingStack::where("portfolio_id", $validated["portfolio_id"])->delete();
 
         // Add new stacks
         if (!empty($validated["using_stacks"])) {
             foreach ($validated["using_stacks"] as $using_stack) {
-                Portfolio_Using_Stack::create([
+                PortfolioUsingStack::create([
                     "portfolio_id" => $updated_portfolio->id,
                     "stack" => $using_stack,
                 ]);
             }
         }
 
-        $updated_using_stacks = Portfolio_Using_Stack::where("portfolio_id", $validated["portfolio_id"])->get();
+        $updated_using_stacks = PortfolioUsingStack::where("portfolio_id", $validated["portfolio_id"])->get();
 
         return response()->json([
             "result" => true,
@@ -138,7 +138,7 @@ class PortfolioController extends Controller
             "id"=>"required|numeric",
         ]);
         $destroyed_portfolio = Portfolio::find($validated["id"]);
-        $destroyed_using_stacks = Portfolio_Using_Stack::where("portfolio_id",$validated["id"])->get();
+        $destroyed_using_stacks = PortfolioUsingStack::where("portfolio_id",$validated["id"])->get();
         foreach($destroyed_using_stacks as $destroyed_using_stack){
             $destroyed_using_stack->delete();
         }

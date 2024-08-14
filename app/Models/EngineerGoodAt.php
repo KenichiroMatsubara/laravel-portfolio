@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Engineer_Want_Work_At extends Model
+class EngineerGoodAt extends Model
 {
     use HasFactory;
-    protected $fillable = ['engineer_id','place'];
+    protected $fillable = ['engineer_id','stack'];
     public function engineers()
     {
         return $this->belongsTo(Engineer::class);

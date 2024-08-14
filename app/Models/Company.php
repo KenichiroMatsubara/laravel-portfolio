@@ -18,15 +18,15 @@ class Company extends Model
 
     public function company_tokens()
     {
-        return $this->hasMany(Company_Token::class);
+        return $this->hasMany(CompanyToken::class);
     }
     public function favorite_from_companies()
     {
-        return $this->hasMany(Favorite_From_Company::class);
+        return $this->hasMany(FavoriteFromCompany::class);
     }
     public function company_using_stacks()
     {
-        return $this->hasMany(Company_Using_Stack::class);
+        return $this->hasMany(CompanyUsingStack::class);
     }
     public function chats()
     {

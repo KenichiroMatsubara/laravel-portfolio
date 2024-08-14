@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('portfolio__using__stacks', function (Blueprint $table) {
+        Schema::create('engineer_good_ats', function (Blueprint $table) {
             $table->id();
-            $table->integer("portfolio_id");
+            $table->integer("engineer_id");
             $table->string("stack");
             $table->timestamps();
         });
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('portfolio__using__stacks');
+        Schema::dropIfExists('engineer_good_ats');
     }
 };
