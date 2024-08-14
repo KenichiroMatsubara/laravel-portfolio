@@ -15,6 +15,9 @@ return new class extends Migration
     {
         Schema::create('engineer_profiles', function (Blueprint $table) {
             $table->id();
+            $table->integer("engineer_id");
+            $table->string("name")->nullable();
+            $table->integer("work_experience")->nullable();
             $table->timestamps();
         });
     }

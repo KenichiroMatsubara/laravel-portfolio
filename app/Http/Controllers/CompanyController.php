@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use App\Models\Company_Token;
 use App\Models\Company_Using_Stack;
+use App\Models\CompanyProfile;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
@@ -16,11 +17,6 @@ class CompanyController extends Controller
             'password' => 'required',
         ]);
         $new_company = Company::create([
-            "name" => "",
-            "address" => "",
-            "explain" => "",
-            "imgURL" => "",
-            "homepageURL" => "",
             "email" => $validated['email'],
             "password" => p_hash($validated['password']),
         ]);
@@ -107,9 +103,11 @@ class CompanyController extends Controller
             "id" => "required",
         ]);
         $company = Company::find($validated['id']);
-        $company_using_stacks = $company->company_using_stacks();
+        $company_profile = CompanyProfile::where("company_id",$validated["id"])->first();
+        $company_using_stacks = Company_Using_Stack::where("company_id",$validated["id"])->get();
         return response()->json([
             "company_data" => $company,
+            "company_profile" => $company_profile,
             "company_using_stacks" => $company_using_stacks,
         ]);
     }
@@ -119,44 +117,53 @@ class CompanyController extends Controller
         $validated = $request->validate([
             'id' => 'required|numeric',
             'name' => 'required',
-            'email' => 'required',
+            'email' => 'required|email',
             'address' => 'required',
             'explain' => 'required',
-            'file' => 'required',
-            'homepageURL' => 'required',
-            "stacks" => 'required',
+            'file' => 'required|image',  // 'file' が画像であることを確認
+            'homepageURL' => 'required|url',
+            'stacks' => 'required|array',
         ]);
+
         $company = Company::find($validated['id']);
-        $company->update([
-            "name" => $validated['name'],
-            "email" => $validated['email'],
-            "address" => $validated['address'],
-            "explain" => $validated['explain'],
-            "homepageURL" => $validated['homepageURL'],
-            "imgURL" => $request->file('image')->store('public/image/'),
-        ]);
-        $company_using_stacks = Company_Using_Stack::where("company_id",$company->id)->get();
-        $company_using_stacks->each->delete();
-        foreach ($request->stacks as $stack) {
+
+        $update_data = [
+            "name" => $validated['name'] ?? "blank",
+            "email" => $validated['email'] ?? "blank",
+            "address" => $validated['address'] ?? "blank",
+            "explain" => $validated['explain'] ?? "blank",
+            "homepageURL" => $validated['homepageURL'] ?? "blank",
+            "imgURL" => $request->file('file')->store('public/image/'),  // 'file' に変更
+        ];
+
+        $company->update($update_data);
+
+        // スタックを削除してから追加
+        Company_Using_Stack::where("company_id", $validated["id"])->delete();
+
+        foreach ($validated['stacks'] as $stack) {
             Company_Using_Stack::create([
-                "company_id" => $company->id,
-                "stack"=>$stack,
+                "company_id" => $validated["id"],
+                "stack" => $stack,
             ]);
         }
-        $company_using_stacks = Company_Using_Stack::where("company_id",$company->id)->get();
+
+        $company_using_stacks = Company_Using_Stack::where("company_id", $validated["id"])->get();
+
         return response()->json([
-            "updated_data"=>$company,
-            "stacks"=>$company_using_stacks,
+            "updated_data" => $company,
+            "stacks" => $company_using_stacks,
         ]);
     }
     public function destroy_company_account(Request $request)
     {
         $validated = $request->validate([
             'id' => 'required|numeric',
-            'name' => 'required',
             "email" => 'required',
         ]);
         $company = Company::find($validated['id']);
+        $company_profile = CompanyProfile::where("company_id",$validated["id"])->first();
+        $company_profile->delete();
         $company_using_stacks = Company_Using_Stack::where("company_id",$company->id)->get();
         $company_using_stacks->each->delete();
         $company->delete();

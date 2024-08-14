@@ -9,11 +9,7 @@ class Company extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name',
         'email',
-        'address',
-        'explain',
-        'homepageURL',
         'password',
     ];
     protected $hidden = [

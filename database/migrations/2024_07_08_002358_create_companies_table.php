@@ -15,11 +15,6 @@ return new class extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
-            $table->string("name")->nullable();
-            $table->string("address")->nullable();
-            $table->longText("explain")->nullable();
-            $table->string("imgURL")->nullable();
-            $table->string("homepageURL")->nullable();
             $table->string("email")->unique();
             $table->string("password");
             $table->timestamps();

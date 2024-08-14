@@ -15,6 +15,12 @@ return new class extends Migration
     {
         Schema::create('company_profiles', function (Blueprint $table) {
             $table->id();
+            $table->integer("company_id");
+            $table->string("name")->nullable();
+            $table->string("address")->nullable();
+            $table->longText("explain")->nullable();
+            $table->string("imgURL")->nullable();
+            $table->string("homepageURL")->nullable();
             $table->timestamps();
         });
     }
