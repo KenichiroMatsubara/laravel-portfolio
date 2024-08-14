@@ -89,6 +89,10 @@ function App() {
                     path='/engineer/edit_portfolio/:productId/'
                     element={<Routings path="/engineer/edit_portfolio/:productId/" />}
                 />
+                <Route
+                    path='/engineer/edit_profile/'
+                    element={<Routings path="/engineer/edit_profile/" />}
+                />
 
 
                 <Route

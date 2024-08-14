@@ -19,7 +19,7 @@ const SignoutBar = () => {
         setToken("");
     }
     return (
-        <div className=''>
+        <div className='ml-4'>
             {onSignoutButton ?
             <div className='flex items-center h-12'>
                 <ArrowBackIosIcon

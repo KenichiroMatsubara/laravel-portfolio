@@ -103,17 +103,20 @@ class EngineerController extends Controller
         $validated = $request->validate([
             'engineer_id' => 'required',
         ]);
+
         $engineer = Engineer::find($validated['id']);
         $engineer_profile = EngineerProfile::where("engineer_id",$validated["engineer_id"])->first();
+        $engineer_want_work_ats = EngineerWantWorkAt::where("engineer_id",$validated["engineer_id"])->get();
         $engineer_good_ats = EngineerGoodAt::where("engineer_id",$validated["engineer_id"])->get();
         $portfolio = Portfolio::where("engineer_id",$validated["engineer_id"])->get();
+
         return response()->json([
             "engineer_profile" => $engineer_profile,
+            "engineer_want_work_ats" => $engineer_want_work_ats,
             "engineer_good_ats" => $engineer_good_ats,
             "portfolios" => $portfolio,
         ]);
     }
-
     public function update_engineer_account(Request $request)
     {
         $validated = $request->validate([
@@ -123,6 +126,7 @@ class EngineerController extends Controller
             'stacks' => 'required',
             'want_work_ats' => 'required'
         ]);
+
         $engineer = Engineer::find($validated['id']);
         $engineer_profile = EngineerProfile::where("engineer_id",$validated["id"])->first();
         $update_data = [
@@ -137,11 +141,11 @@ class EngineerController extends Controller
             $new_engieer_profile = EngineerProfile::create($update_data);
         }
         // エンジニアの得意技術、働きたい場所をすべて取ってきていったん消す
-        $engineer_good_at = EngineerGoodAt::where("engineer_id",$validated["id"])->get();
-        $engineer_want_work_at = EngineerWantWorkAt::where("engineer_id",$validated["id"])->get();
+        $engineer_good_ats = EngineerGoodAt::where("engineer_id",$validated["id"])->get();
+        $engineer_want_work_ats = EngineerWantWorkAt::where("engineer_id",$validated["id"])->get();
 
-        $engineer_good_at->each->delete();
-        $engineer_want_work_at->each->delete();
+        $engineer_good_ats->each->delete();
+        $engineer_want_work_ats->each->delete();
 
         foreach ($validated["stacks"] as $stack) {
             EngineerGoodAt::create([
@@ -155,11 +159,10 @@ class EngineerController extends Controller
                 "place"=>$want_work_at,
             ]);
         }
-        // もう一回作り直す
-        $engineer_good_at = $engineer->engineer_good_at();
         return response()->json([
             "name"=>$engineer->name,
-            "stacks"=>$engineer_good_at,
+            "engineer_want_to_work_ats" => $engineer_want_work_ats,
+            "engineer_good_ats"=>$engineer_good_ats,
         ]);
     }
     public function destroy_engineer_account(Request $request)

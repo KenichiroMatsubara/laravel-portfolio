@@ -16,6 +16,7 @@ import FCSignIn from "./pages/FCSignIn";
 import FERegister from "./pages/FERegister";
 import FCRegister from "./pages/FCRegister";
 import FEEditProduct from './components/FEEditProduct';
+import FEEditProfile from './pages/FEEditProfile';
 
 const Routings: FC<{path:string}> = ({path}) => {
     const { userContext: { userType,id,token,state }, dispatcher: { setUserType, setId,setToken,setState } } = useUserContext();
@@ -98,6 +99,8 @@ const Routings: FC<{path:string}> = ({path}) => {
         }
     }
 
+
+    // Company系列のページのルーティング
     if(path==='/'){
         if(state==="signin"){
             return(
@@ -224,6 +227,19 @@ const Routings: FC<{path:string}> = ({path}) => {
         if(state==="signin"){
             return(
                 <FEEditProduct />
+            )
+        }
+        else if(state==="signout"){
+            return (
+                <Navigate to={`/account/signin_for_engineer/`} />
+            );
+        }
+    }
+
+    else if(path==="/engineer/edit_profile/"){
+        if(state==="signin"){
+            return(
+                <FEEditProfile />
             )
         }
         else if(state==="signout"){

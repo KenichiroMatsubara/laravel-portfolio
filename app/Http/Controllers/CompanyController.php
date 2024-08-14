@@ -111,7 +111,6 @@ class CompanyController extends Controller
             "company_using_stacks" => $company_using_stacks,
         ]);
     }
-
     public function update_company_account(Request $request)
     {
         $validated = $request->validate([

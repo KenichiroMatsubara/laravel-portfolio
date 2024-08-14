@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import Conma from '../components/Conma';
 import FESidebar from '../components/FESidebar';
 import Product from '../components/Product';
@@ -54,7 +54,7 @@ const FEHome = () => {
         <div className='flex'>
             <FESidebar />
             <div className='flex flex-col w-9/12'>
-                <div className='w-full py-5 border-b'>
+                <div className='w-full py-5 border-b flex justify-between items-center'>
                     <div className='flex'>
                         <div className='flex flex-col items-center justify-center'>
                             <img src='https://kohacu.com/wp-content/uploads/2018/06/kohacu.com_001312_20180615.png'
@@ -73,6 +73,13 @@ const FEHome = () => {
                             </div>
                         </div>
                     </div>
+                    <Link to={`${baseURL}/engineer/edit_profile/`}>
+                        <button
+                            className='mr-10 px-4 h-12 rounded bg-blue-500 text-white hover:bg-blue-300 duration-300'
+                        >
+                            アカウントを管理する
+                        </button>
+                    </Link>
                 </div>
                 {productIds.map((productId) => (
                     <Product key={Math.random()} productId={productId} />
