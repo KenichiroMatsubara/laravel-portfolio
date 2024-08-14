@@ -44,18 +44,18 @@ class PortfolioController extends Controller
         $validated = $request->validate([
             "name"=>"required",
             "engineer_id"=>"required|numeric",
-            "explain"=>"required",
-            "githubURL"=>"required",
-            "deployURL"=>"required",
+            "explain"=>"nullable",
+            "githubURL"=>"nullable",
+            "deployURL"=>"nullable",
             "using_stacks"=>"required|array",
             "using_stacks.*"=> "required|string"
         ]);
         $new_portfolio = Portfolio::create([
-            "name" => $validated["name"],
+            "name" => $validated["name"] ?? "blank",
             "engineer_id"=>$validated["engineer_id"],
-            "explain"=>$validated["explain"],
-            "githubURL"=>$validated["githubURL"],
-            "deployURL"=>$validated["deployURL"],
+            "explain"=>$validated["explain"] ?? "blank",
+            "githubURL"=>$validated["githubURL"] ?? "blank",
+            "deployURL"=>$validated["deployURL"] ?? "blank",
         ]);
         foreach($validated["using_stacks"] as $using_stack){
             $new_using_stack = PortfolioUsingStack::create([
