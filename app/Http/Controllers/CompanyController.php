@@ -125,18 +125,23 @@ class CompanyController extends Controller
             'stacks' => 'required|array',
         ]);
 
-        $company = Company::find($validated['id']);
-
         $update_data = [
+            "company_id" => $validated["id"],
             "name" => $validated['name'] ?? "blank",
-            "email" => $validated['email'] ?? "blank",
             "address" => $validated['address'] ?? "blank",
             "explain" => $validated['explain'] ?? "blank",
             "homepageURL" => $validated['homepageURL'] ?? "blank",
             "imgURL" => $request->file('file')->store('public/image/'),  // 'file' に変更
         ];
 
-        $company->update($update_data);
+        $company_profile = CompanyProfile::where("company_id",$validated["id"])->first();
+        if($company_profile){
+            $new_company_profile = $company_profile->update($update_data);
+        }
+        else {
+            $new_company_profile = CompanyProfile::create($update_data);
+        }
+
 
         // スタックを削除してから追加
         Company_Using_Stack::where("company_id", $validated["id"])->delete();
@@ -151,7 +156,7 @@ class CompanyController extends Controller
         $company_using_stacks = Company_Using_Stack::where("company_id", $validated["id"])->get();
 
         return response()->json([
-            "updated_data" => $company,
+            "updated_data" => $new_company_profile,
             "stacks" => $company_using_stacks,
         ]);
     }

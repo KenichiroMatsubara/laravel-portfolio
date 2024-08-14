@@ -6,7 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-
+use Nette\Utils\Random;
 
 class initSeeder extends Seeder
 {
@@ -19,50 +19,79 @@ class initSeeder extends Seeder
     {
         DB::table('engineers')->insert([
             [
-                'name' => Str::random(rand(5,15)),
                 'email' => 'test1@gmail.com',
                 'password' => p_hash(hash('sha256','abcdef')),
             ],
             [
-                'name' => Str::random(rand(5,15)),
                 'email' => 'test@2gmail.com',
                 'password' => p_hash(hash('sha256','abcdef')),
             ],
             [
-                'name' => Str::random(rand(5,15)),
                 'email' => 'test3@gmail.com',
                 'password' => p_hash(hash('sha256','abcdef')),
             ],
         ]);
 
 
+        DB::table('engineer_profiles')->insert([
+            [
+                "engineer_id" => 1,
+                "name" => Str::random(rand(5,10)),
+                "work_experience" => rand(0,10),
+            ],
+            [
+                "engineer_id" => 2,
+                "name" => Str::random(rand(5,10)),
+                "work_experience" => rand(0,10),
+            ],
+            [
+                "engineer_id" => 3,
+                "name" => Str::random(rand(5,10)),
+                "work_experience" => rand(0,10),
+            ],
+        ]);
+
+
         DB::table('companies')->insert([
             [
-                'name' => Str::random(rand(5,15)),
-                'address'=>"",
-                'explain'=>"",
-                'imgURL'=>"",
-                'homepageURL'=>"",
                 'email' => 'test1@gmail.com',
                 'password' => p_hash(hash('sha256','abcdef')),
             ],
             [
-                'name' => Str::random(rand(5,15)),
-                'address'=>"",
-                'explain'=>"",
-                'imgURL'=>"",
-                'homepageURL'=>"",
                 'email' => 'test2@gmail.com',
                 'password' => p_hash(hash('sha256','abcdef')),
             ],
             [
-                'name' => Str::random(rand(5,15)),
-                'address'=>"",
-                'explain'=>"",
-                'imgURL'=>"",
-                'homepageURL'=>"",
                 'email' => 'test3@gmail.com',
                 'password' => p_hash(hash('sha256','abcdef')),
+            ],
+        ]);
+
+
+        DB::table('company_profiles')->insert([
+            [
+                "company_id" => 1,
+                "name" => Str::random(rand(5,10)),
+                "address" => Str::createRandomStringsNormally(),
+                "explain" => Str::createRandomStringsNormally(),
+                "homepageURL" => "america",
+                "imgURL" => "america",
+            ],
+            [
+                "company_id" => 2,
+                "name" => Str::random(rand(5,10)),
+                "address" => Str::createRandomStringsNormally(),
+                "explain" => Str::createRandomStringsNormally(),
+                "homepageURL" => "america",
+                "imgURL" => "america",
+            ],
+            [
+                "company_id" => 3,
+                "name" => Str::random(rand(5,10)),
+                "address" => Str::createRandomStringsNormally(),
+                "explain" => Str::createRandomStringsNormally(),
+                "homepageURL" => "america",
+                "imgURL" => "america",
             ],
         ]);
 
