@@ -96,7 +96,7 @@ function App() {
 
 
                 <Route
-                    path="/test"
+                    path="/test/"
                     element={<Test />}
                 />
             </Routes>

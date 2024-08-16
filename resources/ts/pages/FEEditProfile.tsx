@@ -78,9 +78,9 @@ const FEEditProfile = () => {
     return (
         <div className='flex'>
             <FESidebar />
-            <form className='flex flex-col w-9/12 m-5' onSubmit={handleSubmit}>
+            <form className='flex flex-col w-9/12 gap-3 m-5' onSubmit={handleSubmit}>
                 <span className='mb-8 text-3xl text-orange-600 underline'>新しく制作物を追加する</span>
-                <div className='flex flex-col'>
+                <div className='flex flex-col gap-2'>
                     <span className='text-2xl'>名前</span>
                     <input
                         type="text"
@@ -89,7 +89,7 @@ const FEEditProfile = () => {
                         className='w-64 p-2 border border-gray-500 rounded '
                     />
                 </div>
-                <div className='flex flex-col'>
+                <div className='flex flex-col gap-2'>
                     <span className='text-2xl'>実務経験</span>
                     <input
                         type="number"
@@ -98,7 +98,7 @@ const FEEditProfile = () => {
                         className='w-64 p-2 border border-gray-500 rounded '
                     />
                 </div>
-                <div className='flex flex-col'>
+                <div className='flex flex-col gap-1 text-lg'>
                     <span className='mt-2 text-2xl'>使用技術一覧</span>
                     {stacks.length!==0 ?
                         <Conma Array={stacks} />
@@ -110,7 +110,7 @@ const FEEditProfile = () => {
                         placeholder='新たにあなたの得意な技術を入力してください'
                     />
                 </div>
-                <div className='flex flex-col'>
+                <div className='flex flex-col gap-1 text-lg'>
                     <span className='mt-2 text-2xl'>勤務希望地</span>
                     {stacks.length!==0 ?
                         <Conma Array={stacks} />
