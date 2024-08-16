@@ -118,16 +118,18 @@ const FESignIn = () => {
                 <span className='mb-5 text-xl font-bold'>エンジニア</span>
                 <form onSubmit={handleSubmit} className='flex flex-col mb-5'>
                     <input
-                        type="text"
+                        type="email"
                         ref={email}
                         placeholder='email'
                         className='px-2 py-1 mb-5 rounded'
+                        defaultValue={"test1@gmail.com"}
                     />
                     <input
                         type="password"
                         ref={password}
                         placeholder='password'
                         className='px-2 py-1 mb-5 rounded'
+                        defaultValue={"abcdef"}
                     />
                     <input
                         type="submit"

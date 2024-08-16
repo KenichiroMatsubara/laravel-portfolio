@@ -104,7 +104,7 @@ class EngineerController extends Controller
             'engineer_id' => 'required',
         ]);
 
-        $engineer = Engineer::find($validated['id']);
+        $engineer = Engineer::find($validated['engineer_id']);
         $engineer_profile = EngineerProfile::where("engineer_id",$validated["engineer_id"])->first();
         $engineer_want_work_ats = EngineerWantWorkAt::where("engineer_id",$validated["engineer_id"])->get();
         $engineer_good_ats = EngineerGoodAt::where("engineer_id",$validated["engineer_id"])->get();
@@ -123,8 +123,8 @@ class EngineerController extends Controller
             'id' => 'required|numeric',
             'name' => 'required',
             'work_experience' => 'required|numeric',
-            'stacks' => 'required',
-            'want_work_ats' => 'required'
+            'stacks' => 'nullable|array',
+            'want_work_ats' => 'nullable|array'
         ]);
 
         $engineer = Engineer::find($validated['id']);
@@ -140,6 +140,7 @@ class EngineerController extends Controller
         else {
             $new_engieer_profile = EngineerProfile::create($update_data);
         }
+        $new_engieer_profile = EngineerProfile::where("engineer_id",$validated["id"])->first();
         // エンジニアの得意技術、働きたい場所をすべて取ってきていったん消す
         $engineer_good_ats = EngineerGoodAt::where("engineer_id",$validated["id"])->get();
         $engineer_want_work_ats = EngineerWantWorkAt::where("engineer_id",$validated["id"])->get();
@@ -149,19 +150,19 @@ class EngineerController extends Controller
 
         foreach ($validated["stacks"] as $stack) {
             EngineerGoodAt::create([
-                "engineer_id" => $engineer->id,
+                "engineer_id" => $validated["id"],
                 "stack"=>$stack,
             ]);
         }
         foreach ($validated["want_work_ats"] as $want_work_at) {
             EngineerWantWorkAt::create([
-                "engineer_id" => $engineer->id,
+                "engineer_id" => $validated["id"],
                 "place"=>$want_work_at,
             ]);
         }
         return response()->json([
-            "name"=>$engineer->name,
-            "engineer_want_to_work_ats" => $engineer_want_work_ats,
+            "new_engieer_profile"=>$new_engieer_profile,
+            "engineer_want_work_ats" => $engineer_want_work_ats,
             "engineer_good_ats"=>$engineer_good_ats,
         ]);
     }

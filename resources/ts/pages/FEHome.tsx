@@ -12,10 +12,9 @@ const FEHome = () => {
 
     const [engineerName,setEngineerName] = useState<string>("");
 
-    const year: number = 0;
-    const [user,setUser] = useState<{id: number,token: string}>({id:0,token:""});
+    const [workExperience,setWorkExperience] = useState<number>(0);
     const [langs,setLangs] = useState<string[]>(["未設定"]);
-    const [places,setPlacess] = useState<string[]>(["未設定"]);
+    const [places,setPlaces] = useState<string[]>(["未設定"]);
     const engineerId: number = 1;
     const [productIds,setProductIds] = useState<number[]>([]);
 
@@ -29,7 +28,6 @@ const FEHome = () => {
             try {
                 const response = await axios.post(`${baseURL}/api/get_portfolio_ids`,sendData);
                 setProductIds(response.data.product_ids);
-                console.log(response);
             } catch (error) {
                 console.log(error);
             }
@@ -41,8 +39,21 @@ const FEHome = () => {
             }
             try {
                 const response = await axios.post(`${baseURL}/api/get_engineer_info`,sendData);
-
-                console.log(response);
+                setWorkExperience(response.data.engineer_profile.work_experience);
+                setEngineerName(response.data.engineer_profile.name);
+                const newLangs: string[] = [];
+                const newPlaces: string[] = [];
+                response.data.engineer_good_ats.forEach((element, index) => {
+                    newLangs.push(element.stack);
+                })
+                response.data.engineer_want_work_ats.forEach((element, index) => {
+                    newPlaces.push(element.place);
+                })
+                setLangs(newLangs);
+                setPlaces(newPlaces);
+                console.log(response.data);
+                console.log(response.data.engineer_good_ats);
+                console.log(response.data.engineer_want_work_ats);
             } catch (error) {
                 console.log(error);
             }
@@ -54,7 +65,7 @@ const FEHome = () => {
         <div className='flex'>
             <FESidebar />
             <div className='flex flex-col w-9/12'>
-                <div className='w-full py-5 border-b flex justify-between items-center'>
+                <div className='flex items-center justify-between w-full py-5 border-b'>
                     <div className='flex'>
                         <div className='flex flex-col items-center justify-center'>
                             <img src='https://kohacu.com/wp-content/uploads/2018/06/kohacu.com_001312_20180615.png'
@@ -64,7 +75,7 @@ const FEHome = () => {
                         </div>
                         <div className=''>
                             <div className='flex flex-col ml-10'>
-                                <span>実務経験{year}年</span>
+                                <span>実務経験{workExperience}年</span>
                                 <span>得意言語・フレームワーク</span>
                                 <Conma Array={langs} />
                                 <span>希望勤務地　<Conma Array={places} /></span>
@@ -75,7 +86,7 @@ const FEHome = () => {
                     </div>
                     <Link to={`${baseURL}/engineer/edit_profile/`}>
                         <button
-                            className='mr-10 px-4 h-12 rounded bg-blue-500 text-white hover:bg-blue-300 duration-300'
+                            className='h-12 px-4 mr-10 text-white duration-300 bg-blue-500 rounded hover:bg-blue-300'
                         >
                             アカウントを管理する
                         </button>

@@ -40,8 +40,6 @@ const Product: FC<ProductProps> = ({productId}) => {
             }
             try {
                 const response = await axios.post(`${baseURL}/api/destroy_portfolio`,sendData);
-                console.log(sendData);
-                console.log(response.data);
                 window.location.reload();
             } catch (error) {
                 console.log(sendData);
@@ -60,21 +58,16 @@ const Product: FC<ProductProps> = ({productId}) => {
             const sendData = {
                 portfolio_id: productId,
             };
-            console.log({sendData});
             try {
                 const response = await axios.post(`${baseURL}/api/get_portfolio_info`,sendData);
-                console.log(response);
                 const newProductInfo = {
                     name: response.data.portfolio.name,
                     explain: response.data.portfolio.explain,
                     githubURL: response.data.portfolio.githubURL,
                     deployURL: response.data.portfolio.deployURL,
                 };
-                console.log(newProductInfo);
                 let newStacks = ""
                 response.data.stacks.forEach((stack,index) => {
-                    console.log(newStacks);
-                    console.log(stack.stack);
                     if(index === 0) {
                         newStacks = stack.stack;
                     }
@@ -83,7 +76,6 @@ const Product: FC<ProductProps> = ({productId}) => {
                     }
                 });
                 setStacks(newStacks);
-                console.log(newProductInfo);
                 setProductInfo(newProductInfo);
             } catch (error) {
                 console.log(error);
@@ -95,7 +87,7 @@ const Product: FC<ProductProps> = ({productId}) => {
     if(productInfo){
     return (
             <div className='flex w-full p-5 border-b'>
-                <div className='flex flex-col gap-1 w-3/12'>
+                <div className='flex flex-col w-3/12 gap-1'>
                     <span>{productInfo.name}</span>
                     <div>
                         <span>使用技術</span>
@@ -108,22 +100,22 @@ const Product: FC<ProductProps> = ({productId}) => {
                         <p><a href={productInfo.deployURL}>deployURL</a></p>
                     </div>
                 </div>
-                <div className='break-words whitespace-pre-wrap w-8/12 px-5'>
+                <div className='w-8/12 px-5 break-words whitespace-pre-wrap'>
                     {productInfo.explain}
                 </div>
                 <MoreVertIcon
-                    className='w-1/12 hover:text-gray-600 duration-300 cursor-pointer'
+                    className='w-1/12 duration-300 cursor-pointer hover:text-gray-600'
                     onClick={() => handleClickMoreIcon()}
                 />
                 {/* TODOあとでポートフォリオの変種機能をつけておく　削除はそのままボタン一つでできるようにして、更新はFEMakeNewを利用して作れば行ける */}
                 {(onModal===true) &&
-                <div className='absolute right-10 flex flex-col bg-white w-32 border border-gray-600 z-10'>
+                <div className='absolute z-10 flex flex-col w-32 bg-white border border-gray-600 right-10'>
                     <CloseIcon
-                        className='absolute top-0 right-0 bg-red-500 text-white p-1 hover:bg-red-300 duration-300 cursor-pointer'
+                        className='absolute top-0 right-0 p-1 text-white duration-300 bg-red-500 cursor-pointer hover:bg-red-300'
                         onClick={() => handleCloseModal()}
                     />
                     <div
-                        className='flex gap-3 mt-8 ml-3 hover:text-gray-500 duration-300 cursor-pointer'
+                        className='flex gap-3 mt-8 ml-3 duration-300 cursor-pointer hover:text-gray-500'
                         onClick={() => handleDelete("none")}
                     >
                         <DeleteIcon />
@@ -131,23 +123,23 @@ const Product: FC<ProductProps> = ({productId}) => {
                     </div>
                     <Link
                         to={`${baseURL}/engineer/edit_portfolio/${productId}`}
-                        className='flex gap-3 mt-3 ml-3 mb-3 hover:text-gray-500 duration-300 cursor-pointer'
+                        className='flex gap-3 mt-3 mb-3 ml-3 duration-300 cursor-pointer hover:text-gray-500'
                     >
                         <EditIcon />
                         <span>編集する</span>
                     </Link>
                     {deleteConfirmation===true &&
-                    <div className='flex flex-col gap-2 p-3 absolute top-5 right-3 w-48 items-center bg-white border border-gray-600 z-20'>
+                    <div className='absolute z-20 flex flex-col items-center w-48 gap-2 p-3 bg-white border border-gray-600 top-5 right-3'>
                         <span>本当に削除しますか？</span>
                         <div className='flex gap-3'>
                             <button
-                                className='hover:text-gray-500 duration-300'
+                                className='duration-300 hover:text-gray-500'
                                 onClick={() => handleDelete("yes")}
                             >
                                 はい
                             </button>
                             <button
-                                className='hover:text-gray-500 duration-300'
+                                className='duration-300 hover:text-gray-500'
                                 onClick={() => handleDelete("no")}
                             >
                                 いいえ

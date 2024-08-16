@@ -23,6 +23,7 @@ const MultiInputFiled: FC<MultiInputFieldProps> = ({array, setArray,placeholder}
             const newArray = [...array];
             newArray.push(newElement);
             setArray(newArray);
+            setNewElement("");
         }
     }
     return (
@@ -41,7 +42,7 @@ const MultiInputFiled: FC<MultiInputFieldProps> = ({array, setArray,placeholder}
                     </div>
                 ))}
             </div>
-            <div className='flex items-start gap-5 mt-10'>
+            <div className='flex items-start gap-5 mt-5'>
                 <div className='flex flex-col items-center justify-center'>
                     <input
                         type="text" placeholder={placeholder} value={newElement} onChange={(e) => setNewElement(e.target.value)}

@@ -18,7 +18,7 @@ class TestController extends Controller
         $engineer = Engineer::all();
         return response()->json([
             "engineer"=>$engineer,
-            "result"=>"test success"
+            "result"=>"test success!!"
         ]);
     }
     public function req_test(Request $request)
