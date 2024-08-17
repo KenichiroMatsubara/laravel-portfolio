@@ -85,4 +85,71 @@ if (!(
             return false;
         }
     }
+    // JSONをBase64化
+    function json_to_b64($data)
+    {
+        return base64_encode(json_encode($data));
+    }
+    // Base64を扱いやすいJSONデータに変換
+    function b64_to_json($data)
+    {
+        return json_decode(base64_decode($data),true);
+    }
+    // 署名関数
+    function sign($data,$algo)
+    {
+        $secret = getenv("SECRET");
+        if($algo=="HS256"){
+            return base64_encode(hash_hmac("sha256",$data,$secret,true));
+        }
+    }
+    function make_jwt($role,$id,$token_id)
+    {
+        $header = [
+            "alg"=>"HS256",
+            "typ"=>"JWT",
+        ];
+        $payload = [
+            "id"=>$id,
+            "tid"=>$token_id,
+            "role"=>$role,
+            'iat'=>time(),
+            'exp'=>time()+3600,//有効期限は１時間
+        ];
+        $b64Header = json_to_b64($header);
+        $b64Payload = json_to_b64($payload);
+
+        $signature = sign($b64Header . "." . $b64Payload,$header['alg']);
+        $jwt = $b64Header . "." . $b64Payload . "." . $signature;
+        return $jwt;
+    }
+    // トークンが有効期限内のものであるかや、それが誰のトークンなのかなど様々な確認をする
+    function check_token($jwt)
+    {
+        $tokenParts = explode('.', $jwt);
+        $b64Header = $tokenParts[0];
+        $b64Payload = $tokenParts[1];
+        $signature = $tokenParts[2];
+        // トークンの改ざんを検知
+        if(sign($b64Header.".".$b64Payload,b64_to_json($b64Header)["alg"])!=$signature){
+            return [
+                "result"=>false,
+            ];
+        }
+        // トークンの期限を確認
+        else if(b64_to_json($b64Payload)["exp"]<time()){
+            return [
+                "result"=>false,
+            ];
+        }
+        // トークンに含まれる情報を確認
+        else{
+            return [
+                "result"=>true,
+                "payload"=>b64_to_json($b64Payload),
+                "user_type"=>b64_to_json($b64Payload)["role"],
+                "id"=>b64_to_json($b64Payload)["id"],
+            ];
+        }
+    }
 }
