@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Engineer;
 use App\Models\EngineerGoodAt;
-use App\Models\EngineerToken;
 use App\Models\EngineerWantWorkAt;
 use App\Models\EngineerProfile;
 use App\Models\Portfolio;
+use App\Models\Token;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 
@@ -23,8 +23,14 @@ class EngineerController extends Controller
             "email" => $validated['email'],
             "password" => p_hash($validated['password']),
         ]);
+        $new_token = Token::create([
+            "role"=>"engineer_user",
+            "user_id"=>$new_engineer->id,
+            "expired"=>false,
+        ]);
         return response()->json([
-            "new engineer"=>$new_engineer
+            "new_account"=>$new_engineer,
+            "JWT token"=>make_jwt($new_token->role,$new_token->user_id,$new_token->id),
         ]);
     }
 
@@ -38,28 +44,28 @@ class EngineerController extends Controller
         $engineer = Engineer::where("email", $validated['email'])->first();
         // パスワード認証
         if (p_compare_password($validated['password'], $engineer->password)) {
-            if ($validated['autoSignin']==true) {
-                // ３０日以上前に作られたトークンを削除
-                EngineerToken::where("created_at","<",now()->subDays(30))->delete();
+            if($validated["autoSignin"]==true){
                 // 新たにトークンを発行
-                $token = EngineerToken::create([
-                    "token"=>make_token(),
-                    "engineer_id" => $engineer->id,
+                $new_token = Token::create([
+                    "role"=>"engineer_user",
+                    "user_id"=>$engineer->id,
+                    "expired"=>false,
                 ]);
+
                 return response()->json([
-                    "result" => "pass",
-                    "token" => $token->token,
-                    "id"=>$engineer->id,
-                    "email" => $engineer->email
+                    "result"=>"pass",
+                    "token"=>make_jwt($new_token->role,$new_token->user_id,$new_token->id),
+                    "email" => $engineer->email,
+                    "data"=>$engineer,
                 ]);
             }
-            // オートログインなし
+            // オートログインをしないとき
             else {
                 return response()->json([
                     "result" => "pass",
                     "email" => $engineer->email,
                     "token" => "none",
-                    "id"=>$engineer->id
+                    "id" => $engineer->id,
                 ]);
             }
         }
@@ -76,27 +82,20 @@ class EngineerController extends Controller
             'email' => 'required',
             'token' => 'required',
         ]);
-        // ３０日以上前に作られたトークンを削除
-        EngineerToken::where("created_at","<",now()->subDays(30))->delete();
-        $engineer = Engineer::where("email",$validated["email"])->first();
-        $tokens = EngineerToken::where("engineer_id",$engineer->id)->get();
-        foreach($tokens as $token){
-            if ($token->token == $validated['token']) {
-                // $token->update([
-                //     "token" => make_token(),
-                // ]);
 
-                return response()->json([
-                    "result" => "pass",
-                    "token" => $token->token,
-                    "id"=>$engineer->id,
-                ]);
-            }
+        if(check_token($validated["token"])["result"]==true){
+            return response()->json([
+                "result"=>"pass",
+                "id"=>check_token($validated["token"])["id"],
+                "token"=>$validated["token"]
+            ]);
         }
-        return response()->json([
-            "result" => false,
-            "message" => "token auth failed",
-        ],404);
+        else {
+            return response()->json([
+                "result" => false,
+                "message" => "token auth failed",
+            ],401);
+        }
     }
     public function get_engineer_info(Request $request)
     {

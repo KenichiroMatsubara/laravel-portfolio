@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('tokens', function (Blueprint $table) {
             $table->id();
-            $table->integer("token_id");
             $table->string("role");
             $table->integer("user_id");
             $table->boolean("expired");

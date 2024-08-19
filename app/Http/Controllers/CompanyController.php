@@ -5,6 +5,7 @@ use App\Models\Company;
 use App\Models\CompanyToken;
 use App\Models\CompanyUsingStack;
 use App\Models\CompanyProfile;
+use App\Models\Token;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
@@ -20,8 +21,14 @@ class CompanyController extends Controller
             "email" => $validated['email'],
             "password" => p_hash($validated['password']),
         ]);
+        $new_token = Token::create([
+            "role"=>"company_user",
+            "user_id"=>$new_company->id,
+            "expired"=>false,
+        ]);
         return response()->json([
             "new_account"=>$new_company,
+            "JWT token"=>make_jwt($new_token->role,$new_token->user_id,$new_token->id),
         ]);
     }
 
@@ -36,16 +43,16 @@ class CompanyController extends Controller
         // パスワード認証
         if (p_compare_password($validated['password'], $company->password)) {
             if($validated["autoSignin"]==true){
-                // ３０日以上前に作られたトークンを削除
-                CompanyToken::where("created_at","<",now()->subDays(30))->delete();
                 // 新たにトークンを発行
-                $token = CompanyToken::create([
-                    "token"=>make_token(),
-                    "company_id" => $company->id,
+                $new_token = Token::create([
+                    "role"=>"company_user",
+                    "user_id"=>$company->id,
+                    "expired"=>false,
                 ]);
+
                 return response()->json([
                     "result"=>"pass",
-                    "token"=>$token->token,
+                    "token"=>make_jwt($new_token->role,$new_token->user_id,$new_token->id),
                     "email" => $company->email,
                     "data"=>$company,
                 ]);
@@ -73,29 +80,20 @@ class CompanyController extends Controller
             'email' => 'required',
             'token' => 'required',
         ]);
-        // ３０日以上前に作られたトークンを削除
-        CompanyToken::where("created_at","<",now()->subDays(30))->delete();
 
-
-        $company = Company::where("email",$validated["email"])->first();
-        $tokens = CompanyToken::where("company_id",$company->id)->get();
-        foreach ($tokens as $token) {
-            if ($token->token == $validated['token']) {
-                // $token->update([
-                //     "token" => make_token(),
-                // ]);
-
-                return response()->json([
-                    "result" => "pass",
-                    "id" => $company->id,
-                    "token" => $token->token,
-                ]);
-            }
+        if(check_token($validated["token"])["result"]==true){
+            return response()->json([
+                "result"=>"pass",
+                "id"=>check_token($validated["token"])["id"],
+                "token"=>$validated["token"]
+            ]);
         }
-        return response()->json([
-            "result" => false,
-            "messages"=>"failed signin company account by token",
-        ],404);
+        else {
+            return response()->json([
+                "result" => false,
+                "messages"=>"failed signin company account by token",
+            ],401);
+        }
     }
     public function get_company_info(Request $request)
     {

@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Http\Request;
+
 if (!(
     function_exists("randstr")
     || function_exists("make_token")
@@ -103,18 +105,18 @@ if (!(
             return base64_encode(hash_hmac("sha256",$data,$secret,true));
         }
     }
-    function make_jwt($role,$id,$token_id)
+    function make_jwt($role,$uid,$token_id)
     {
         $header = [
             "alg"=>"HS256",
             "typ"=>"JWT",
         ];
         $payload = [
-            "id"=>$id,
+            "uid"=>$uid,
             "tid"=>$token_id,
             "role"=>$role,
             'iat'=>time(),
-            'exp'=>time()+3600,//有効期限は１時間
+            'exp'=>time()+3600*24,//有効期限は1日
         ];
         $b64Header = json_to_b64($header);
         $b64Payload = json_to_b64($payload);
@@ -131,15 +133,19 @@ if (!(
         $b64Payload = $tokenParts[1];
         $signature = $tokenParts[2];
         // トークンの改ざんを検知
-        if(sign($b64Header.".".$b64Payload,b64_to_json($b64Header)["alg"])!=$signature){
+        if(sign($b64Header . "." . $b64Payload,"HS256")!=$signature){
             return [
                 "result"=>false,
+                "messages"=>"sign is falied",
+                "signature" => $signature,
+                "signature2"=>sign($b64Header . "." . $b64Payload,"HS256")
             ];
         }
         // トークンの期限を確認
         else if(b64_to_json($b64Payload)["exp"]<time()){
             return [
                 "result"=>false,
+                "messages"=>"token is not valid"
             ];
         }
         // トークンに含まれる情報を確認
@@ -148,8 +154,19 @@ if (!(
                 "result"=>true,
                 "payload"=>b64_to_json($b64Payload),
                 "user_type"=>b64_to_json($b64Payload)["role"],
-                "id"=>b64_to_json($b64Payload)["id"],
+                "id"=>b64_to_json($b64Payload)["uid"],
             ];
+        }
+    }
+    // ヘッダーに含まれるトークンの正当性を確認
+    function headerIsValid(Request $request)
+    {
+        $jwt_token = $request->header('JWT_TOKEN');
+        if(check_token($jwt_token)["result"]==true){
+            return true;
+        }
+        else{
+            return false;
         }
     }
 }
