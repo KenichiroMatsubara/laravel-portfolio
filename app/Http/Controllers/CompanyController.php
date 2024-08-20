@@ -24,7 +24,7 @@ class CompanyController extends Controller
         $new_token = Token::create([
             "role"=>"company_user",
             "user_id"=>$new_company->id,
-            "expired"=>false,
+            "expired"=>time()+3600*24*365,
         ]);
         return response()->json([
             "new_account"=>$new_company,

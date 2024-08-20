@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string("role");
             $table->integer("user_id");
-            $table->boolean("expired");
+            $table->integer("expired");
             $table->timestamps();
         });
     }

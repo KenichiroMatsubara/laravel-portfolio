@@ -12,6 +12,6 @@ class Token extends Model
     protected $fillable = [
         "role",
         "user_id",
-        "expired"
+        "expired",
     ];
 }
