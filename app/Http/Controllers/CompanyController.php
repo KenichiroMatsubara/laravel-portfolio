@@ -130,7 +130,7 @@ class CompanyController extends Controller
             "address" => $validated['address'] ?? "blank",
             "explain" => $validated['explain'] ?? "blank",
             "homepageURL" => $validated['homepageURL'] ?? "blank",
-            "imgURL" => $request->file('file')->store('public/image/'),  // 'file' に変更
+            "imgURL" => $request->file('img')->store('public/image/'),  // 'file' に変更
         ];
 
         $company_profile = CompanyProfile::where("company_id",$validated["id"])->first();

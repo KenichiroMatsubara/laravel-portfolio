@@ -18,7 +18,6 @@ const initStacks = {
 
 const EditHome = () => {
     const [stacks,setStacks] = useState<Stacks>(initStacks);
-    const [imgTitle,setImgTitle] = useState<string>();
     const [img,setImg] = useState<any>();
 
     const sampleProfileData:companyProfile = {
@@ -34,12 +33,11 @@ const EditHome = () => {
     const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault();
         const form = new FormData(e.currentTarget);
-        const title: FormDataEntryValue = form.get("title") || "";
+        const name: FormDataEntryValue = form.get("name") || "";
         const explain: FormDataEntryValue = form.get("explain") || "";
         const githubURL: FormDataEntryValue = form.get("githubURL") || "";
         const deployURL: FormDataEntryValue = form.get("deployURL") || "";
         const file:FormData = new FormData();
-        file.append("title",imgTitle || "");
         file.append("img",img[0]);
     }
 
@@ -59,7 +57,7 @@ const EditHome = () => {
                     <span className='text-2xl'>会社名</span>
                     <input
                         type="text"
-                        name='title'
+                        name='name'
                         className='w-64 p-2 border border-gray-500 rounded '
                     />
                 </div>
@@ -105,7 +103,6 @@ const EditHome = () => {
                     </div>
                 </div>
                 <div>
-                    <input type="text" placeholder="写真のタイトル" onChange={(e) => setImgTitle(e.target.value)} />
                     <input accept="image/*" multiple type="file" onChange={(e) => setImg(e.target.value)} />
                 </div>
                 <input
