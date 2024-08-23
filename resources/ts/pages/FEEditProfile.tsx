@@ -7,7 +7,7 @@ import MultiInputFiled from '../components/MultiInputFiled';
 
 
 const FEEditProfile = () => {
-    const { userContext: { id } } = useUserContext();
+    const { userContext: { userType,id,token,state } } = useUserContext();
     const baseURL:string = useContext(BaseURLContext);
 
     const [name, setName] = useState<string>("");
@@ -19,11 +19,12 @@ const FEEditProfile = () => {
     useEffect(() => {
         const getEngineerInfo = async () => {
             const sendData = {
-                "engineer_id": Number(id),
+                "engineer_id": id,
             }
             try {
                 const response = await axios.post(`${baseURL}/api/get_engineer_info`,sendData);
                 setName(response.data.engineer_profile.name);
+                console.log(response.data);
                 setWorkExperience(response.data.engineer_profile.work_experience);
                 const newStacks = [...stacks];
                 response.data.engineer_good_ats.forEach(stack => {
@@ -35,7 +36,6 @@ const FEEditProfile = () => {
                     newWantWorkAts.push(place.place);
                 });
                 setWantWorkAts(newWantWorkAts);
-                console.log(response.data);
             } catch (error) {
                 console.log(sendData);
                 console.log(error);

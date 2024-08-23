@@ -27,6 +27,7 @@ class EngineerController extends Controller
             "role"=>"engineer_user",
             "user_id"=>$new_engineer->id,
             "expired"=>time()+3600*24*365,
+            "salt"=>randstr(20),
         ]);
         return response()->json([
             "new_account"=>$new_engineer,
@@ -49,7 +50,8 @@ class EngineerController extends Controller
                 $new_token = Token::create([
                     "role"=>"engineer_user",
                     "user_id"=>$engineer->id,
-                    "expired"=>false,
+                    "expired"=>time()+3600*24*365,
+                    "salt"=>randstr(20),
                 ]);
 
                 return response()->json([

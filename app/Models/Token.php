@@ -13,5 +13,6 @@ class Token extends Model
         "role",
         "user_id",
         "expired",
+        "salt",
     ];
 }

@@ -43,22 +43,23 @@ const FEHome = () => {
                 setEngineerName(response.data.engineer_profile.name);
                 const newLangs: string[] = [];
                 const newPlaces: string[] = [];
-                response.data.engineer_good_ats.forEach((element, index) => {
+                response.data.engineer_good_ats.forEach((element) => {
                     newLangs.push(element.stack);
                 })
-                response.data.engineer_want_work_ats.forEach((element, index) => {
+                response.data.engineer_want_work_ats.forEach((element) => {
                     newPlaces.push(element.place);
                 })
                 setLangs(newLangs);
                 setPlaces(newPlaces);
+                console.log(sendData);
                 console.log(response.data);
-                console.log(response.data.engineer_good_ats);
-                console.log(response.data.engineer_want_work_ats);
             } catch (error) {
                 console.log(error);
             }
         };
         getEngineerInfo();
+        console.log(langs);
+        console.log(places);
     },[]);
 
     return (
@@ -76,9 +77,8 @@ const FEHome = () => {
                         <div className=''>
                             <div className='flex flex-col ml-10'>
                                 <span>実務経験{workExperience}年</span>
-                                <span>得意言語・フレームワーク</span>
-                                <Conma Array={langs} />
-                                <span>希望勤務地　<Conma Array={places} /></span>
+                                <span>得意言語・フレームワーク　{langs.length===0 ? "未設定" :<Conma Array={langs} />}</span>
+                                <span>希望勤務地　{langs.length===0 ? "未設定" :<Conma Array={places} />}</span>
                             </div>
                             <div className='flex flex-col ml-10'>
                             </div>

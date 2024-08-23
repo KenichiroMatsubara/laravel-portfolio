@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Token;
 use Illuminate\Http\Request;
 
 if (!(
@@ -98,9 +99,9 @@ if (!(
         return json_decode(base64_decode($data),true);
     }
     // 署名関数
-    function sign($data,$algo)
+    function sign($data,$algo,$salt)
     {
-        $secret = getenv("SECRET");
+        $secret = hash("sha256",$salt.getenv("SECRET"));
         if($algo=="HS256"){
             return base64_encode(hash_hmac("sha256",$data,$secret,true));
         }
@@ -120,8 +121,9 @@ if (!(
         ];
         $b64Header = json_to_b64($header);
         $b64Payload = json_to_b64($payload);
+        $salt = Token::find($token_id);
 
-        $signature = sign($b64Header . "." . $b64Payload,$header['alg']);
+        $signature = sign($b64Header . "." . $b64Payload,$header['alg'],$salt);
         $jwt = $b64Header . "." . $b64Payload . "." . $signature;
         return $jwt;
     }
@@ -132,20 +134,21 @@ if (!(
         $b64Header = $tokenParts[0];
         $b64Payload = $tokenParts[1];
         $signature = $tokenParts[2];
+        $salt = Token::find(b64_to_json($b64Payload)["tid"]);
         // トークンの改ざんを検知
-        if(sign($b64Header . "." . $b64Payload,"HS256")!=$signature){
+        if(sign($b64Header . "." . $b64Payload,"HS256",$salt)!=$signature){
             return [
                 "result"=>false,
                 "messages"=>"sign is falied",
                 "signature" => $signature,
-                "signature2"=>sign($b64Header . "." . $b64Payload,"HS256")
+                "signature2"=>sign($b64Header . "." . $b64Payload,"HS256",$salt)
             ];
         }
         // トークンの期限を確認
         else if(b64_to_json($b64Payload)["exp"]<time()){
             return [
                 "result"=>false,
-                "messages"=>"token is not valid"
+                "messages"=>"token is expired"
             ];
         }
         // トークンに含まれる情報を確認
