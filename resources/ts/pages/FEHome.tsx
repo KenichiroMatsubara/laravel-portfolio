@@ -15,15 +15,14 @@ const FEHome = () => {
     const [workExperience,setWorkExperience] = useState<number>(0);
     const [langs,setLangs] = useState<string[]>(["未設定"]);
     const [places,setPlaces] = useState<string[]>(["未設定"]);
-    const engineerId: number = 1;
     const [productIds,setProductIds] = useState<number[]>([]);
-
     const baseURL: string = useContext(BaseURLContext);
+
 
     useEffect(() => {
         const getPortfolios = async() => {
             const sendData = {
-                "engineer_id": engineerId
+                "engineer_id": id
             };
             try {
                 const response = await axios.post(`${baseURL}/api/get_portfolio_ids`,sendData);
@@ -35,7 +34,7 @@ const FEHome = () => {
         getPortfolios();
         const getEngineerInfo = async() => {
             const sendData = {
-                "engineer_id": engineerId
+                "engineer_id": id
             }
             try {
                 const response = await axios.post(`${baseURL}/api/get_engineer_info`,sendData);

@@ -21,7 +21,7 @@ $test = "App\Http\Controllers\TestController@";
 $engineer = "App\Http\Controllers\EngineerController@";
 $company = "App\Http\Controllers\CompanyController@";
 $chat = "App\Http\Controllers\ChatController@";
-$favorite = "App\Http\Controllers\Favorite_From_Company_Controller@";
+$favorite = "App\Http\Controllers\FavoriteController@";
 $portfolio = "App\Http\Controllers\PortfolioController@";
 
 Route::get("/",$test."test");
@@ -50,10 +50,14 @@ Route::post("/get_company_id_by_engineer_id",$chat."get_company_id_by_engineer_i
 Route::post("/get_engineer_id_by_company_id",$chat."get_engineer_id_by_company_id");
 Route::post("/get_chat",$chat."get_chat");
 
-Route::post("/on_favorite",$favorite."on_favorite");
-Route::post("/off_favorite",$favorite."off_favorite");
-Route::post("/get_favorite_from_company",$favorite."get_favorite_from_company");
-Route::post("/get_engineer_company_favorite",$favorite."get_engineer_company_favorite");
+Route::post("/create_favorite",$favorite."create_favorite");
+Route::post("/destroy_favorite",$favorite."destroy_favorite");
+Route::post("/get_engineer_favorited_company_info",$favorite."get_engineer_favorited_company_info");
+Route::post("/get_company_favorited_engineer_info",$favorite."get_company_favorited_engineer_info");
+Route::post("/get_engineer_favorited_by_company_info",$favorite."get_engineer_favorited_by_company_info");
+Route::post("/get_company_favorited_by_engineer_info",$favorite."get_company_favorited_by_engineer_info");
+
+
 
 Route::post("/get_portfolio_info",$portfolio."get_portfolio_info");
 Route::post("/get_portfolio_ids",$portfolio."get_portfolio_ids");

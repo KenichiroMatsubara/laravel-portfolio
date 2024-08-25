@@ -15,15 +15,6 @@ class Company extends Model
     protected $hidden = [
         'password',
     ];
-
-    public function company_tokens()
-    {
-        return $this->hasMany(CompanyToken::class);
-    }
-    public function favorite_from_companies()
-    {
-        return $this->hasMany(FavoriteFromCompany::class);
-    }
     public function company_using_stacks()
     {
         return $this->hasMany(CompanyUsingStack::class);
@@ -31,5 +22,9 @@ class Company extends Model
     public function chats()
     {
         return $this->hasMany(Chat::class);
+    }
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
     }
 }

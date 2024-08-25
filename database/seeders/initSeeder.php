@@ -23,7 +23,7 @@ class initSeeder extends Seeder
                 'password' => p_hash(hash('sha256','abcdef')),
             ],
             [
-                'email' => 'test@2gmail.com',
+                'email' => 'test2@gmail.com',
                 'password' => p_hash(hash('sha256','abcdef')),
             ],
             [
@@ -100,37 +100,37 @@ class initSeeder extends Seeder
             [
                 'company_id' => 1,
                 'engineer_id' => 1,
-                'type' => 'FromEngineerToCompany',
+                'type' => 'e_to_c',
                 'text' => Str::random(rand(10,20)),
             ],
             [
                 'company_id' => 1,
                 'engineer_id' => 1,
-                'type' => 'FromEngineerToCompany',
+                'type' => 'e_to_c',
                 'text' => Str::random(rand(10,20)),
             ],
             [
                 'company_id' => 1,
                 'engineer_id' => 1,
-                'type' => 'FromCompanyToEngineer',
+                'type' => 'c_to_e',
                 'text' => Str::random(rand(10,20)),
             ],
             [
                 'company_id' => 2,
                 'engineer_id' => 2,
-                'type' => 'FromEngineerToCompany',
+                'type' => 'e_to_c',
                 'text' => Str::random(rand(10,20)),
             ],
             [
                 'company_id' => 2,
                 'engineer_id' => 2,
-                'type' => 'FromEngineerToCompany',
+                'type' => 'e_to_c',
                 'text' => Str::random(rand(10,20)),
             ],
             [
                 'company_id' => 2,
                 'engineer_id' => 2,
-                'type' => 'FromCompanyToEngineer',
+                'type' => 'c_to_e',
                 'text' => Str::random(rand(10,20)),
             ],
         ]);
@@ -242,26 +242,31 @@ class initSeeder extends Seeder
         ]);
 
 
-        DB::table(('favorite_from_companies'))->insert([
+        DB::table(('favorites'))->insert([
             [
                 'company_id' => 1,
                 'engineer_id' => 1,
+                'type'=>'c_to_e'
             ],
             [
                 'company_id' => 2,
                 'engineer_id' => 1,
+                'type'=>'c_to_e'
             ],
             [
                 'company_id' => 3,
                 'engineer_id' => 1,
+                'type'=>'c_to_e'
             ],
             [
                 'company_id' => 1,
                 'engineer_id' => 2,
+                'type'=>'e_to_c'
             ],
             [
                 'company_id' => 1,
                 'engineer_id' => 3,
+                'type'=>'e_to_c'
             ],
         ]);
     }

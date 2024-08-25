@@ -15,11 +15,6 @@ class Engineer extends Model
     protected $hidden = [
         'password',
     ];
-
-    public function engineer_tokens()
-    {
-        return $this->hasMany(EngineerToken::class);
-    }
     public function portfolios()
     {
         return $this->hasMany(Portfolio::class);
@@ -35,5 +30,9 @@ class Engineer extends Model
     public function chats()
     {
         return $this->hasMany(Chat::class);
+    }
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
     }
 }
