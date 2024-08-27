@@ -139,7 +139,7 @@ const FavoriteMain = () => {
                                 </div>
                             </div>
                             <div className='flex flex-col items-center'>
-                                <Link to={`/profile/${engineerInfo.engineerName}`}>
+                                <Link to={`/profile/${engineerInfo.engineerId}`}>
                                     <button
                                         className='px-5 py-1 text-white duration-300 bg-orange-500 rounded hover:bg-orange-300'
                                     >
