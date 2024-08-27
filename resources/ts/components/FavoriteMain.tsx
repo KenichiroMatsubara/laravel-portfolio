@@ -17,24 +17,7 @@ const FavoriteMain = () => {
     const baseURL: string = useContext(BaseURLContext);
     const [onFavorite,setOnFavorite] = useState<boolean[]>([false,true]);
     const [showFavoritedUser,setShowFavoritedUser]=useState<boolean>(true);
-    const [engineerInfos,setEngineerInfos] = useState<EngineerInfo[]>([
-        {
-            engineerName: name1,
-            engineerId: 1,
-            engieerExperience: 0,
-            favoriteLangs: ["php","laravel","react","nodejs"],
-            workAt: ["愛知県","東京都"],
-            profileImg: "https://kohacu.com/wp-content/uploads/2018/06/kohacu.com_001312_20180615.png"
-        },
-        {
-            engineerName: name2,
-            engineerId: 2,
-            engieerExperience: 10,
-            favoriteLangs: ["php","laravel","react","nodejs"],
-            workAt: ["愛知県","東京都"],
-            profileImg: "https://kohacu.com/wp-content/uploads/2018/06/kohacu.com_001312_20180615.png"
-        },
-    ]);
+    const [engineerInfos,setEngineerInfos] = useState<EngineerInfo[]>();
 
     useEffect(() => {
         const getFavoritedEngineer = async () => {
@@ -47,6 +30,21 @@ const FavoriteMain = () => {
                 try {
                     const response = await axios.post(`${baseURL}/api/get_company_favorited_engineer_info`,sendData);
                     console.log(response.data);
+                    const newEngineerInfos:EngineerInfo[] = [];
+                    response.data.engineer_infos.forEach((engineer_info)=>{
+                        console.log(engineer_info.profile ? engineer_info.profile.name:"未設定");
+                        const newEngineerInfo:EngineerInfo = {
+                            engineerName: engineer_info.profile ? engineer_info.profile.name:"未設定",
+                            engineerId: engineer_info.id,
+                            engieerExperience: engineer_info.profile ? engineer_info.profile.work_experience:0,
+                            favoriteLangs: engineer_info.using_stacks || ["未設定"],
+                            workAt :engineer_info.want_to_work_ats || ["未設定"],
+                            profileImg: ""
+                        };
+                        newEngineerInfos.push(newEngineerInfo);
+                    });
+                    setEngineerInfos(newEngineerInfos);
+                    console.log("お気に入りをCompanyが付けたEngineerを表示する場合");
                 } catch (error) {
                     console.log(error);
                 }
@@ -56,6 +54,21 @@ const FavoriteMain = () => {
                 try {
                     const response = await axios.post(`${baseURL}/api/get_company_favorited_by_engineer_info`,sendData);
                     console.log(response.data);
+                    const newEngineerInfos:EngineerInfo[] = [];
+                    response.data.engineer_infos.forEach((engineer_info)=>{
+                        const newEngineerInfo:EngineerInfo = {
+                            engineerName: engineer_info.profile ? engineer_info.profile.name:"未設定",
+                            engineerId: engineer_info.id,
+                            engieerExperience: engineer_info.profile ? engineer_info.profile.work_experience:0,
+                            favoriteLangs: engineer_info.using_stacks || ["未設定"],
+                            workAt :engineer_info.want_to_work_ats || ["未設定"],
+                            profileImg: ""
+                        };
+                        console.log(newEngineerInfo);
+                        newEngineerInfos.push(newEngineerInfo);
+                    });
+                    setEngineerInfos(newEngineerInfos);
+                    console.log("お気に入りをEngineerが付けたCompanyを表示する場合");
                 } catch (error) {
                     console.log(error);
                 }
@@ -64,22 +77,34 @@ const FavoriteMain = () => {
         getFavoritedEngineer();
     },[showFavoritedUser]);
 
+    // zTODOこのした二つの関数は全くの未完成
     const handleOnFavorite = async(index: number) => {
         const newOnFavorite = [...onFavorite];
         newOnFavorite[index] = true;
         setOnFavorite(newOnFavorite);
         const sendData = {"company_id":id};
         try {
-            const response = await axios.post(`${baseURL}/api/get_company_favorited_engineer_info`,sendData);
+            const response = await axios.post(`${baseURL}/api/create_favorite`,sendData);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const handleOffFavorite = async(index: number) => {
+        const newOnFavorite = [...onFavorite];
+        newOnFavorite[index] = false;
+        setOnFavorite(newOnFavorite);
+        const sendData = {"company_id":id};
+        try {
+            const response = await axios.post(`${baseURL}/api/destroy_favorite`,sendData);
         } catch (error) {
             console.log(error);
         }
     }
 
     return (
-        <div className='flex flex-col w-9/12'>
+        <div className='flex flex-col w-9/12 mx-10'>
             <ul className='h-full'>
-                <div className='flex gap-5 mt-5 '>
+                <div className='flex gap-5 my-5 '>
                     <button className={showFavoritedUser ?
                         "w-60 h-12 text-white bg-orange-500 rounded-full hover:bg-orange-300 duration-300 text-xl"
                         :
@@ -97,8 +122,8 @@ const FavoriteMain = () => {
                         LIKED BY
                     </button>
                 </div>
-                {engineerInfos.map((engineerInfo: EngineerInfo,index) => (
-                        <div className='flex items-center justify-between px-10 py-5 duration-300 border-b border-orange-300'>
+                {engineerInfos!==undefined ? engineerInfos.map((engineerInfo: EngineerInfo,index) => (
+                        <div className='flex items-center justify-between py-5 duration-300 border-b border-orange-300'>
                             <div className='flex items-center'>
                                 <div className='flex flex-col items-center justify-center'>
                                     <img src={engineerInfo.profileImg}
@@ -141,7 +166,11 @@ const FavoriteMain = () => {
                                 </div>}
                             </div>
                         </div>
-                ))}
+                ))
+                :
+                <>
+                    {showFavoritedUser ?<span className='py-5 mt-32'>あなたのお気に入りのエンジニアを見つけられませんでした</span> :<span className='py-5 mt-32'>あなたにお気に入りをつけたエンジニアを見つけられませんでした</span>}
+                </>}
             </ul>
         </div>
     )
