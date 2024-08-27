@@ -16,6 +16,7 @@ const FavoriteMain = () => {
     const { userContext: { userType,id,token,state }, dispatcher: { setUserType, setId,setToken,setState } } = useUserContext();
     const baseURL: string = useContext(BaseURLContext);
     const [onFavorite,setOnFavorite] = useState<boolean[]>([false,true]);
+    const [showFavoritedUser,setShowFavoritedUser]=useState<boolean>(true);
     const [engineerInfos,setEngineerInfos] = useState<EngineerInfo[]>([
         {
             engineerName: name1,
@@ -41,16 +42,29 @@ const FavoriteMain = () => {
                 "company_id":id
             }
             console.log({sendData});
-            try {
-                const response = await axios.post(`${baseURL}/api/get_company_favorited_engineer_info`,sendData);
-                console.log(response.data);
-            } catch (error) {
-                console.log(error);
+            // お気に入りをCompanyが付けたEngineerを表示する場合
+            if(showFavoritedUser===true){
+                try {
+                    const response = await axios.post(`${baseURL}/api/get_company_favorited_engineer_info`,sendData);
+                    console.log(response.data);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            // お気に入りをEngineerが付けたCompanyを表示する場合
+            else{
+                try {
+                    const response = await axios.post(`${baseURL}/api/get_company_favorited_by_engineer_info`,sendData);
+                    console.log(response.data);
+                } catch (error) {
+                    console.log(error);
+                }
             }
         };
-    },[]);
+        getFavoritedEngineer();
+    },[showFavoritedUser]);
 
-    const handleOnFavorite = async(index) => {
+    const handleOnFavorite = async(index: number) => {
         const newOnFavorite = [...onFavorite];
         newOnFavorite[index] = true;
         setOnFavorite(newOnFavorite);
@@ -65,6 +79,24 @@ const FavoriteMain = () => {
     return (
         <div className='flex flex-col w-9/12'>
             <ul className='h-full'>
+                <div className='flex gap-5 mt-5 '>
+                    <button className={showFavoritedUser ?
+                        "w-60 h-12 text-white bg-orange-500 rounded-full hover:bg-orange-300 duration-300 text-xl"
+                        :
+                        "w-60 h-12 text-sm rounded-full text-white bg-gray-400 px-4 py-1 hover:bg-gray-300 duration-300 hover:text-xl"}
+                        onClick={()=>setShowFavoritedUser(true)}
+                    >
+                        LIKED
+                    </button>
+                    <button className={showFavoritedUser ?
+                        "w-60 h-12 text-sm rounded-full text-white bg-gray-400 px-4 py-1 hover:bg-gray-300 duration-300 hover:text-xl"
+                        :
+                        "w-60 h-12 text-white bg-orange-500 rounded-full hover:bg-orange-300 duration-300 text-xl"}
+                        onClick={()=>setShowFavoritedUser(false)}
+                    >
+                        LIKED BY
+                    </button>
+                </div>
                 {engineerInfos.map((engineerInfo: EngineerInfo,index) => (
                         <div className='flex items-center justify-between px-10 py-5 duration-300 border-b border-orange-300'>
                             <div className='flex items-center'>

@@ -139,7 +139,7 @@ class FavoriteController extends Controller
         ]);
     }
     // companyアカウントがどのengineerアカウントからFavoriteを受け取っているかを知る関数
-    public function get_company_favorited_by_engineer_info(Request $request)    
+    public function get_company_favorited_by_engineer_info(Request $request)
     {
         $validated = $request->validate([
             "company_id"=>"required|numeric",
