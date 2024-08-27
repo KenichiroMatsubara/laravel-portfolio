@@ -13,4 +13,8 @@ class EngineerProfile extends Model
         "name",
         "work_experience",
     ];
+    public function engineer()
+    {
+        return $this->hasOne(Engineer::class);
+    }
 }

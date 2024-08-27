@@ -16,4 +16,8 @@ class CompanyProfile extends Model
         "imgURL",
         "homepageURL",
     ];
+    public function company()
+    {
+        return $this->hasOne(Company::class);
+    }
 }

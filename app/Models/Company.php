@@ -27,4 +27,8 @@ class Company extends Model
     {
         return $this->hasMany(Favorite::class);
     }
+    public function company_profile()
+    {
+        return $this->hasOne(CompanyProfile::class);
+    }
 }

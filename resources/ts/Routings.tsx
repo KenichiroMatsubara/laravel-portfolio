@@ -24,7 +24,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
 
     if(path==='/account/'){
-        if(state==='signin'){
+        if(state==='signin' && id!==-1){
             if(userType==='company'){
                 return (
                     <Navigate to={`/`} />
@@ -45,7 +45,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
 
     else if(path==='/account/signin_for_engineer/'){
-        if(state==="signin"){
+        if(state==="signin" && id!==-1){
             return (
                 <Navigate to={`/engineer/`} />
             );
@@ -59,7 +59,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
 
     else if(path==='/account/register_for_engineer/'){
-        if(state==="signin"){
+        if(state==="signin" && id!==-1){
             return (
                 <Navigate to={`/engineer/`} />
             );
@@ -73,7 +73,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
 
     else if(path==='/account/signin_for_company/'){
-        if(state==="signin"){
+        if(state==="signin" && id!==-1){
             return (
                 <Navigate to={`/`} />
             );
@@ -87,7 +87,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
 
     else if(path==='/account/register_for_company/'){
-        if(state==="signin"){
+        if(state==="signin" && id!==-1){
             return (
                 <Navigate to={`/`} />
             );
@@ -102,7 +102,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
     // Company系列のページのルーティング
     if(path==='/'){
-        if(state==="signin"){
+        if(state==="signin" && id!==-1){
             return(
                 <Home />
             )
@@ -115,7 +115,7 @@ const Routings: FC<{path:string}> = ({path}) => {
     }
 
     else if(path==='/search/'){
-        if(state==="signin"){
+        if(state==="signin" && id!==-1){
             return(
                 <Search />
             )
@@ -129,7 +129,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
 
     else if(path==='/profile/:engineer_id/'){
-        if(state==="signin"){
+        if(state==="signin" && id!==-1){
             return(
                 <Profile />
             )
@@ -143,7 +143,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
 
     else if(path==='/favorite/'){
-        if(state==="signin"){
+        if(state==="signin" && id!==-1){
             return(
                 <Favorite />
             )
@@ -157,7 +157,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
 
     else if(path==='/edit_home/'){
-        if(state==="signin"){
+        if(state==="signin" && id!==-1){
             return(
                 <EditHome />
             )
@@ -171,7 +171,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
     // ここからエンジニアサイドのルーティング
     else if(path=='/engineer/'){
-        if(state==="signin"){
+        if(state==="signin" && id!==-1){
             return (
                 <FEHome />
             )
@@ -183,7 +183,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
 
     else if(path==='/engineer/make_new/'){
-        if(state==="signin"){
+        if(state==="signin" && id!==-1){
             return(
                 <FEMakeNew />
             )
@@ -197,7 +197,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
 
     else if(path==='/engineer/companylist/'){
-        if(state==="signin"){
+        if(state==="signin" && id!==-1){
             return(
                 <FECompanyProfiles />
             )
@@ -211,7 +211,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
 
     else if(path==='/engineer/search/'){
-        if(state==="signin"){
+        if(state==="signin" && id!==-1){
             return(
                 <FESearch />
             )
@@ -224,7 +224,7 @@ const Routings: FC<{path:string}> = ({path}) => {
     }
 
     else if(path==="/engineer/edit_portfolio/:productId/"){
-        if(state==="signin"){
+        if(state==="signin" && id!==-1){
             return(
                 <FEEditProduct />
             )
@@ -237,7 +237,7 @@ const Routings: FC<{path:string}> = ({path}) => {
     }
 
     else if(path==="/engineer/edit_profile/"){
-        if(state==="signin"){
+        if(state==="signin" && id!==-1){
             return(
                 <FEEditProfile />
             )

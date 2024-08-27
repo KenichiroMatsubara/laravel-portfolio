@@ -19,11 +19,11 @@ class Engineer extends Model
     {
         return $this->hasMany(Portfolio::class);
     }
-    public function engineer_want_work_at()
+    public function engineer_want_work_ats()
     {
         return $this->hasMany(EngineerWantWorkAt::class);
     }
-    public function engineer_good_at()
+    public function engineer_good_ats()
     {
         return $this->hasMany(EngineerGoodAt::class);
     }
@@ -34,5 +34,9 @@ class Engineer extends Model
     public function favorites()
     {
         return $this->hasMany(Favorite::class);
+    }
+    public function engineer_profile()
+    {
+        return $this->hasOne(EngineerProfile::class);
     }
 }

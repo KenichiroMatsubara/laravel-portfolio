@@ -21,6 +21,7 @@ const FEHome = () => {
 
     useEffect(() => {
         const getPortfolios = async() => {
+            console.log(id,state,token,userType);
             const sendData = {
                 "engineer_id": id
             };

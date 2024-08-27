@@ -74,14 +74,19 @@ class FavoriteController extends Controller
         $favorited_companies = Favorite::
             where("engineer_id",$validated["engineer_id"])
             ->where("type","e_to_c")
+            ->with("company")
             ->get();
-        $favorited_company_ids = [];
+        $favorited_company_infos = [];
         foreach($favorited_companies as $favorited_company){
-            array_push($favorited_company_ids,$favorited_company->company_id);
+            array_push($favorited_company_infos,[
+                "id"=>$favorited_company->company_id,
+                "profile"=>$favorited_company->company_profile,
+                "using_stacks"=>$favorited_company->company_using_stacks,
+            ]);
         }
         return response()->json([
             "result"=>true,
-            "company_ids"=>$favorited_company_ids,
+            "company_infos"=>$favorited_company_infos,
         ]);
     }
     // companyがどのengineerにFavoriteを送っているかを知る関数
@@ -90,28 +95,23 @@ class FavoriteController extends Controller
         $validated = $request->validate([
             "company_id"=>"required|numeric",
         ]);
-        $favorites = Company::find($validated["company_id"])
-            ->favorites()
-            ->where('type','e_to_c')
+        $favorited_engineers = Favorite::
+            where("company_id",$validated["company_id"])
+            ->where("type","c_to_e")
+            ->with("engineer")
             ->get();
-        $engineers = [];
-        foreach($favorites as $favorite){
-            array_push($engineers,$favorite->engineer);
-        }
-        $engineer_info=[];
-        foreach($engineers as $engineer){
-            array_push($engineer_info,[
-                "engineer"=>$engineer,
-                "engineer_want_work_at"=>$engineer->engineer_want_work_at,
-                "engineer_good_at"=>$engineer->engineer_good_at,
+        $favorited_engineer_infos = [];
+        foreach($favorited_engineers as $favorited_engineer){
+            array_push($favorited_engineer_infos,[
+                "id"=>$favorited_engineer->engineer_id,
+                "profile"=>$favorited_engineer->engineer_profile,
+                "using_stacks"=>$favorited_engineer->engineer_good_ats,
+                "want_to_work_ats"=>$favorited_engineer->engineer_want_work_ats,
             ]);
         }
-
         return response()->json([
             "result"=>true,
-            "favorites"=>$favorites,
-            "engineers"=>$engineers,
-            "engineer_info"=>$engineer_info,
+            "engineer_infos"=>$favorited_engineer_infos,
         ]);
     }
     // engineerアカウントがどのcomapnyアカウントからFavoriteを受け取っているかを知る関数
@@ -123,18 +123,23 @@ class FavoriteController extends Controller
         $favorited_companies = Favorite::
             where("engineer_id",$validated["engineer_id"])
             ->where("type","c_to_e")
+            ->with("company")
             ->get();
-        $favorited_company_ids = [];
+        $favorited_company_infos = [];
         foreach($favorited_companies as $favorited_company){
-            array_push($favorited_company_ids,$favorited_company->company_id);
+            array_push($favorited_company_infos,[
+                "id"=>$favorited_company->company_id,
+                "profile"=>$favorited_company->company_profile,
+                "using_stacks"=>$favorited_company->company_using_stacks,
+            ]);
         }
         return response()->json([
             "result"=>true,
-            "company_ids"=>$favorited_company_ids,
+            "company_infos"=>$favorited_company_infos,
         ]);
     }
     // companyアカウントがどのengineerアカウントからFavoriteを受け取っているかを知る関数
-    public function get_company_favorited_by_engineer_info(Request $request)
+    public function get_company_favorited_by_engineer_info(Request $request)    
     {
         $validated = $request->validate([
             "company_id"=>"required|numeric",
@@ -142,14 +147,20 @@ class FavoriteController extends Controller
         $favorited_engineers = Favorite::
             where("company_id",$validated["company_id"])
             ->where("type","e_to_c")
+            ->with("engineer")
             ->get();
-        $favorited_engineer_ids = [];
+        $favorited_engineer_infos = [];
         foreach($favorited_engineers as $favorited_engineer){
-            array_push($favorited_engineer_ids,$favorited_engineer->engineer_id);
+            array_push($favorited_engineer_infos,[
+                "id"=>$favorited_engineer->engineer_id,
+                "profile"=>$favorited_engineer->engineer_profile,
+                "using_stacks"=>$favorited_engineer->engineer_good_ats,
+                "want_to_work_ats"=>$favorited_engineer->engineer_want_work_ats,
+            ]);
         }
         return response()->json([
             "result"=>true,
-            "engineer_ids"=>$favorited_engineer_ids,
+            "engineer_infos"=>$favorited_engineer_infos,
         ]);
     }
 }

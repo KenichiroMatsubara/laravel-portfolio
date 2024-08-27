@@ -37,7 +37,7 @@ const FESignIn = () => {
             try {
                 const response = await axios.post(`${baseURL}/api/signin_engineer_account_by_token`,sendData);
                 Cookies.set("token",response.data.token);
-                setId(response.data.id);
+                setId(response.data.data.id);
                 setUserType("engineer");
                 setToken(response.data.token);
                 setState("signin")
@@ -87,12 +87,11 @@ const FESignIn = () => {
                     Cookies.remove("token");
                 }
                 Cookies.set("userType","engineer");
-                setId(response.data.id);
+                setId(response.data.data.id);
                 setState("signin");
                 setToken(response.data.token);
                 setUserType("engineer");
                 console.log(response.data);
-                console.log({userType,token,state,id});
                 console.log({Cookie_data: {
                     email: Cookies.get("email"),
                     token: Cookies.get("token"),
