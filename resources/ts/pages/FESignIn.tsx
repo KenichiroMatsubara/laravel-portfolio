@@ -8,7 +8,6 @@ import { BaseURLContext } from '../app';
 
 const FESignIn = () => {
     const { userContext: { userType,id,token,state }, dispatcher: { setUserType, setId,setToken,setState } } = useUserContext();
-
     const [autoSignin,setAutoSignin] = useState<boolean>(!(token==="none"));//tokenがからの時はautoSigninを実行しない
     const [authFailed, setAuthFailed] = useState<boolean>(false);
 

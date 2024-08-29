@@ -4,11 +4,12 @@ import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
 import ProfileMain from '../components/ProfileMain';
 import Chat from '../components/Chat';
+import { useUserContext } from '../UserContext';
 
 const Profile: FC = () => {
-    const engineerId: number = Number(useParams().engineerId || "0");
+    const { userContext: { userType,id,token,state }, dispatcher: { setUserType, setId,setToken,setState } } = useUserContext();
+    const engineerId: number = Number(location.pathname.split("/")[location.pathname.split("/").length-2] || "0");
     const [onModal,setOnModal] = useState<boolean>(false);
-    const userType: string = "company";
 
     useEffect(() => {
         console.log(onModal);
@@ -21,7 +22,7 @@ const Profile: FC = () => {
                 <Sidebar />
                 <ProfileMain engineerId={engineerId} setOnModal={setOnModal} />
             </div>
-            {onModal && <Chat engineerId={engineerId} companyId={1} setOnModal={setOnModal} />}
+            {onModal && <Chat engineerId={engineerId} companyId={id} setOnModal={setOnModal} />}
         </div>
     )
 }

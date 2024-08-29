@@ -8,14 +8,18 @@ import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { Link } from 'react-router-dom';
+import { useUserContext } from '../UserContext';
 
 
 const Product: FC<ProductProps> = ({productId}) => {
     const baseURL:string = useContext(BaseURLContext);
+    const { userContext: { userType,id,token,state }, dispatcher: { setUserType, setId,setToken,setState } } = useUserContext();
+
     const [productInfo, setProductInfo] = useState<ProductInfo>();
     const [stacks,setStacks] = useState<string>("");
     const [onModal,setOnModal] = useState<boolean>(false);
     const [deleteConfirmation, setDeleteConfirmation] = useState<boolean>(false);
+    const [isOwner,setIsOwner] = useState<boolean>(false);
 
     const handleClickMoreIcon  = () => {
         if(onModal===true) return;
@@ -77,6 +81,10 @@ const Product: FC<ProductProps> = ({productId}) => {
                 });
                 setStacks(newStacks);
                 setProductInfo(newProductInfo);
+                // UsertypeがEngingeerでportfolioのEngieer_idと今使っているユーザーのidが一致するときのみにポートフォリオの作成者であると認定
+                if(userType==="engineer" && response.data.portfolio.engineer_id===id){
+                    setIsOwner(true)
+                }
             } catch (error) {
                 console.log(error);
             }
@@ -103,10 +111,12 @@ const Product: FC<ProductProps> = ({productId}) => {
                 <div className='w-8/12 px-5 break-words whitespace-pre-wrap'>
                     {productInfo.explain}
                 </div>
+                {isOwner===true &&
                 <MoreVertIcon
                     className='w-1/12 duration-300 cursor-pointer hover:text-gray-600'
                     onClick={() => handleClickMoreIcon()}
                 />
+                }
                 {/* TODOあとでポートフォリオの変種機能をつけておく　削除はそのままボタン一つでできるようにして、更新はFEMakeNewを利用して作れば行ける */}
                 {(onModal===true) &&
                 <div className='absolute z-10 flex flex-col w-32 bg-white border border-gray-600 right-10'>

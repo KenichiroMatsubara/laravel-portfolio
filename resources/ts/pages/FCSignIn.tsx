@@ -88,7 +88,7 @@ const FCSignIn = () => {
                     Cookies.remove("token");
                 }
                 Cookies.set("userType","company");
-                setId(response.data.id);
+                setId(response.data.data.id);
                 setState("signin");
                 setToken(response.data.token);
                 setUserType("company");
