@@ -78,10 +78,20 @@ class FavoriteController extends Controller
             ->get();
         $favorited_company_infos = [];
         foreach($favorited_companies as $favorited_company){
+            $favorite = Favorite::where("company_id",$favorited_company->company_id)
+            ->where("engineer_id",$validated["engineer_id"])
+            ->where("type","c_to_e")
+            ->first();
+            // favoriteが存在するならば、is_favoritedをtrueにする
+            $is_favorited = false;
+            if($favorite){
+                $is_favorited=true;
+            }
             array_push($favorited_company_infos,[
                 "id"=>$favorited_company->company_id,
                 "profile"=>$favorited_company->company_profile,
                 "using_stacks"=>$favorited_company->company_using_stacks,
+                "company_favorited"=>$is_favorited
             ]);
         }
         return response()->json([
@@ -102,11 +112,21 @@ class FavoriteController extends Controller
             ->get();
         $favorited_engineer_infos = [];
         foreach($favorited_engineers as $favorited_engineer){
+            $favorite = Favorite::where("engineer_id",$favorited_engineer->engineer_id)
+            ->where("company_id",$validated["company_id"])
+            ->where("type","e_to_c")
+            ->first();
+            // favoriteが存在するならば、is_favoritedをtrueにする
+            $is_favorited = false;
+            if($favorite){
+                $is_favorited=true;
+            }
             array_push($favorited_engineer_infos,[
                 "id"=>$favorited_engineer->engineer_id,
                 "profile"=>$favorited_engineer->engineer_profile,
                 "using_stacks"=>$favorited_engineer->engineer_good_ats,
                 "want_to_work_ats"=>$favorited_engineer->engineer_want_work_ats,
+                "engineer_favorited"=> $is_favorited
             ]);
         }
         return response()->json([
@@ -127,10 +147,20 @@ class FavoriteController extends Controller
             ->get();
         $favorited_company_infos = [];
         foreach($favorited_companies as $favorited_company){
+            $favorite = Favorite::where("company_id",$favorited_company->company_id)
+            ->where("engineer_id",$validated["engineer_id"])
+            ->where("type","e_to_c")
+            ->first();
+            // favoriteが存在するならば、is_favoritedをtrueにする
+            $is_favorited = false;
+            if($favorite){
+                $is_favorited=true;
+            }
             array_push($favorited_company_infos,[
                 "id"=>$favorited_company->company_id,
                 "profile"=>$favorited_company->company_profile,
                 "using_stacks"=>$favorited_company->company_using_stacks,
+                "engineer_favorited"=>$is_favorited,
             ]);
         }
         return response()->json([
@@ -151,16 +181,76 @@ class FavoriteController extends Controller
             ->get();
         $favorited_engineer_infos = [];
         foreach($favorited_engineers as $favorited_engineer){
+            $favorite = Favorite::where("engineer_id",$favorited_engineer->engineer_id)
+            ->where("company_id",$validated["company_id"])
+            ->where("type","c_to_e")
+            ->first();
+            // favoriteが存在するならば、is_favoritedをtrueにする
+            $is_favorited = false;
+            if($favorite){
+                $is_favorited=true;
+            }
             array_push($favorited_engineer_infos,[
                 "id"=>$favorited_engineer->engineer_id,
                 "profile"=>$favorited_engineer->engineer_profile,
                 "using_stacks"=>$favorited_engineer->engineer_good_ats,
                 "want_to_work_ats"=>$favorited_engineer->engineer_want_work_ats,
+                "company_favorited"=>$is_favorited
             ]);
         }
         return response()->json([
             "result"=>true,
             "engineer_infos"=>$favorited_engineer_infos,
+        ]);
+    }
+    public function is_company_favorited(Request $request){
+        $validated = $request->validate([
+            "engineer_ids" => "required|array",
+            "engineer_ids.*"=>"required|numeric",
+            "company_id"=>"required|numeric",
+        ]);
+        $is_favoriteds = [];
+        foreach($validated["engineer_ids"] as $engineer_id){
+            $favorite = Favorite::where("engineer_id",$engineer_id)
+            ->where("company_id",$validated["company_id"])
+            ->where("type","c_to_e")
+            ->first();
+            // $favoriteが存在するならば
+            if($favorite){
+                $is_favoriteds[] = true;
+            }
+            else {
+                $is_favoriteds[] = false;
+            }
+        }
+        return response()->json([
+            "result" => true,
+            "is_favoriteds"=> $is_favoriteds
+        ]);
+    }
+    public function is_engineer_favorited(Request $request){
+        $validated = $request->validate([
+            "company_ids" => "required|array",
+            "company_ids.*"=>"required|numeric",
+            "engineer_id"=>"required|numeric",
+        ]);
+        $is_favoriteds = [];
+        foreach($validated["company_ids"] as $company_id){
+            $favorite = Favorite::where("engineer_id",$validated["engineer_id"])
+            ->where("company_id",$company_id)
+            ->where("type","e_to_c")
+            ->first();
+            // $favoriteが存在するならば
+            if($favorite){
+                $is_favoriteds[] = true;
+            }
+            else {
+                $is_favoriteds[] = false;
+            }
+        }
+        return response()->json([
+            "result" => true,
+            "is_favoriteds"=> $is_favoriteds
         ]);
     }
 }

@@ -15,7 +15,7 @@ const FavoriteMain = () => {
     const places: string[] = ["愛知県"];
     const { userContext: { userType,id,token,state }, dispatcher: { setUserType, setId,setToken,setState } } = useUserContext();
     const baseURL: string = useContext(BaseURLContext);
-    const [onFavorite,setOnFavorite] = useState<boolean[]>([false,true]);
+    const [onFavorite,setOnFavorite] = useState<boolean[]>([]);
     const [showFavoritedUser,setShowFavoritedUser]=useState<boolean>(true);
     const [engineerInfos,setEngineerInfos] = useState<EngineerInfo[]>();
 
@@ -31,6 +31,7 @@ const FavoriteMain = () => {
                     const response = await axios.post(`${baseURL}/api/get_company_favorited_engineer_info`,sendData);
                     console.log(response.data);
                     const newEngineerInfos:EngineerInfo[] = [];
+                    const newOnFaovirted:boolean[] = [];
                     response.data.engineer_infos.forEach((engineer_info)=>{
                         console.log(engineer_info.profile ? engineer_info.profile.name:"未設定");
                         const newEngineerInfo:EngineerInfo = {
@@ -41,8 +42,10 @@ const FavoriteMain = () => {
                             workAt :engineer_info.want_to_work_ats || ["未設定"],
                             profileImg: ""
                         };
+                        newOnFaovirted.push(true);
                         newEngineerInfos.push(newEngineerInfo);
                     });
+                    setOnFavorite(newOnFaovirted);
                     setEngineerInfos(newEngineerInfos);
                     console.log("お気に入りをCompanyが付けたEngineerを表示する場合");
                 } catch (error) {
@@ -55,6 +58,7 @@ const FavoriteMain = () => {
                     const response = await axios.post(`${baseURL}/api/get_company_favorited_by_engineer_info`,sendData);
                     console.log(response.data);
                     const newEngineerInfos:EngineerInfo[] = [];
+                    const newOnFaovirted:boolean[] = [];
                     response.data.engineer_infos.forEach((engineer_info)=>{
                         const newEngineerInfo:EngineerInfo = {
                             engineerName: engineer_info.profile ? engineer_info.profile.name:"未設定",
@@ -66,7 +70,9 @@ const FavoriteMain = () => {
                         };
                         console.log(newEngineerInfo);
                         newEngineerInfos.push(newEngineerInfo);
+                        newOnFaovirted.push(engineer_info.company_favorited);
                     });
+                    setOnFavorite(newOnFaovirted);
                     setEngineerInfos(newEngineerInfos);
                     console.log("お気に入りをEngineerが付けたCompanyを表示する場合");
                 } catch (error) {
