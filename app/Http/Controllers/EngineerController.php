@@ -194,80 +194,92 @@ class EngineerController extends Controller
             "search_input" => "required|string",
             "search_key" => "required|string",
         ]);
+
         $engineer_infos = [];
-        if($validated["search_key"]=="all"){
-            $searching_engineer_profiles = EngineerProfile::where("name","ILIKE","%{$validated['search_input']}%")
+        $search_input = strtolower($validated['search_input']);
+
+        if ($validated["search_key"] == "all") {
+                // Name search
+            $searching_engineer_profiles = EngineerProfile::whereRaw("LOWER(name) LIKE ?", ["%$search_input%"])
                 ->get();
-            foreach($searching_engineer_profiles as $searching_engineer_profile){
+            foreach($searching_engineer_profiles as $searching_engineer_profile)
+            {
                 $engineer_infos[] = [
-                    "engineer" => $searching_engineer_profile->engineer_id,
+                    "engineer" => $searching_engineer_profile->engineer,
                     "engineer_profile" => $searching_engineer_profile,
                     "engineer_using_stacks" => $searching_engineer_profile->engineer->engineer_good_ats,
                     "engineer_want_work_ats" => $searching_engineer_profile->engineer->engineer_want_work_ats,
                 ];
             }
-            $searching_engineers = EngineerGoodAt::where("stack", "ILIKE","%{$validated['search_input']}%")
-                ->with("engineers")
-                ->get();
-            foreach($searching_engineers as $searching_engineer){
+
+            // Stack search
+            $searching_engineers = Engineer::whereHas('engineer_good_ats', function($query) use ($search_input) {
+                $query->whereRaw('LOWER(stack) LIKE ?', ["%$search_input%"]);
+            })->distinct()->get();
+            foreach ($searching_engineers as $searching_engineer) {
                 $engineer_infos[] = [
                     "engineer" => $searching_engineer,
                     "engineer_profile" => $searching_engineer->engineer_profile,
-                    "engineer_using_stacks" => $searching_engineers->engineer_good_ats,
-                    "engineer_want_work_ats" => $searching_engineers->engineer_want_work_ats,
+                    "engineer_using_stacks" => $searching_engineer->engineer_good_ats,
+                    "engineer_want_work_ats" => $searching_engineer->engineer_want_work_ats,
                 ];
             }
-            $searching_engineers = EngineerWantWorkAt::where("place","ILIKE","%{$validated['search_input']}%")
-                ->with("engineers")
-                ->get();
-            foreach($searching_engineers as $searching_engineer){
+
+            // Place search
+            $searching_engineers = Engineer::whereHas('engineer_want_work_ats', function($query) use ($search_input) {
+                $query->whereRaw('LOWER(place) LIKE ?', ["%$search_input%"]);
+            })->distinct()->get();
+            foreach ($searching_engineers as $searching_engineer) {
                 $engineer_infos[] = [
                     "engineer" => $searching_engineer,
                     "engineer_profile" => $searching_engineer->engineer_profile,
-                    "engineer_using_stacks" => $searching_engineers->engineer_good_ats,
-                    "engineer_want_work_ats" => $searching_engineers->engineer_want_work_ats,
+                    "engineer_using_stacks" => $searching_engineer->engineer_good_ats,
+                    "engineer_want_work_ats" => $searching_engineer->engineer_want_work_ats,
                 ];
             }
-        }
-        else if($validated["search_key"]=="name"){
-            $searching_engineer_profiles = EngineerProfile::where("name","ILIKE","%{$validated['search_input']}%")
+        } else if ($validated["search_key"] == "name") {
+            $searching_engineer_profiles = EngineerProfile::whereRaw("LOWER(name) LIKE ?", ["%$search_input%"])
                 ->get();
-            foreach($searching_engineer_profiles as $searching_engineer_profile){
+            foreach($searching_engineer_profiles as $searching_engineer_profile)
+            {
                 $engineer_infos[] = [
-                    "engineer" => $searching_engineer_profile->engineer_id,
+                    "engineer" => $searching_engineer_profile->engineer,
                     "engineer_profile" => $searching_engineer_profile,
                     "engineer_using_stacks" => $searching_engineer_profile->engineer->engineer_good_ats,
                     "engineer_want_work_ats" => $searching_engineer_profile->engineer->engineer_want_work_ats,
                 ];
             }
-        }
-        else if($validated["search_key"]=="stack"){
-            $searching_engineers = EngineerGoodAt::where("stack", "ILIKE","%{$validated['search_input']}%")
-            ->with("engineers")
-            ->get();
-            foreach($searching_engineers as $searching_engineer){
+            return response()->json([
+                "result" => $engineer_infos,
+            ]);
+        } else if ($validated["search_key"] == "stack") {
+            $searching_engineers = Engineer::whereHas('engineer_good_ats', function($query) use ($search_input) {
+                $query->whereRaw('LOWER(stack) LIKE ?', ["%$search_input%"]);
+            })->distinct()->get();
+            foreach ($searching_engineers as $searching_engineer) {
                 $engineer_infos[] = [
                     "engineer" => $searching_engineer,
                     "engineer_profile" => $searching_engineer->engineer_profile,
-                    "engineer_using_stacks" => $searching_engineers->engineer_good_ats,
-                    "engineer_want_work_ats" => $searching_engineers->engineer_want_work_ats,
+                    "engineer_using_stacks" => $searching_engineer->engineer_good_ats,
+                    "engineer_want_work_ats" => $searching_engineer->engineer_want_work_ats,
                 ];
             }
-        }
-        else if($validated["search_key"]=="place"){
-            $searching_engineers = EngineerWantWorkAt::where("place","ILIKE","%{$validated['search_input']}%")
-                ->with("engineers")
-                ->get();
-            foreach($searching_engineers as $searching_engineer){
+        } else if ($validated["search_key"] == "place") {
+            $searching_engineers = Engineer::whereHas('engineer_want_work_ats', function($query) use ($search_input) {
+                $query->whereRaw('LOWER(place) LIKE ?', ["%$search_input%"]);
+            })->distinct()->get();
+            foreach ($searching_engineers as $searching_engineer) {
                 $engineer_infos[] = [
                     "engineer" => $searching_engineer,
                     "engineer_profile" => $searching_engineer->engineer_profile,
-                    "engineer_using_stacks" => $searching_engineers->engineer_good_ats,
-                    "engineer_want_work_ats" => $searching_engineers->engineer_want_work_ats,
+                    "engineer_using_stacks" => $searching_engineer->engineer_good_ats,
+                    "engineer_want_work_ats" => $searching_engineer->engineer_want_work_ats,
                 ];
             }
         }
+
         return response()->json([
+            "result" => "%$search_input%",
             "engineer_infos" => $engineer_infos,
         ]);
     }

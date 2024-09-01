@@ -15,6 +15,6 @@ class EngineerProfile extends Model
     ];
     public function engineer()
     {
-        return $this->hasOne(Engineer::class);
+        return $this->belongsTo(Engineer::class);
     }
 }
