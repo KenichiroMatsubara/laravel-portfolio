@@ -33,6 +33,7 @@ Route::post("/signin_engineer_account_by_token",$engineer."signin_engineer_accou
 Route::post("/get_engineer_info",$engineer."get_engineer_info");
 Route::post("/update_engineer_account",$engineer."update_engineer_account");
 Route::post("/destroy_engineer_account",$engineer."destroy_engineer_account");
+Route::post("/search_engineers", $engineer."search_engineers");
 
 
 Route::post("/create_company_account",$company."create_company_account");

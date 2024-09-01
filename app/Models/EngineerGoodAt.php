@@ -9,7 +9,7 @@ class EngineerGoodAt extends Model
 {
     use HasFactory;
     protected $fillable = ['engineer_id','stack'];
-    public function engineers()
+    public function engineer()
     {
         return $this->belongsTo(Engineer::class);
     }

@@ -3,6 +3,6 @@ export type EngineerInfo = {
     engineerId: number,
     engieerExperience: number,
     favoriteLangs: string[],
-    workAt: string[],
+    workAts: string[],
     profileImg: string,
 }

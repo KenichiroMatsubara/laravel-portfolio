@@ -34,6 +34,8 @@
         "react-cookie": "^7.1.4",
         "react-form-hook": "^0.0.1",
         "react-router-dom": "^6.24.0",
+        "react-select": "^5.8.0",
+        "search-select": "^1.0.4",
         "universal-cookie": "^7.1.4"
     }
 }

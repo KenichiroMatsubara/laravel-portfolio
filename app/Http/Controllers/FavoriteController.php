@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
+use App\Models\CompanyProfile;
+use App\Models\CompanyUsingStack;
 use App\Models\Engineer;
+use App\Models\EngineerGoodAt;
+use App\Models\EngineerProfile;
+use App\Models\EngineerWantWorkAt;
 use App\Models\Favorite;
 use DB;
 use Illuminate\Http\Request;
@@ -22,8 +27,9 @@ class FavoriteController extends Controller
         $favorite = Favorite::where("company_id",$validated["company_id"])
             ->where("engineer_id",$validated["engineer_id"])
             ->where("type",$validated["type"])
-            ->first();
-        if($favorite){
+            ->get();
+        if($favorite && count($favorite)>0){
+            $favorite->each->delete();
             return response()->json([
                 "result"=>true,
                 "message"=>"the favorite already exist"
@@ -50,9 +56,9 @@ class FavoriteController extends Controller
         $favorite = Favorite::where("company_id",$validated["company_id"])
             ->where("engineer_id",$validated["engineer_id"])
             ->where("type",$validated["type"])
-            ->first();
-        if($favorite){
-            $favorite->delete();
+            ->get();
+        if($favorite && count($favorite)>0){
+            $favorite->each->delete();
             return response()->json([
                 "result"=>true,
                 "message"=>"the favorite destroyed successfully!"
@@ -71,14 +77,13 @@ class FavoriteController extends Controller
         $validated = $request->validate([
             "engineer_id"=>"required|numeric",
         ]);
-        $favorited_companies = Favorite::
+        $favorited_company_profiles = Favorite::
             where("engineer_id",$validated["engineer_id"])
             ->where("type","e_to_c")
-            ->with("company")
             ->get();
         $favorited_company_infos = [];
-        foreach($favorited_companies as $favorited_company){
-            $favorite = Favorite::where("company_id",$favorited_company->company_id)
+        foreach($favorited_company_profiles as $favorited_company_profile){
+            $favorite = Favorite::where("company_id",$favorited_company_profile->company_id)
             ->where("engineer_id",$validated["engineer_id"])
             ->where("type","c_to_e")
             ->first();
@@ -88,9 +93,9 @@ class FavoriteController extends Controller
                 $is_favorited=true;
             }
             array_push($favorited_company_infos,[
-                "id"=>$favorited_company->company_id,
-                "profile"=>$favorited_company->company_profile,
-                "using_stacks"=>$favorited_company->company_using_stacks,
+                "id"=>$favorited_company_profile->company_id,
+                "profile">=$favorited_company_profile,
+                "using_stacks"=>$favorited_company_profile->company->company_using_stacks,
                 "company_favorited"=>$is_favorited
             ]);
         }
@@ -105,14 +110,14 @@ class FavoriteController extends Controller
         $validated = $request->validate([
             "company_id"=>"required|numeric",
         ]);
-        $favorited_engineers = Favorite::
+        $favorited_engineer_profiles = Favorite::
             where("company_id",$validated["company_id"])
             ->where("type","c_to_e")
             ->with("engineer")
             ->get();
         $favorited_engineer_infos = [];
-        foreach($favorited_engineers as $favorited_engineer){
-            $favorite = Favorite::where("engineer_id",$favorited_engineer->engineer_id)
+        foreach($favorited_engineer_profiles as $favorited_engineer_profile){
+            $favorite = Favorite::where("engineer_id",$favorited_engineer_profile->engineer_id)
             ->where("company_id",$validated["company_id"])
             ->where("type","e_to_c")
             ->first();
@@ -122,10 +127,10 @@ class FavoriteController extends Controller
                 $is_favorited=true;
             }
             array_push($favorited_engineer_infos,[
-                "id"=>$favorited_engineer->engineer_id,
-                "profile"=>$favorited_engineer->engineer_profile,
-                "using_stacks"=>$favorited_engineer->engineer_good_ats,
-                "want_to_work_ats"=>$favorited_engineer->engineer_want_work_ats,
+                "id"=>$favorited_engineer_profile->engineer_id,
+                "profile"=>$favorited_engineer_profile,
+                "using_stacks"=>$favorited_engineer_profile->engineer->engineer_good_ats,
+                "want_work_ats"=>$favorited_engineer_profile->engineer->engineer_want_work_ats,
                 "engineer_favorited"=> $is_favorited
             ]);
         }
@@ -140,26 +145,26 @@ class FavoriteController extends Controller
         $validated = $request->validate([
             "engineer_id"=>"required|numeric",
         ]);
-        $favorited_companies = Favorite::
+        $favorited_company_profiles = Favorite::
             where("engineer_id",$validated["engineer_id"])
             ->where("type","c_to_e")
             ->with("company")
             ->get();
         $favorited_company_infos = [];
-        foreach($favorited_companies as $favorited_company){
-            $favorite = Favorite::where("company_id",$favorited_company->company_id)
-            ->where("engineer_id",$validated["engineer_id"])
-            ->where("type","e_to_c")
-            ->first();
+        foreach($favorited_company_profiles as $favorited_company_profile){
+            $favorite = Favorite::where("company_id",$favorited_company_profile->company_id)
+                ->where("engineer_id",$validated["engineer_id"])
+                ->where("type","e_to_c")
+                ->first();
             // favoriteが存在するならば、is_favoritedをtrueにする
             $is_favorited = false;
             if($favorite){
                 $is_favorited=true;
             }
             array_push($favorited_company_infos,[
-                "id"=>$favorited_company->company_id,
-                "profile"=>$favorited_company->company_profile,
-                "using_stacks"=>$favorited_company->company_using_stacks,
+                "id"=>$favorited_company_profile->company_id,
+                "profile">=$favorited_company_profile,
+                "using_stacks"=>$favorited_company_profile->company->company_using_stacks,
                 "engineer_favorited"=>$is_favorited,
             ]);
         }
@@ -174,14 +179,14 @@ class FavoriteController extends Controller
         $validated = $request->validate([
             "company_id"=>"required|numeric",
         ]);
-        $favorited_engineers = Favorite::
+        $favorited_engineer_profiles = Favorite::
             where("company_id",$validated["company_id"])
             ->where("type","e_to_c")
             ->with("engineer")
             ->get();
         $favorited_engineer_infos = [];
-        foreach($favorited_engineers as $favorited_engineer){
-            $favorite = Favorite::where("engineer_id",$favorited_engineer->engineer_id)
+        foreach($favorited_engineer_profiles as $favorited_engineer_profile){
+            $favorite = Favorite::where("engineer_id",$favorited_engineer_profile->engineer_id)
             ->where("company_id",$validated["company_id"])
             ->where("type","c_to_e")
             ->first();
@@ -191,10 +196,10 @@ class FavoriteController extends Controller
                 $is_favorited=true;
             }
             array_push($favorited_engineer_infos,[
-                "id"=>$favorited_engineer->engineer_id,
-                "profile"=>$favorited_engineer->engineer_profile,
-                "using_stacks"=>$favorited_engineer->engineer_good_ats,
-                "want_to_work_ats"=>$favorited_engineer->engineer_want_work_ats,
+                "id"=>$favorited_engineer_profile->engineer_id,
+                "profile"=>$favorited_engineer_profile,
+                "using_stacks"=>$favorited_engineer_profile->engineer->engineer_good_ats,
+                "want_work_ats"=>$favorited_engineer_profile->engineer->engineer_want_work_ats,
                 "company_favorited"=>$is_favorited
             ]);
         }
@@ -212,9 +217,9 @@ class FavoriteController extends Controller
         $is_favoriteds = [];
         foreach($validated["engineer_ids"] as $engineer_id){
             $favorite = Favorite::where("engineer_id",$engineer_id)
-            ->where("company_id",$validated["company_id"])
-            ->where("type","c_to_e")
-            ->first();
+                ->where("company_id",$validated["company_id"])
+                ->where("type","c_to_e")
+                ->first();
             // $favoriteが存在するならば
             if($favorite){
                 $is_favoriteds[] = true;

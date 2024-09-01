@@ -1,5 +1,5 @@
 import React from 'react'
-import Topbar from '../components/Topbar'
+import Topbar from '../components/Searchbar'
 import Sidebar from '../components/Sidebar'
 import FavoriteMain from '../components/FavoriteMain'
 

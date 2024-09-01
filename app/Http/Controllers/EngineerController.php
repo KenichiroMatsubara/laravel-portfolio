@@ -16,12 +16,12 @@ class EngineerController extends Controller
     public function create_engineer_account(Request $request)
     {
         $validated = $request->validate([
-            'email' => 'required|unique:engineers',
-            'password' => 'required',
+            "email" => "required|unique:engineers",
+            "password" => "required",
         ]);
         $new_engineer = Engineer::create([
-            "email" => $validated['email'],
-            "password" => p_hash($validated['password']),
+            "email" => $validated["email"],
+            "password" => p_hash($validated["password"]),
         ]);
         $new_token = Token::create([
             "role"=>"engineer_user",
@@ -38,13 +38,13 @@ class EngineerController extends Controller
     public function signin_engineer_account_by_password(Request $request)
     {
         $validated = $request->validate([
-            'email' => 'required',
-            'password' => 'required',
-            'autoSignin' => 'required|boolean',
+            "email" => "required",
+            "password" => "required",
+            "autoSignin" => "required|boolean",
         ]);
-        $engineer = Engineer::where("email", $validated['email'])->first();
+        $engineer = Engineer::where("email", $validated["email"])->first();
         // パスワード認証
-        if (p_compare_password($validated['password'], $engineer->password)) {
+        if (p_compare_password($validated["password"], $engineer->password)) {
             if($validated["autoSignin"]==true){
                 // 新たにトークンを発行
                 $new_token = Token::create([
@@ -81,8 +81,8 @@ class EngineerController extends Controller
     public function signin_engineer_account_by_token(Request $request)
     {
         $validated = $request->validate([
-            'email' => 'required',
-            'token' => 'required',
+            "email" => "required",
+            "token" => "required",
         ]);
 
         if(check_token($validated["token"])["result"]==true){
@@ -102,10 +102,10 @@ class EngineerController extends Controller
     public function get_engineer_info(Request $request)
     {
         $validated = $request->validate([
-            'engineer_id' => 'required',
+            "engineer_id" => "required",
         ]);
 
-        $engineer = Engineer::find($validated['engineer_id']);
+        $engineer = Engineer::find($validated["engineer_id"]);
         $engineer_profile = EngineerProfile::where("engineer_id",$validated["engineer_id"])->first();
         $engineer_want_work_ats = EngineerWantWorkAt::where("engineer_id",$validated["engineer_id"])->get();
         $engineer_good_ats = EngineerGoodAt::where("engineer_id",$validated["engineer_id"])->get();
@@ -121,14 +121,14 @@ class EngineerController extends Controller
     public function update_engineer_account(Request $request)
     {
         $validated = $request->validate([
-            'id' => 'required|numeric',
-            'name' => 'required',
-            'work_experience' => 'required|numeric',
-            'stacks' => 'nullable|array',
-            'want_work_ats' => 'nullable|array'
+            "id" => "required|numeric",
+            "name" => "required",
+            "work_experience" => "required|numeric",
+            "stacks" => "nullable|array",
+            "want_work_ats" => "nullable|array"
         ]);
 
-        $engineer = Engineer::find($validated['id']);
+        $engineer = Engineer::find($validated["id"]);
         $engineer_profile = EngineerProfile::where("engineer_id",$validated["id"])->first();
         $update_data = [
             "engineer_id" => $validated["id"],
@@ -170,9 +170,9 @@ class EngineerController extends Controller
     public function destroy_engineer_account(Request $request)
     {
         $validated = $request->validate([
-            'id' => 'required|numeric',
+            "id" => "required|numeric",
         ]);
-        $engineer = Engineer::find($validated['id']);
+        $engineer = Engineer::find($validated["id"]);
         $engineer_profile = EngineerProfile::where("engineer_id",$validated["id"])->first();
         $engineer_good_at = EngineerGoodAt::where("engineer_id",$validated["id"])->get();
         $engineer_want_work_at = EngineerWantWorkAt::where("engineer_id",$validated["id"])->get();
@@ -186,6 +186,89 @@ class EngineerController extends Controller
 
         return response()->json([
             "result"=>"sucessfull!",
+        ]);
+    }
+    public function search_engineers(Request $request)
+    {
+        $validated = $request->validate([
+            "search_input" => "required|string",
+            "search_key" => "required|string",
+        ]);
+        $engineer_infos = [];
+        if($validated["search_key"]=="all"){
+            $searching_engineer_profiles = EngineerProfile::where("name","ILIKE","%{$validated['search_input']}%")
+                ->get();
+            foreach($searching_engineer_profiles as $searching_engineer_profile){
+                $engineer_infos[] = [
+                    "engineer" => $searching_engineer_profile->engineer_id,
+                    "engineer_profile" => $searching_engineer_profile,
+                    "engineer_using_stacks" => $searching_engineer_profile->engineer->engineer_good_ats,
+                    "engineer_want_work_ats" => $searching_engineer_profile->engineer->engineer_want_work_ats,
+                ];
+            }
+            $searching_engineers = EngineerGoodAt::where("stack", "ILIKE","%{$validated['search_input']}%")
+                ->with("engineers")
+                ->get();
+            foreach($searching_engineers as $searching_engineer){
+                $engineer_infos[] = [
+                    "engineer" => $searching_engineer,
+                    "engineer_profile" => $searching_engineer->engineer_profile,
+                    "engineer_using_stacks" => $searching_engineers->engineer_good_ats,
+                    "engineer_want_work_ats" => $searching_engineers->engineer_want_work_ats,
+                ];
+            }
+            $searching_engineers = EngineerWantWorkAt::where("place","ILIKE","%{$validated['search_input']}%")
+                ->with("engineers")
+                ->get();
+            foreach($searching_engineers as $searching_engineer){
+                $engineer_infos[] = [
+                    "engineer" => $searching_engineer,
+                    "engineer_profile" => $searching_engineer->engineer_profile,
+                    "engineer_using_stacks" => $searching_engineers->engineer_good_ats,
+                    "engineer_want_work_ats" => $searching_engineers->engineer_want_work_ats,
+                ];
+            }
+        }
+        else if($validated["search_key"]=="name"){
+            $searching_engineer_profiles = EngineerProfile::where("name","ILIKE","%{$validated['search_input']}%")
+                ->get();
+            foreach($searching_engineer_profiles as $searching_engineer_profile){
+                $engineer_infos[] = [
+                    "engineer" => $searching_engineer_profile->engineer_id,
+                    "engineer_profile" => $searching_engineer_profile,
+                    "engineer_using_stacks" => $searching_engineer_profile->engineer->engineer_good_ats,
+                    "engineer_want_work_ats" => $searching_engineer_profile->engineer->engineer_want_work_ats,
+                ];
+            }
+        }
+        else if($validated["search_key"]=="stack"){
+            $searching_engineers = EngineerGoodAt::where("stack", "ILIKE","%{$validated['search_input']}%")
+            ->with("engineers")
+            ->get();
+            foreach($searching_engineers as $searching_engineer){
+                $engineer_infos[] = [
+                    "engineer" => $searching_engineer,
+                    "engineer_profile" => $searching_engineer->engineer_profile,
+                    "engineer_using_stacks" => $searching_engineers->engineer_good_ats,
+                    "engineer_want_work_ats" => $searching_engineers->engineer_want_work_ats,
+                ];
+            }
+        }
+        else if($validated["search_key"]=="place"){
+            $searching_engineers = EngineerWantWorkAt::where("place","ILIKE","%{$validated['search_input']}%")
+                ->with("engineers")
+                ->get();
+            foreach($searching_engineers as $searching_engineer){
+                $engineer_infos[] = [
+                    "engineer" => $searching_engineer,
+                    "engineer_profile" => $searching_engineer->engineer_profile,
+                    "engineer_using_stacks" => $searching_engineers->engineer_good_ats,
+                    "engineer_want_work_ats" => $searching_engineers->engineer_want_work_ats,
+                ];
+            }
+        }
+        return response()->json([
+            "engineer_infos" => $engineer_infos,
         ]);
     }
 }

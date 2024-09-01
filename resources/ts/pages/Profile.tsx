@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
-import Topbar from '../components/Topbar';
+import Topbar from '../components/Searchbar';
 import ProfileMain from '../components/ProfileMain';
 import Chat from '../components/Chat';
 import { useUserContext } from '../UserContext';

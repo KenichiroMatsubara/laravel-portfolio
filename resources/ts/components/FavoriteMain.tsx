@@ -8,11 +8,6 @@ import { BaseURLContext } from '../app';
 import { useUserContext } from '../UserContext';
 
 const FavoriteMain = () => {
-    const year: number = 0;
-    const name1: string = "名前1";
-    const name2: string = "名前2";
-    const langs: string[] = ["php","laravel","react","typescript","nodejs"]
-    const places: string[] = ["愛知県"];
     const { userContext: { userType,id,token,state }, dispatcher: { setUserType, setId,setToken,setState } } = useUserContext();
     const baseURL: string = useContext(BaseURLContext);
     const [onFavorite,setOnFavorite] = useState<boolean[]>([]);
@@ -26,28 +21,40 @@ const FavoriteMain = () => {
             }
             console.log({sendData});
             // お気に入りをCompanyが付けたEngineerを表示する場合
+            console.log({sendData:sendData});
             if(showFavoritedUser===true){
                 try {
                     const response = await axios.post(`${baseURL}/api/get_company_favorited_engineer_info`,sendData);
                     console.log(response.data);
                     const newEngineerInfos:EngineerInfo[] = [];
                     const newOnFaovirted:boolean[] = [];
+                    console.log(response.data.engineer_infos);
                     response.data.engineer_infos.forEach((engineer_info)=>{
-                        console.log(engineer_info.profile ? engineer_info.profile.name:"未設定");
                         const newEngineerInfo:EngineerInfo = {
                             engineerName: engineer_info.profile ? engineer_info.profile.name:"未設定",
                             engineerId: engineer_info.id,
                             engieerExperience: engineer_info.profile ? engineer_info.profile.work_experience:0,
-                            favoriteLangs: engineer_info.using_stacks || ["未設定"],
-                            workAt :engineer_info.want_to_work_ats || ["未設定"],
+                            favoriteLangs: [],
+                            workAts :[],
                             profileImg: ""
                         };
+                        engineer_info.using_stacks.forEach(using_stack => {
+                            newEngineerInfo.favoriteLangs.push(using_stack.stack);
+                        });
+                        engineer_info.want_work_ats.forEach(want_work_at => {
+                            newEngineerInfo.workAts.push(want_work_at.place);
+                        });
+                        if(newEngineerInfo.favoriteLangs.length===0){
+                            newEngineerInfo.favoriteLangs=["未設定"]
+                        }
+                        if(newEngineerInfo.workAts.length===0){
+                            newEngineerInfo.workAts=["未設定"]
+                        }
                         newOnFaovirted.push(true);
                         newEngineerInfos.push(newEngineerInfo);
                     });
                     setOnFavorite(newOnFaovirted);
                     setEngineerInfos(newEngineerInfos);
-                    console.log("お気に入りをCompanyが付けたEngineerを表示する場合");
                 } catch (error) {
                     console.log(error);
                 }
@@ -64,17 +71,28 @@ const FavoriteMain = () => {
                             engineerName: engineer_info.profile ? engineer_info.profile.name:"未設定",
                             engineerId: engineer_info.id,
                             engieerExperience: engineer_info.profile ? engineer_info.profile.work_experience:0,
-                            favoriteLangs: engineer_info.using_stacks || ["未設定"],
-                            workAt :engineer_info.want_to_work_ats || ["未設定"],
+                            favoriteLangs: [],
+                            workAts :[],
                             profileImg: ""
                         };
+                        engineer_info.using_stacks.forEach(using_stack => {
+                            newEngineerInfo.favoriteLangs.push(using_stack.stack);
+                        });
+                        engineer_info.want_work_ats.forEach(want_work_at => {
+                            newEngineerInfo.workAts.push(want_work_at.place);
+                        });
+                        if(newEngineerInfo.favoriteLangs.length===0){
+                            newEngineerInfo.favoriteLangs=["未設定"]
+                        }
+                        if(newEngineerInfo.workAts.length===0){
+                            newEngineerInfo.workAts=["未設定"]
+                        }
                         console.log(newEngineerInfo);
                         newEngineerInfos.push(newEngineerInfo);
                         newOnFaovirted.push(engineer_info.company_favorited);
                     });
                     setOnFavorite(newOnFaovirted);
                     setEngineerInfos(newEngineerInfos);
-                    console.log("お気に入りをEngineerが付けたCompanyを表示する場合");
                 } catch (error) {
                     console.log(error);
                 }
@@ -83,25 +101,32 @@ const FavoriteMain = () => {
         getFavoritedEngineer();
     },[showFavoritedUser]);
 
-    // zTODOこのした二つの関数は全くの未完成
-    const handleOnFavorite = async(index: number) => {
-        const newOnFavorite = [...onFavorite];
-        newOnFavorite[index] = true;
-        setOnFavorite(newOnFavorite);
-        const sendData = {"company_id":id};
+    const handleOnFavorite = async(engineer_id: number,index:number) => {
+        const sendData = {
+            "company_id":id,
+            "engineer_id":engineer_id,
+            "type":"c_to_e",
+        };
         try {
             const response = await axios.post(`${baseURL}/api/create_favorite`,sendData);
+            const newOnFavorite = [...onFavorite];
+            newOnFavorite[index] = true;
+            setOnFavorite(newOnFavorite);
         } catch (error) {
             console.log(error);
         }
     }
-    const handleOffFavorite = async(index: number) => {
-        const newOnFavorite = [...onFavorite];
-        newOnFavorite[index] = false;
-        setOnFavorite(newOnFavorite);
-        const sendData = {"company_id":id};
+    const handleOffFavorite = async(engineer_id: number,index:number) => {
+        const sendData = {
+            "company_id":id,
+            "engineer_id":engineer_id,
+            "type":"c_to_e"
+        };
         try {
-            const response = await axios.post(`${baseURL}/api/destroy_favorite`,sendData);
+            const response = await axios.post(`${baseURL}/api/create_favorite`,sendData);
+            const newOnFavorite = [...onFavorite];
+            newOnFavorite[index] = false;
+            setOnFavorite(newOnFavorite);
         } catch (error) {
             console.log(error);
         }
@@ -128,54 +153,58 @@ const FavoriteMain = () => {
                         LIKED BY
                     </button>
                 </div>
-                {engineerInfos!==undefined ? engineerInfos.map((engineerInfo: EngineerInfo,index) => (
-                        <div className='flex items-center justify-between py-5 duration-300 border-b border-orange-300'>
-                            <div className='flex items-center'>
-                                <div className='flex flex-col items-center justify-center'>
-                                    <img src={engineerInfo.profileImg}
-                                        className='object-cover w-16 h-16 rounded-full'
-                                    />
-                                    <span className=''>{engineerInfo.engineerName}</span>
-                                </div>
-                                <div className='flex flex-col ml-5'>
-                                    <span>実務経験{engineerInfo.engieerExperience}年</span>
-                                    <span>得意言語・フレームワーク</span>
-                                    <Conma Array={engineerInfo.favoriteLangs} />
-                                    <span>希望勤務地　<Conma Array={engineerInfo.workAt} /></span>
-                                </div>
+                {engineerInfos!==undefined && engineerInfos.length!==0 ? engineerInfos.map((engineerInfo: EngineerInfo,index) => (
+                    <div className='flex items-center justify-between py-5 duration-300 border-b border-orange-300'>
+                        <div className='flex items-center'>
+                            <div className='flex flex-col items-center justify-center'>
+                                <img src={engineerInfo.profileImg}
+                                    className='object-cover w-16 h-16 rounded-full'
+                                />
+                                <span className=''>{engineerInfo.engineerName}</span>
                             </div>
-                            <div className='flex flex-col items-center'>
-                                <Link to={`/profile/${engineerInfo.engineerId}/`}>
-                                    <button
-                                        className='px-5 py-1 text-white duration-300 bg-orange-500 rounded hover:bg-orange-300'
-                                    >
-                                        詳細
-                                    </button>
-                                </Link>
-                                {onFavorite[index] ?
-                                <div
-                                    className='p-3 mt-3 border-2 rounded-full'
-                                    onClick={() => console.log("test")}
-                                >
-                                    <FavoriteIcon
-                                        className=''
-                                    />
-                                </div>
-                                :
-                                <div
-                                    className='p-3 mt-3 text-white duration-300 bg-gray-800 rounded-full hover:bg-gray-600'
-                                    onClick={() => console.log("test")}
-                                >
-                                    <FavoriteIcon
-                                        className=''
-                                    />
-                                </div>}
+                            <div className='flex flex-col ml-5'>
+                                <span>実務経験{engineerInfo.engieerExperience}年</span>
+                                <span>得意言語・フレームワーク</span>
+                                <Conma Array={engineerInfo.favoriteLangs} />
+                                <span>希望勤務地　<Conma Array={engineerInfo.workAts} /></span>
                             </div>
                         </div>
+                        <div className='flex flex-col items-center'>
+                            <Link to={`/profile/${engineerInfo.engineerId}/`}>
+                                <button
+                                    className='px-5 py-1 text-white duration-300 bg-orange-500 rounded hover:bg-orange-300'
+                                >
+                                    詳細
+                                </button>
+                            </Link>
+                            {onFavorite[index] ?
+                            <div
+                                className='p-3 mt-3 text-white bg-red-400 rounded-full'
+                                onClick={() => handleOffFavorite(engineerInfo.engineerId,index)}
+                            >
+                                <FavoriteIcon
+                                    className=''
+                                />
+                            </div>
+                            :
+                            <div
+                                className='p-3 mt-3 text-gray-800 duration-300 rounded-full hover:text-gray-400'
+                                onClick={() => handleOnFavorite(engineerInfo.engineerId,index)}
+                            >
+                                <FavoriteIcon
+                                    className=''
+                                />
+                            </div>}
+                        </div>
+                    </div>
                 ))
                 :
                 <>
-                    {showFavoritedUser ?<span className='py-5 mt-32'>あなたのお気に入りのエンジニアを見つけられませんでした</span> :<span className='py-5 mt-32'>あなたにお気に入りをつけたエンジニアを見つけられませんでした</span>}
+                    {showFavoritedUser ?<span className='py-5 mt-32'>
+                        あなたのお気に入りのエンジニアを見つけられませんでした
+                    </span> :<span className='py-5 mt-32'>
+                        あなたにお気に入りをつけたエンジニアを見つけられませんでした
+                    </span>}
                 </>}
             </ul>
         </div>
