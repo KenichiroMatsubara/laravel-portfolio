@@ -6,39 +6,45 @@ import SendIcon from '@mui/icons-material/Send';
 
 const chats: Chat[] =[
     {
+        id: 1,
         text: "お元気ですか",
-        createdAt: "2024/06/30-19:06",
-        from: "company",
+        createdAt: "2024-08-25 03:13:15",
+        type: "c_to_e",
         read: false,
     },
     {
+        id: 2,
         text: "元気です",
-        createdAt: "2024/06/30-19:07",
-        from: "engineer",
+        createdAt: "2024-08-25 03:13:15",
+        type: "e_to_c",
         read: false,
     },
     {
+        id: 3,
         text: "教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育",
-        createdAt: "2024/07/06-21:07",
-        from: "engineer",
+        createdAt: "2024-08-25 03:13:15",
+        type: "e_to_c",
         read: false,
     },
     {
+        id: 4,
         text: "教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育",
-        createdAt: "2024/07/06-21:07",
-        from: "engineer",
+        createdAt: "2024-08-25 03:13:15",
+        type: "e_to_c",
         read: false,
     },
     {
+        id: 5,
         text: "教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育",
-        createdAt: "2024/07/06-21:07",
-        from: "engineer",
+        createdAt: "2024-08-25 03:13:15",
+        type: "e_to_c",
         read: false,
     },
     {
+        id: 6,
         text: "教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育",
-        createdAt: "2024/07/06-21:07",
-        from: "engineer",
+        createdAt: "2024-08-25 03:13:15",
+        type: "e_to_c",
         read: false,
     },
 ];
@@ -56,28 +62,27 @@ const Chat: FC<ChatProps> = ({engineerId,companyId,setOnModal}) => {
     }
 
     return (
-        <div className='absolute top-0 bottom-0 left-0 right-0 z-50 mt-20 ml-auto mr-auto bg-orange-100 border w-80 h-96 flex flex-col'>
+        <div className='absolute top-0 bottom-0 left-0 right-0 z-50 flex flex-col mt-20 ml-auto mr-auto border bg-orange-50 w-80 h-96'>
             <CloseIcon
                 className='absolute top-0 right-0 p-1 ml-auto text-white duration-300 bg-red-500 hover:bg-red-300'
                 onClick={() => setOnModal(false)}
             />
-            <div className='bg-orange-100 flex flex-col overflow-y-scroll'>
+            <div className='flex flex-col overflow-y-scroll bg-orange-100'>
                 {chats.map((chat) => (
-                <div className={"company"==chat.from ?'ml-4 mr-1 rounded-xl bg-white my-2 py-5 px-2':'mr-4 ml-1 rounded-xl bg-pink-300 my-2 py-5 px-2'}>
+                <div className={"c_to_e"==chat.type ?'ml-4 mr-1 rounded-xl bg-white my-2 py-5 px-2':'mr-4 ml-1 rounded-xl bg-orange-400 text-white my-2 py-5 px-2'}>
                     <span className=''>{chat.text}</span>
-                    <span className='text-xs text-gray-500'>{chat.createdAt}</span>
                 </div>))}
                 <div className='h-24'>　</div>
             </div>
-            <div className='flex bg-white bottom-0 absolute h-12 w-full items-center outline-none'>
+            <div className='absolute bottom-0 flex items-center w-full h-12 bg-white outline-none'>
                 <input
                     type="text"
-                    className=' py-1 px-2 m-1 w-60'
+                    className='px-2 py-1 m-1 w-60'
                     value={sendText}
                     onChange={(e) => setSendText(e.target.value)}
                     onClick={() => handleSendText()}
                 />
-                <SendIcon className='text-orange-400 hover:text-orange-100 duration-300' />
+                <SendIcon className='text-orange-400 duration-300 hover:text-orange-100' />
             </div>
         </div>
     )

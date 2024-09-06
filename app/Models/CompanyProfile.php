@@ -18,6 +18,6 @@ class CompanyProfile extends Model
     ];
     public function company()
     {
-        return $this->hasOne(Company::class);
+        return $this->belongsTo(Company::class);
     }
 }

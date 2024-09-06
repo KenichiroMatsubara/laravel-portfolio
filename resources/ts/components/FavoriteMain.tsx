@@ -33,7 +33,7 @@ const FavoriteMain = () => {
                         const newEngineerInfo:EngineerInfo = {
                             engineerName: engineer_info.profile ? engineer_info.profile.name:"未設定",
                             engineerId: engineer_info.id,
-                            engieerExperience: engineer_info.profile ? engineer_info.profile.work_experience:0,
+                            engieerExperience: engineer_info.profile ? engineer_info.profile.work_experience : 0,
                             favoriteLangs: [],
                             workAts :[],
                             profileImg: ""
@@ -133,80 +133,78 @@ const FavoriteMain = () => {
     }
 
     return (
-        <div className='flex flex-col w-9/12 mx-10'>
-            <ul className='h-full'>
-                <div className='flex gap-5 my-5 '>
-                    <button className={showFavoritedUser ?
-                        "w-60 h-12 text-white bg-orange-500 rounded-full hover:bg-orange-300 duration-300 text-xl"
-                        :
-                        "w-60 h-12 text-sm rounded-full text-white bg-gray-400 px-4 py-1 hover:bg-gray-300 duration-300 hover:text-xl"}
-                        onClick={()=>setShowFavoritedUser(true)}
-                    >
-                        LIKED
-                    </button>
-                    <button className={showFavoritedUser ?
-                        "w-60 h-12 text-sm rounded-full text-white bg-gray-400 px-4 py-1 hover:bg-gray-300 duration-300 hover:text-xl"
-                        :
-                        "w-60 h-12 text-white bg-orange-500 rounded-full hover:bg-orange-300 duration-300 text-xl"}
-                        onClick={()=>setShowFavoritedUser(false)}
-                    >
-                        LIKED BY
-                    </button>
-                </div>
-                {engineerInfos!==undefined && engineerInfos.length!==0 ? engineerInfos.map((engineerInfo: EngineerInfo,index) => (
-                    <div className='flex items-center justify-between py-5 duration-300 border-b border-orange-300'>
-                        <div className='flex items-center'>
-                            <div className='flex flex-col items-center justify-center'>
-                                <img src={engineerInfo.profileImg}
-                                    className='object-cover w-16 h-16 rounded-full'
-                                />
-                                <span className=''>{engineerInfo.engineerName}</span>
-                            </div>
-                            <div className='flex flex-col ml-5'>
-                                <span>実務経験{engineerInfo.engieerExperience}年</span>
-                                <span>得意言語・フレームワーク</span>
-                                <Conma Array={engineerInfo.favoriteLangs} />
-                                <span>希望勤務地　<Conma Array={engineerInfo.workAts} /></span>
-                            </div>
+        <div className='flex flex-col w-9/12 h-full mx-10'>
+            <div className='flex gap-5 my-5 '>
+                <button className={showFavoritedUser ?
+                    "w-60 h-12 text-white bg-orange-500 rounded-full hover:bg-orange-300 duration-300 text-xl"
+                    :
+                    "w-60 h-12 text-sm rounded-full text-white bg-gray-400 px-4 py-1 hover:bg-gray-300 duration-300 hover:text-xl"}
+                    onClick={()=>setShowFavoritedUser(true)}
+                >
+                    LIKED
+                </button>
+                <button className={showFavoritedUser ?
+                    "w-60 h-12 text-sm rounded-full text-white bg-gray-400 px-4 py-1 hover:bg-gray-300 duration-300 hover:text-xl"
+                    :
+                    "w-60 h-12 text-white bg-orange-500 rounded-full hover:bg-orange-300 duration-300 text-xl"}
+                    onClick={()=>setShowFavoritedUser(false)}
+                >
+                    LIKED BY
+                </button>
+            </div>
+            {engineerInfos!==undefined && engineerInfos.length!==0 ? engineerInfos.map((engineerInfo: EngineerInfo,index) => (
+                <div className='flex items-center justify-between py-5 duration-300 border-b border-orange-300'>
+                    <div className='flex items-center'>
+                        <div className='flex flex-col items-center justify-center'>
+                            <img src={engineerInfo.profileImg}
+                                className='object-cover w-16 h-16 rounded-full'
+                            />
+                            <span className=''>{engineerInfo.engineerName}</span>
                         </div>
-                        <div className='flex flex-col items-center'>
-                            <Link to={`/profile/${engineerInfo.engineerId}/`}>
-                                <button
-                                    className='px-5 py-1 text-white duration-300 bg-orange-500 rounded hover:bg-orange-300'
-                                >
-                                    詳細
-                                </button>
-                            </Link>
-                            {onFavorite[index] ?
-                            <div
-                                className='p-3 mt-3 text-white bg-red-400 rounded-full'
-                                onClick={() => handleOffFavorite(engineerInfo.engineerId,index)}
-                            >
-                                <FavoriteIcon
-                                    className=''
-                                />
-                            </div>
-                            :
-                            <div
-                                className='p-3 mt-3 text-gray-800 duration-300 rounded-full hover:text-gray-400'
-                                onClick={() => handleOnFavorite(engineerInfo.engineerId,index)}
-                            >
-                                <FavoriteIcon
-                                    className=''
-                                />
-                            </div>}
+                        <div className='flex flex-col ml-5'>
+                            <span>実務経験{engineerInfo.engieerExperience}年</span>
+                            <span>得意言語・フレームワーク</span>
+                            <Conma Array={engineerInfo.favoriteLangs} />
+                            <span>希望勤務地　<Conma Array={engineerInfo.workAts} /></span>
                         </div>
                     </div>
-                ))
-                :
-                <>
-                    {showFavoritedUser ?<span className='py-5 mt-32'>
-                        あなたのお気に入りのエンジニアを見つけられませんでした
-                    </span> :<span className='py-5 mt-32'>
-                        あなたにお気に入りをつけたエンジニアを見つけられませんでした
-                    </span>}
-                </>}
-            </ul>
+                    <div className='flex flex-col items-center'>
+                        <Link to={`/profile/${engineerInfo.engineerId}/`}>
+                            <button
+                                className='px-5 py-1 text-white duration-300 bg-orange-500 rounded hover:bg-orange-300'
+                            >
+                                詳細
+                            </button>
+                        </Link>
+                        {onFavorite[index] ?
+                        <div
+                            className='p-3 mt-3 text-white bg-red-400 rounded-full'
+                            onClick={() => handleOffFavorite(engineerInfo.engineerId,index)}
+                        >
+                            <FavoriteIcon
+                                className=''
+                            />
+                        </div>
+                        :
+                        <div
+                            className='p-3 mt-3 text-gray-800 duration-300 rounded-full hover:text-gray-400'
+                            onClick={() => handleOnFavorite(engineerInfo.engineerId,index)}
+                        >
+                            <FavoriteIcon
+                                className=''
+                            />
+                        </div>}
+                    </div>
+                </div>
+            ))
+            :
+            <>
+                {showFavoritedUser ?<span className='py-3'>
+                    あなたのお気に入りのエンジニアを見つけられませんでした
+                </span> :<span className='py-3'>
+                    あなたにお気に入りをつけたエンジニアを見つけられませんでした
+                </span>}
+            </>}
         </div>
     )
 }

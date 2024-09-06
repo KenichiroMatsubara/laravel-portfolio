@@ -6,6 +6,7 @@ use App\Models\Engineer;
 use App\Models\EngineerGoodAt;
 use App\Models\EngineerWantWorkAt;
 use App\Models\EngineerProfile;
+use App\Models\Favorite;
 use App\Models\Portfolio;
 use App\Models\Token;
 use Illuminate\Routing\Controller;
@@ -191,90 +192,135 @@ class EngineerController extends Controller
     public function search_engineers(Request $request)
     {
         $validated = $request->validate([
-            "search_input" => "required|string",
+            "search_input" => "nullable|string",
             "search_key" => "required|string",
+            "company_id" => "required|numeric"
         ]);
 
-        $engineer_infos = [];
+        $engineer_infos = collect(); // Laravel Collection を使用
         $search_input = strtolower($validated['search_input']);
 
         if ($validated["search_key"] == "all") {
-                // Name search
+            // 名前検索
             $searching_engineer_profiles = EngineerProfile::whereRaw("LOWER(name) LIKE ?", ["%$search_input%"])
                 ->get();
             foreach($searching_engineer_profiles as $searching_engineer_profile)
             {
-                $engineer_infos[] = [
+                $favorited = Favorite::where("company_id", $validated["company_id"])
+                    ->where("engineer_id", $searching_engineer_profile->engineer_id)
+                    ->where("type", "c_to_e")
+                    ->first();
+
+                $engineer_infos->push([
+                    "id" => $searching_engineer_profile->engineer_id,
                     "engineer" => $searching_engineer_profile->engineer,
-                    "engineer_profile" => $searching_engineer_profile,
-                    "engineer_using_stacks" => $searching_engineer_profile->engineer->engineer_good_ats,
-                    "engineer_want_work_ats" => $searching_engineer_profile->engineer->engineer_want_work_ats,
-                ];
+                    "profile" => $searching_engineer_profile,
+                    "using_stacks" => $searching_engineer_profile->engineer->engineer_good_ats,
+                    "want_work_ats" => $searching_engineer_profile->engineer->engineer_want_work_ats,
+                    "favorited" => $favorited ? true : false,
+                ]);
             }
 
-            // Stack search
+            // スタック検索
             $searching_engineers = Engineer::whereHas('engineer_good_ats', function($query) use ($search_input) {
                 $query->whereRaw('LOWER(stack) LIKE ?', ["%$search_input%"]);
             })->distinct()->get();
+
             foreach ($searching_engineers as $searching_engineer) {
-                $engineer_infos[] = [
+                $favorited = Favorite::where("company_id", $validated["company_id"])
+                    ->where("engineer_id", $searching_engineer->id)
+                    ->where("type", "c_to_e")
+                    ->first();
+
+                $engineer_infos->push([
+                    "id" => $searching_engineer->id,
                     "engineer" => $searching_engineer,
-                    "engineer_profile" => $searching_engineer->engineer_profile,
-                    "engineer_using_stacks" => $searching_engineer->engineer_good_ats,
-                    "engineer_want_work_ats" => $searching_engineer->engineer_want_work_ats,
-                ];
+                    "profile" => $searching_engineer->engineer_profile,
+                    "using_stacks" => $searching_engineer->engineer_good_ats,
+                    "want_work_ats" => $searching_engineer->engineer_want_work_ats,
+                    "favorited" => $favorited ? true : false,
+                ]);
             }
 
-            // Place search
+            // 場所検索
             $searching_engineers = Engineer::whereHas('engineer_want_work_ats', function($query) use ($search_input) {
                 $query->whereRaw('LOWER(place) LIKE ?', ["%$search_input%"]);
             })->distinct()->get();
+
             foreach ($searching_engineers as $searching_engineer) {
-                $engineer_infos[] = [
+                $favorited = Favorite::where("company_id", $validated["company_id"])
+                    ->where("engineer_id", $searching_engineer->id)
+                    ->where("type", "c_to_e")
+                    ->first();
+
+                $engineer_infos->push([
+                    "id" => $searching_engineer->id,
                     "engineer" => $searching_engineer,
-                    "engineer_profile" => $searching_engineer->engineer_profile,
-                    "engineer_using_stacks" => $searching_engineer->engineer_good_ats,
-                    "engineer_want_work_ats" => $searching_engineer->engineer_want_work_ats,
-                ];
+                    "profile" => $searching_engineer->engineer_profile,
+                    "using_stacks" => $searching_engineer->engineer_good_ats,
+                    "want_work_ats" => $searching_engineer->engineer_want_work_ats,
+                    "favorited" => $favorited ? true : false,
+                ]);
             }
-        } else if ($validated["search_key"] == "name") {
-            $searching_engineer_profiles = EngineerProfile::whereRaw("LOWER(name) LIKE ?", ["%$search_input%"])
-                ->get();
-            foreach($searching_engineer_profiles as $searching_engineer_profile)
-            {
-                $engineer_infos[] = [
-                    "engineer" => $searching_engineer_profile->engineer,
-                    "engineer_profile" => $searching_engineer_profile,
-                    "engineer_using_stacks" => $searching_engineer_profile->engineer->engineer_good_ats,
-                    "engineer_want_work_ats" => $searching_engineer_profile->engineer->engineer_want_work_ats,
-                ];
-            }
-            return response()->json([
-                "result" => $engineer_infos,
-            ]);
-        } else if ($validated["search_key"] == "stack") {
-            $searching_engineers = Engineer::whereHas('engineer_good_ats', function($query) use ($search_input) {
-                $query->whereRaw('LOWER(stack) LIKE ?', ["%$search_input%"]);
-            })->distinct()->get();
-            foreach ($searching_engineers as $searching_engineer) {
-                $engineer_infos[] = [
-                    "engineer" => $searching_engineer,
-                    "engineer_profile" => $searching_engineer->engineer_profile,
-                    "engineer_using_stacks" => $searching_engineer->engineer_good_ats,
-                    "engineer_want_work_ats" => $searching_engineer->engineer_want_work_ats,
-                ];
-            }
-        } else if ($validated["search_key"] == "place") {
-            $searching_engineers = Engineer::whereHas('engineer_want_work_ats', function($query) use ($search_input) {
-                $query->whereRaw('LOWER(place) LIKE ?', ["%$search_input%"]);
-            })->distinct()->get();
-            foreach ($searching_engineers as $searching_engineer) {
-                $engineer_infos[] = [
-                    "engineer" => $searching_engineer,
-                    "engineer_profile" => $searching_engineer->engineer_profile,
-                    "engineer_using_stacks" => $searching_engineer->engineer_good_ats,
-                    "engineer_want_work_ats" => $searching_engineer->engineer_want_work_ats,
-                ];
+
+            // 重複する ID を削除
+            $engineer_infos = $engineer_infos->unique('id')->values();
+        } else {
+            // 他の検索キー（name, stack, place）の処理は既存のまま
+            if ($validated["search_key"] == "name") {
+                $searching_engineer_profiles = EngineerProfile::whereRaw("LOWER(name) LIKE ?", ["%$search_input%"])
+                    ->get();
+                foreach($searching_engineer_profiles as $searching_engineer_profile)
+                {
+                    $favorited = Favorite::where("company_id", $validated["company_id"])
+                        ->where("engineer_id", $searching_engineer_profile->engineer_id)
+                        ->where("type", "c_to_e")
+                        ->first();
+                    $engineer_infos[] = [
+                        "id" => $searching_engineer_profile->engineer->id,
+                        "engineer" => $searching_engineer_profile->engineer,
+                        "profile" => $searching_engineer_profile,
+                        "using_stacks" => $searching_engineer_profile->engineer->engineer_good_ats,
+                        "want_work_ats" => $searching_engineer_profile->engineer->engineer_want_work_ats,
+                        "favorited" => $favorited ? true : false,
+                    ];
+                }
+            } elseif ($validated["search_key"] == "stack") {
+                $searching_engineers = Engineer::whereHas('engineer_good_ats', function($query) use ($search_input) {
+                    $query->whereRaw('LOWER(stack) LIKE ?', ["%$search_input%"]);
+                })->distinct()->get();
+                foreach ($searching_engineers as $searching_engineer) {
+                    $favorited = Favorite::where("company_id", $validated["company_id"])
+                        ->where("engineer_id", $searching_engineer->id)
+                        ->where("type", "c_to_e")
+                        ->first();
+                    $engineer_infos[] = [
+                        "id" => $searching_engineer->id,
+                        "engineer" => $searching_engineer,
+                        "profile" => $searching_engineer->engineer_profile,
+                        "using_stacks" => $searching_engineer->engineer_good_ats,
+                        "want_work_ats" => $searching_engineer->engineer_want_work_ats,
+                        "favorited" => $favorited ? true : false,
+                    ];
+                }
+            } elseif ($validated["search_key"] == "place") {
+                $searching_engineers = Engineer::whereHas('engineer_want_work_ats', function($query) use ($search_input) {
+                    $query->whereRaw('LOWER(place) LIKE ?', ["%$search_input%"]);
+                })->distinct()->get();
+                foreach ($searching_engineers as $searching_engineer) {
+                    $favorited = Favorite::where("company_id", $validated["company_id"])
+                        ->where("engineer_id", $searching_engineer->id)
+                        ->where("type", "c_to_e")
+                        ->first();
+                    $engineer_infos[] = [
+                        "id" => $searching_engineer->id,
+                        "engineer" => $searching_engineer,
+                        "profile" => $searching_engineer->engineer_profile,
+                        "using_stacks" => $searching_engineer->engineer_good_ats,
+                        "want_work_ats" => $searching_engineer->engineer_want_work_ats,
+                        "favorited" => $favorited ? true : false,
+                    ];
+                }
             }
         }
 
@@ -283,4 +329,5 @@ class EngineerController extends Controller
             "engineer_infos" => $engineer_infos,
         ]);
     }
+
 }

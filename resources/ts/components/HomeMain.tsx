@@ -6,11 +6,10 @@ import { Link } from 'react-router-dom'
 const HomeMain = () => {
     const sampleProfileData:companyProfile = {
         name: "matsubaraJapan",
-        homepage: "https://www.triple-e.inc/",
+        homepageURL: "https://www.triple-e.inc/",
         address: "愛知県岡崎市山綱町",
-        phoneNumber: "123-4567-8901",
         usedStacks: ["php","laravel","aws","docker","github","react","vue"],
-        jobDescription: "バックエンドエンジニアとフロントエンドエンジニアを募集しています。",
+        explain: "バックエンドエンジニアとフロントエンドエンジニアを募集しています。",
         imgURL: 'https://kohacu.com/wp-content/uploads/2018/06/kohacu.com_001312_20180615.png'
     }
     return (
@@ -19,11 +18,11 @@ const HomeMain = () => {
                 <span className='text-3xl text-orange-500 underline'>{sampleProfileData.name}</span>
                 <span className='mt-5'>{sampleProfileData.address}</span>
                 <span className='mt-5'>仕事内容</span>
-                <span className=''>{sampleProfileData.jobDescription}</span>
+                <span className=''>{sampleProfileData.explain}</span>
                 <span className='mt-5'>使用技術</span>
                 <Conma Array={sampleProfileData.usedStacks} />
                 <a
-                    href={sampleProfileData.homepage}
+                    href={sampleProfileData.homepageURL}
                     className='mt-5 text-blue-500 duration-300 hover:text-blue-300'
                 >
                     ホームページを見る

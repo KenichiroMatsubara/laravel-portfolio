@@ -22,11 +22,10 @@ const EditHome = () => {
 
     const sampleProfileData:companyProfile = {
         name: "matsubaraJapan",
-        homepage: "https://www.triple-e.inc/",
+        homepageURL: "https://www.triple-e.inc/",
         address: "愛知県岡崎市山綱町",
-        phoneNumber: "123-4567-8901",
         usedStacks: ["php","laravel","aws","docker","github","react","vue"],
-        jobDescription: "バックエンドエンジニアとフロントエンドエンジニアを募集しています。",
+        explain: "バックエンドエンジニアとフロントエンドエンジニアを募集しています。",
         imgURL: 'https://kohacu.com/wp-content/uploads/2018/06/kohacu.com_001312_20180615.png'
     }
 
