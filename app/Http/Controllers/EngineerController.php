@@ -325,7 +325,7 @@ class EngineerController extends Controller
         }
 
         return response()->json([
-            "result" => "%$search_input%",
+            "result" => true,
             "engineer_infos" => $engineer_infos,
         ]);
     }

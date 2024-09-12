@@ -42,6 +42,7 @@ Route::post("/signin_company_account_by_token",$company."signin_company_account_
 Route::post("/get_company_info",$company."get_company_info");
 Route::post("/update_company_account",$company."update_company_account");
 Route::post("/destroy_company_account",$company."destroy_company_account");
+Route::post("/search_companies", $company."search_companies");
 
 
 Route::post("/create_chat",$chat."create_chat");

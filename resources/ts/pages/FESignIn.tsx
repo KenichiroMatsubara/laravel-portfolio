@@ -8,13 +8,13 @@ import { BaseURLContext } from '../app';
 
 const FESignIn = () => {
     const { userContext: { userType,id,token,state }, dispatcher: { setUserType, setId,setToken,setState } } = useUserContext();
+    const baseURL:string = useContext(BaseURLContext);
     const [autoSignin,setAutoSignin] = useState<boolean>(!(token==="none"));//tokenがからの時はautoSigninを実行しない
     const [authFailed, setAuthFailed] = useState<boolean>(false);
 
     const email = useRef<HTMLInputElement>(null);
     const password = useRef<HTMLInputElement>(null);
 
-    const baseURL:string = useContext(BaseURLContext);
 
     // 自動クッキーログイン機能
     useEffect(()=> {
@@ -36,15 +36,16 @@ const FESignIn = () => {
             try {
                 const response = await axios.post(`${baseURL}/api/signin_engineer_account_by_token`,sendData);
                 Cookies.set("token",response.data.token);
-                setId(response.data.data.id);
+                setId(response.data.id);
                 setUserType("engineer");
                 setToken(response.data.token);
-                setState("signin")
+                setState("signin");
                 console.log({this_is_senddata: sendData});
                 console.log(response.data);
                 console.log({userType,token,state});
                 console.log("auto login successed!!!");
             } catch (error) {
+                console.log(error);
                 console.log({this_is_senddata: sendData});
                 console.log("token signin is failed")
                 setUserType("");
@@ -55,7 +56,6 @@ const FESignIn = () => {
                 Cookies.remove("email");
                 Cookies.remove("userType");
                 console.log({userType,state,id,token});
-                console.log(error);
             }
         }
         autoSigninFunc();

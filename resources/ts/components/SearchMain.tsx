@@ -130,21 +130,19 @@ const SearchMain = () => {
                                 </button>
                             </Link>
                             {onFavorite[index] ?
-                            <div
-                                className='p-3 mt-3 text-white bg-red-400 rounded-full'
-                                onClick={() => handleOffFavorite(engineerInfo.engineerId,index)}
-                            >
+                            <div className='p-3 rounded-full hover:bg-gray-200 duration-300'>
                                 <FavoriteIcon
-                                    className=''
+                                    className='text-red-300'
+                                    fontSize='large'
+                                    onClick={() => handleOffFavorite(engineerInfo.engineerId,index)}
                                 />
                             </div>
                             :
-                            <div
-                                className='p-3 mt-3 text-gray-800 duration-300 rounded-full hover:text-gray-400'
-                                onClick={() => handleOnFavorite(engineerInfo.engineerId,index)}
-                            >
+                            <div className='p-3 rounded-full hover:bg-gray-200 duration-300'>
                                 <FavoriteIcon
-                                    className=''
+                                    className=' stroke-black stroke-1 text-white'
+                                    fontSize='large'
+                                    onClick={() => handleOnFavorite(engineerInfo.engineerId,index)}
                                 />
                             </div>}
                         </div>

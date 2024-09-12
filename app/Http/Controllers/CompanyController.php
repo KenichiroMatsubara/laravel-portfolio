@@ -1,13 +1,14 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Company;
-use App\Models\CompanyToken;
 use App\Models\CompanyUsingStack;
 use App\Models\CompanyProfile;
+use App\Models\Favorite;
 use App\Models\Token;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Http\Request;
 
 class CompanyController extends Controller
 {
@@ -173,6 +174,103 @@ class CompanyController extends Controller
         $company->delete();
         return response()->json([
             "result"=>"sucessfull!",
+        ]);
+    }
+    public function search_companies(Request $request)
+    {
+        $validated = $request->validate([
+            'engineer_id' => 'required|numeric',
+            'search_input' => 'required|string',
+        ]);
+        $companies = collect();
+        $search_input = strtolower($validated['search_input']);
+
+        // 名前検索
+        $searching_companies = Company::whereHas('company_profile',function($query) use ($search_input){
+            $query->whereRaw("LOWER(name) LIKE ?",["%$search_input%"]);
+        })->distinct()->get();
+
+        foreach($searching_companies as $searching_company) {
+            $favorited = Favorite::where("engineer_id",$validated["engineer_id"])
+                ->where("company_id",$searching_company->id)
+                ->where("type","e_to_c")
+                ->first();
+
+            $companies->push([
+                "id"=> $searching_company->id,
+                "company" => $searching_company,
+                "profile" => $searching_company->company_profile,
+                "using_stacks" => $searching_company->company_using_stacks,
+                "favorited" => $favorited ? true : false,
+            ]);
+        }
+
+        // 住所検索
+        $searching_companies = Company::whereHas('company_profile',function($query) use ($search_input){
+            $query->whereRaw("LOWER(address) LIKE ?",["%$search_input%"]);
+        })->distinct()->get();
+
+        foreach($searching_companies as $searching_company) {
+            $favorited = Favorite::where("engineer_id",$validated["engineer_id"])
+                ->where("company_id",$searching_company->id)
+                ->where("type","e_to_c")
+                ->first();
+
+            $companies->push([
+                "id"=> $searching_company->id,
+                "company" => $searching_company,
+                "profile" => $searching_company->company_profile,
+                "using_stacks" => $searching_company->company_using_stacks,
+                "favorited" => $favorited ? true : false,
+            ]);
+        }
+
+        // 技術検索
+        $searching_companies = Company::whereHas('company_using_stacks',function($query) use ($search_input){
+            $query->whereRaw("LOWER(stack) LIKE ?",["%$search_input%"]);
+        })->distinct()->get();
+
+        foreach($searching_companies as $searching_company) {
+            $favorited = Favorite::where("engineer_id",$validated["engineer_id"])
+                ->where("company_id",$searching_company->id)
+                ->where("type","e_to_c")
+                ->first();
+
+            $companies->push([
+                "id"=> $searching_company->id,
+                "company" => $searching_company,
+                "profile" => $searching_company->company_profile,
+                "using_stacks" => $searching_company->company_using_stacks,
+                "favorited" => $favorited ? true : false,
+            ]);
+        }
+
+        // 説明検索
+        $searching_companies = Company::whereHas('company_profile',function($query) use ($search_input){
+            $query->whereRaw("LOWER(`explain`) LIKE ?",["%$search_input%"]);
+        })->distinct()->get();
+
+        foreach($searching_companies as $searching_company) {
+            $favorited = Favorite::where("engineer_id",$validated["engineer_id"])
+                ->where("company_id",$searching_company->id)
+                ->where("type","e_to_c")
+                ->first();
+
+            $companies->push([
+                "id"=> $searching_company->id,
+                "company" => $searching_company,
+                "profile" => $searching_company->company_profile,
+                "using_stacks" => $searching_company->company_using_stacks,
+                "favorited" => $favorited ? true : false,
+            ]);
+        }
+
+        // idが被っている会社を削除
+        $companies = $companies->unique('id')->values();
+
+        return response()->json([
+            "result" => true,
+            "companies" => $companies,
         ]);
     }
 }
