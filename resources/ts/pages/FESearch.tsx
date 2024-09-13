@@ -8,7 +8,7 @@ import axios from 'axios';
 import { BaseURLContext } from '../app';
 import { useUserContext } from '../UserContext';
 
-const sampleCompanyData: Company = {
+export const sampleCompanyData: Company = {
     company_id: 1,
     name: "松原inovative",
     explain: "バックエンドエンジニアを募集しています。Laravel,reactをできるプログラマーを募集しています。",
@@ -26,29 +26,103 @@ const FESearch: FC = () => {
     const [companies,setCompanies] = useState<Company[]>([sampleCompanyData,sampleCompanyData]);
     const [onFavorites,setOnFavorites] = useState<boolean[]>([false,false]);
     useEffect(() => {
-        const searchCompany = async() => {
+        const searchCompanies = async() => {
+            if(searchInput.trim()===""){
+                console.log("search_input is blank");
+                setCompanies([]);
+                setOnFavorites([]);
+                return;
+            }
+            const sendData = {
+                "engineer_id": id,
+                "search_input":searchInput
+            };
             try {
-                const sendData = {
-                    "engineer_id": id,
-                    "search_input":searchInput
-                };
-                const response = await axios.post(`${baseURL}/search_companies`,sendData);
+                const response = await axios.post(`${baseURL}/api/search_companies`,sendData);
+                console.log(response.data.companies);
+                const newCompanies: Company[] = [];
+                const newOnFavorites: boolean[] = [];
+                response.data.companies.forEach((company, index)=> {
+                    const newStacks: string[] = [];
+                    company.using_stacks.forEach((stack) => {
+                        newStacks.push(stack);
+                    })
+                    if(company.profile){
+                        const newCompany: Company = {
+                            company_id: company.id,
+                            name: company.profile.name ? company.profile.name : "未設定",
+                            explain: company.profile.explain ? company.profile.explain: "未設定",
+                            stacks: newStacks,
+                            homepageURL: company.profile.homepageURL ? company.profile.homepageURL : "",
+                            address: company.profile.address ? company.profile.address : "未設定",
+                            imgURL: company.profile.imgURL ? company.profile.imgURL : "未設定",
+                        };
+                        newCompanies.push(newCompany);
+                        newOnFavorites.push(company.favorited);
+                    }
+                    else {
+                        const newCompany: Company = {
+                            company_id: company.id,
+                            name: "未設定",
+                            explain: "未設定",
+                            stacks: newStacks,
+                            homepageURL: "",
+                            address: "未設定",
+                            imgURL: "未設定",
+                        };
+                        newCompanies.push(newCompany);
+                        newOnFavorites.push(company.favorited);
+                    }
+                });
+                setCompanies(newCompanies);
+                setOnFavorites(newOnFavorites);
             } catch (error) {
                 console.log(error);
+                setCompanies([]);
+                setOnFavorites([]);
             }
         };
+        searchCompanies();
     },[searchInput]);
 
     const handleOnFavorite = async(company_id: number,index: number) => {
-        const newOnFavorites = [...onFavorites];
-        console.log(newOnFavorites);
-        newOnFavorites[index] = true;
-        setOnFavorites(newOnFavorites);
+        const sendData = {
+            "company_id": company_id,
+            "engineer_id": id,
+            "type": "e_to_c"
+        }
+        try {
+            const response = await axios.post(`${baseURL}/api/create_favorite`,sendData);
+            const newOnFavorites = [...onFavorites];
+            newOnFavorites[index] = true;
+            setOnFavorites(newOnFavorites);
+        } catch (error) {
+            console.log(error);
+        }
     };
+
     const handleOffFavorite = async(company_id:number,index:number) => {
-        const newOnFavorites = [...onFavorites];
-        newOnFavorites[index] = false;
-        setOnFavorites(newOnFavorites);
+        const sendData = {
+            "company_id": company_id,
+            "engineer_id": id,
+            "type": "e_to_c"
+        }
+        console.log(sendData);
+        try {
+            const response = await axios.post(`${baseURL}/api/destroy_favorite`,sendData);
+            const newOnFavorites = [...onFavorites];
+            newOnFavorites[index] = false;
+            setOnFavorites(newOnFavorites);
+            console.log(response.data)
+        } catch (error) {
+            console.log(error);
+            console.log(error.response);
+            if(error.response.data.result===true && error.response.data.message==="the favorite was not found!"){
+                const newOnFavorites = [...onFavorites];
+                newOnFavorites[index] = false;
+                setOnFavorites(newOnFavorites);
+            }
+        }
     };
 
     return (
@@ -65,11 +139,11 @@ const FESearch: FC = () => {
                         <SearchIcon className='' />
                     </div>
                 </div>
-                <div>
-                    {companies.map((company:Company,index:number) => (
+                <div className='mx-10 mt-5'>
+                    {companies.length ? companies.map((company:Company,index:number) => (
                         <div className='border-b pl-4 pr-8 py-4 flex items-center justify-between' key={index}>
                             <div className='flex gap-5'>
-                                <div className='flex flex-col gap-3 items-center'>
+                                <div className='flex flex-col gap-3 items-center w-36'>
                                     <img src={company.imgURL} alt=""
                                         className='rounded-full w-20 h-20'
                                     />
@@ -89,7 +163,7 @@ const FESearch: FC = () => {
                             {onFavorites[index]===true ?
                             <div className='p-3 rounded-full hover:bg-gray-200 duration-300'>
                                 <FavoriteIcon
-                                    className='text-red-300'
+                                    className='text-red-400'
                                     fontSize='large'
                                     onClick={() => handleOffFavorite(company.company_id,index)}
                                 />
@@ -104,7 +178,11 @@ const FESearch: FC = () => {
                             </div>
                             }
                         </div>
-                    ))}
+                    )):
+                        <div>
+                            該当する会社はありませんでした
+                        </div>
+                    }
                 </div>
             </div>
         </div>

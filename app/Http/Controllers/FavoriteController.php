@@ -57,8 +57,12 @@ class FavoriteController extends Controller
             ->where("engineer_id",$validated["engineer_id"])
             ->where("type",$validated["type"])
             ->get();
-        if($favorite && count($favorite)>0){
-            $favorite->each->delete();
+        if($favorite->isNotEmpty()){
+            Favorite::where("company_id", $validated["company_id"])
+                ->where("engineer_id", $validated["engineer_id"])
+                ->where("type", $validated["type"])
+                ->delete();
+
             return response()->json([
                 "result"=>true,
                 "message"=>"the favorite destroyed successfully!"
@@ -94,6 +98,7 @@ class FavoriteController extends Controller
             }
             array_push($favorited_company_infos,[
                 "id"=>$favorited_company_profile->company_id,
+                "company"=>$favorited_company_profile->company,
                 "profile">=$favorited_company_profile,
                 "using_stacks"=>$favorited_company_profile->company->company_using_stacks,
                 "company_favorited"=>$is_favorited
@@ -101,7 +106,7 @@ class FavoriteController extends Controller
         }
         return response()->json([
             "result"=>true,
-            "company_infos"=>$favorited_company_infos,
+            "companies"=>$favorited_company_infos,
         ]);
     }
     // companyがどのengineerにFavoriteを送っているかを知る関数
@@ -163,6 +168,7 @@ class FavoriteController extends Controller
             }
             array_push($favorited_company_infos,[
                 "id"=>$favorited_company_profile->company_id,
+                "company">=$favorited_company_profile->company,
                 "profile">=$favorited_company_profile,
                 "using_stacks"=>$favorited_company_profile->company->company_using_stacks,
                 "engineer_favorited"=>$is_favorited,
@@ -170,7 +176,7 @@ class FavoriteController extends Controller
         }
         return response()->json([
             "result"=>true,
-            "company_infos"=>$favorited_company_infos,
+            "companies"=>$favorited_company_infos,
         ]);
     }
     // companyアカウントがどのengineerアカウントからFavoriteを受け取っているかを知る関数

@@ -5,6 +5,7 @@ import FiberNewIcon from '@mui/icons-material/FiberNew';
 import SearchIcon from '@mui/icons-material/Search';
 import { Link } from 'react-router-dom';
 import SignoutBar from './SignoutBar';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 const FESidebar = () => {
     return (
@@ -19,8 +20,8 @@ const FESidebar = () => {
                 </Link>
                 <Link to={"/engineer/companylist"}>
                     <li className='flex items-center px-4 py-2 text-2xl text-orange-500 duration-300 border-b border-orange-300 hover:text-orange-300'>
-                        <NotificationsIcon fontSize='large' />
-                        <span className='ml-1'>Contact</span>
+                        <FavoriteIcon fontSize='large' />
+                        <span className='ml-1'>Favorite</span>
                     </li>
                 </Link>
                 <Link to={"/engineer/make_new"}>
