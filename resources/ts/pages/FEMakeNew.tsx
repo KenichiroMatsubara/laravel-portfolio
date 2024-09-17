@@ -4,6 +4,7 @@ import type { Stacks } from '../types/stacks';
 import { useUserContext } from '../UserContext';
 import axios from 'axios';
 import { BaseURLContext } from '../app';
+import { useNavigate } from 'react-router-dom';
 
 const initStacks = {
     php: false,
@@ -22,6 +23,7 @@ const initStacks = {
 const FEMakeNew = () => {
     const [stacks,setStacks] = useState<Stacks>(initStacks);
     const { userContext: { id } } = useUserContext();
+    const navigate = useNavigate()
 
     const baseURL:string = useContext(BaseURLContext);
 
@@ -53,7 +55,7 @@ const FEMakeNew = () => {
             const response = await axios.post(`${baseURL}/api/create_portfolio`,sendData);
             console.log(sendData);
             console.log(response.data);
-            window.location.reload();
+            navigate("/engineer");
         } catch (error) {
             console.log(sendData);
             console.log(error);

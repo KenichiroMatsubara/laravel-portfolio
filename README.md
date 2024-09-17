@@ -1,3 +1,11 @@
+今回のアプリケーションで私が力を入れたのはパスワードのハッシュ化、独自JWTトークン、検索機能、リアルタイムチャットです
+他にもお気に入り機能等いろいろな機能はありますが、個人的にはこれらに力を入れました
+
+ハッシュ化にはデータベース上にソルトを用意しつつ、それと秘密鍵を.envにいれることで、ハッシュ化の堅牢性を従来より高めました
+独自JWTトークンでもJWTトークン上には保存せずにデータベース上にソルトを保存し、それとハッシュ化を合わせる手法を編み出しました。秘密鍵がバレる可能性が極限まで低くなり、かつ秘密鍵がバレても、データベースを抜き取り続けなければ不正ログインを防げるようにしました
+なおじどうろぐいんができな
+
+ここから下は最初からあったから残しているだけで読まなくてもいいです
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">

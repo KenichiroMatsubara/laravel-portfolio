@@ -9,11 +9,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { Link } from 'react-router-dom';
 import { useUserContext } from '../UserContext';
-
+import { useNavigate } from 'react-router-dom';
 
 const Product: FC<ProductProps> = ({productId}) => {
     const baseURL:string = useContext(BaseURLContext);
     const { userContext: { userType,id,token,state }, dispatcher: { setUserType, setId,setToken,setState } } = useUserContext();
+    const navigate = useNavigate();
 
     const [productInfo, setProductInfo] = useState<ProductInfo>();
     const [stacks,setStacks] = useState<string>("");
@@ -44,7 +45,7 @@ const Product: FC<ProductProps> = ({productId}) => {
             }
             try {
                 const response = await axios.post(`${baseURL}/api/destroy_portfolio`,sendData);
-                window.location.reload();
+                navigate("/engineer/");
             } catch (error) {
                 console.log(sendData);
                 console.log(error);

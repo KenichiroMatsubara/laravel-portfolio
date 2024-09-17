@@ -4,11 +4,12 @@ import { useUserContext } from '../UserContext';
 import axios from 'axios';
 import { BaseURLContext } from '../app';
 import MultiInputFiled from '../components/MultiInputFiled';
-
+import { useNavigate } from 'react-router-dom';
 
 const FEEditProfile = () => {
     const { userContext: { userType,id,token,state } } = useUserContext();
     const baseURL:string = useContext(BaseURLContext);
+    const navigate = useNavigate();
 
     const [name, setName] = useState<string>("");
     const [workExperience, setWorkExperience] = useState<number>(0);
@@ -57,7 +58,7 @@ const FEEditProfile = () => {
             const response = await axios.post(`${baseURL}/api/update_engineer_account`,sendData);
             console.log(sendData);
             console.log(response.data);
-            window.location.assign(`${baseURL}/engineer/`);
+            navigate(`/engineer/`);
         } catch (error) {
             console.log("error occur!")
             console.log(sendData);
@@ -80,8 +81,8 @@ const FEEditProfile = () => {
                     <span className='text-2xl'>名前</span>
                     <input
                         type="text"
-                        name='name'
                         value={name}
+                        onChange={(e) => setName(e.target.value)}
                         required
                         className='w-64 p-2 border border-gray-500 rounded '
                     />

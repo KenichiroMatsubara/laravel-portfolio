@@ -6,11 +6,13 @@ import type { Stacks } from '../types/stacks';
 import { BaseURLContext } from '../app';
 import { useUserContext } from '../UserContext';
 import MultiInputFiled from '../components/MultiInputFiled';
+import { useNavigate } from 'react-router-dom';
 
 
 const EditHome = () => {
     const baseURL:string = useContext(BaseURLContext);
     const { userContext: { userType,id,token,state } } = useUserContext();
+    const navigate = useNavigate();
 
     const [stacks,setStacks] = useState<string[]>([]);
     const [name,setName] = useState<string>("");
@@ -34,7 +36,7 @@ const EditHome = () => {
         try {
             const response = await axios.post(`${baseURL}/api/update_company_account`,sendData);
             console.log(response.data)
-            window.location.assign(`${baseURL}`);
+            navigate(``);
         } catch (error) {
             console.log(error);
         }

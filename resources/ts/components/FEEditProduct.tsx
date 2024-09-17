@@ -5,6 +5,7 @@ import { useUserContext } from '../UserContext';
 import axios from 'axios';
 import { BaseURLContext } from '../app';
 import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const initStacks = {
     php: false,
@@ -25,6 +26,7 @@ const FEEditProduct = () => {
     const { userContext: { id } } = useUserContext();
     const { productId } = useParams();
     const baseURL:string = useContext(BaseURLContext);
+    const navigate = useNavigate();
 
     const [defaultName, setDefaultName] = useState<string>("");
     const [defaultExplain, setDefaultExplain] = useState<string>("");
@@ -85,7 +87,7 @@ const FEEditProduct = () => {
             const response = await axios.post(`${baseURL}/api/update_portfolio`,sendData);
             console.log(sendData);
             console.log(response.data);
-            window.location.assign(`${baseURL}/engineer/`);
+            navigate(`/engineer/`);
         } catch (error) {
             console.log("error occur!")
             console.log(sendData);
