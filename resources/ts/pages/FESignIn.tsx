@@ -120,14 +120,14 @@ const FESignIn = () => {
                         ref={email}
                         placeholder='email'
                         className='px-2 py-1 mb-5 rounded'
-                        defaultValue={"test1@gmail.com"}
+                        defaultValue={""}
                     />
                     <input
                         type="password"
                         ref={password}
                         placeholder='password'
                         className='px-2 py-1 mb-5 rounded'
-                        defaultValue={"abcdef"}
+                        defaultValue={""}
                     />
                     <input
                         type="submit"
