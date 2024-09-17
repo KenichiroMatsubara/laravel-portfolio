@@ -29,7 +29,7 @@ const HomeMain = () => {
             try {
                 const response = await axios.post(`${baseURL}/api/get_company_info`,sendData);
                 console.log(response);
-                const newCompany:Company = initCompany;
+                const newCompany:Company = {...initCompany};
                 if(response.data.company_profile){
                     newCompany.name=response.data.company_profile.name || "未設定";
                     newCompany.explain=response.data.company_profile.explain || "未設定";
@@ -43,7 +43,7 @@ const HomeMain = () => {
                 });
                 console.log("object");
                 setCompany(newCompany);
-                console.log("object");
+                console.log(company);
             } catch (error) {
                 console.log(error);
             }
