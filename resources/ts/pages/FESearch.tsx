@@ -23,7 +23,7 @@ const FESearch: FC = () => {
     const baseURL:string = useContext(BaseURLContext);
 
     const [searchInput,setSearchInput] = useState<string>("");
-    const [companies,setCompanies] = useState<Company[]>([sampleCompanyData,sampleCompanyData]);
+    const [companies,setCompanies] = useState<Company[]>([]);
     const [onFavorites,setOnFavorites] = useState<boolean[]>([false,false]);
     useEffect(() => {
         const searchCompanies = async() => {
@@ -45,7 +45,7 @@ const FESearch: FC = () => {
                 response.data.companies.forEach((company, index)=> {
                     const newStacks: string[] = [];
                     company.using_stacks.forEach((stack) => {
-                        newStacks.push(stack);
+                        newStacks.push(stack.stack);
                     })
                     if(company.profile){
                         const newCompany: Company = {
@@ -140,7 +140,7 @@ const FESearch: FC = () => {
                     </div>
                 </div>
                 <div className='mx-10 mt-5'>
-                    {companies.length ? companies.map((company:Company,index:number) => (
+                    {companies.length>0 ? companies.map((company:Company,index:number) => (
                         <div className='border-b pl-4 pr-8 py-4 flex items-center justify-between' key={index}>
                             <div className='flex gap-5'>
                                 <div className='flex flex-col gap-3 items-center w-36'>
