@@ -38,6 +38,7 @@ const HomeMain = () => {
                     newCompany.imgURL=response.data.company_profile.imgURL || "未設定";
                     console.log(newCompany);
                 }
+                newCompany.stacks = [];
                 response.data.company_using_stacks.forEach((stack) => {
                     newCompany.stacks.push(stack.stack);
                 });

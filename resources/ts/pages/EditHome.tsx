@@ -36,7 +36,7 @@ const EditHome = () => {
         try {
             const response = await axios.post(`${baseURL}/api/update_company_account`,sendData);
             console.log(response.data)
-            navigate(``);
+            navigate(`/`);
         } catch (error) {
             console.log(error);
         }
