@@ -7,87 +7,66 @@ import axios from 'axios';
 import { useUserContext } from '../UserContext';
 import { BaseURLContext } from '../app';
 
-const chats: Chat[] =[
-    {
-        id: 1,
-        text: "お元気ですか",
-        createdAt: "2024-08-25 03:13:15",
-        updatedAt: "2024-08-25 03:13:15",
-        type: "c_to_e",
-        read: false,
-    },
-    {
-        id: 2,
-        text: "元気です",
-        createdAt: "2024-08-25 03:13:15",
-        updatedAt: "2024-08-25 03:13:15",
-        type: "e_to_c",
-        read: false,
-    },
-    {
-        id: 3,
-        text: "教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育",
-        createdAt: "2024-08-25 03:13:15",
-        updatedAt: "2024-08-25 03:13:15",
-        type: "e_to_c",
-        read: false,
-    },
-    {
-        id: 4,
-        text: "教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育",
-        createdAt: "2024-08-25 03:13:15",
-        updatedAt: "2024-08-25 03:13:15",
-        type: "e_to_c",
-        read: false,
-    },
-    {
-        id: 5,
-        text: "教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育",
-        createdAt: "2024-08-25 03:13:15",
-        updatedAt: "2024-08-25 03:13:15",
-        type: "e_to_c",
-        read: false,
-    },
-    {
-        id: 6,
-        text: "教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育",
-        createdAt: "2024-08-25 03:13:15",
-        updatedAt: "2024-08-25 03:13:15",
-        type: "e_to_c",
-        read: false,
-    },
-];
 
 const Chat: FC<ChatProps> = ({engineerId,companyId,setOnModal}) => {
     const { userContext: { userType,id,token,state }, dispatcher: { setUserType, setId,setToken,setState } } = useUserContext();
     const baseURL:string = useContext(BaseURLContext);
 
     const [sendText,setSendText] = useState<string>("");
+    const [chats, setChats] = useState<Chat[]>([]);
+    const [trigger,setTrigger] = useState<number>(0);
+    useEffect(() => {
+        const interval = setInterval(() => {
+          setTrigger(prev => prev + 1); // 状態を更新して`useEffect`を発火させる
+        }, 10000); // 10秒ごと
+        return () => clearInterval(interval); 
+    },[]);
+
+    useEffect(() => {
+        getChat();
+    },[trigger]);
 
     const closeThisModal = () => {
         setOnModal(false);
         console.log(setOnModal);
     }
 
-    useEffect(() => {
-        const getChat = async() => {
-
-            const sendData = {
-                "engineer_id": engineerId,
-                "company_id": companyId
-            };
-            console.log(sendData);
-            try {
-                const response = await axios.post(`${baseURL}/api/get_chat`,sendData);
-                console.log(response);
-            } catch (error) {
-                console.log(error);
-            }
+    const getChat = async() => {
+        const sendData = {
+            "engineer_id": engineerId,
+            "company_id": companyId
+        };
+        console.log(sendData);
+        try {
+            const response = await axios.post(`${baseURL}/api/get_chat`,sendData);
+            console.log(response);
+            setChats(response.data.chats);
+        } catch (error) {
+            console.log(error);
         }
-        getChat();
-    },[]);
+    }
 
-    const handleSendText = () => {
+
+    const handleSendText = async() => {
+        if(sendText.trim()===""){
+            return;
+        }
+        const sendData = {
+            "engineer_id":engineerId,
+            "company_id":companyId,
+            "type":userType==="engineer" ? "e_to_c":"c_to_e",
+            "text":sendText,
+        };
+        console.log(sendData);
+        try {
+            const response = await axios.post(`${baseURL}/api/create_chat`,sendData);
+            console.log("sdafdsafdasfdasfdsafdsafdsa")
+            console.log(response);
+            setSendText("");
+            getChat();
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -109,9 +88,11 @@ const Chat: FC<ChatProps> = ({engineerId,companyId,setOnModal}) => {
                     className='px-2 py-1 m-1 w-60'
                     value={sendText}
                     onChange={(e) => setSendText(e.target.value)}
+                    />
+                <SendIcon
+                    className='text-orange-400 duration-300 hover:text-orange-100'
                     onClick={() => handleSendText()}
                 />
-                <SendIcon className='text-orange-400 duration-300 hover:text-orange-100' />
             </div>
         </div>
     )

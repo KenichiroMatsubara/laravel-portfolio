@@ -4,5 +4,5 @@ export type Chat = {
     createdAt: string,
     updatedAt: string,
     type: string
-    read: boolean
+    readed: boolean
 }

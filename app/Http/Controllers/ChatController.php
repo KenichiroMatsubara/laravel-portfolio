@@ -11,10 +11,10 @@ class ChatController extends Controller
     public function create_chat(Request $request)
     {
         $validated = $request->validate([
-            "engineer_id"=>"required",
-            "company_id"=>"required",
-            "type"=>"required",
-            "text"=>"required"
+            "engineer_id"=>"required|numeric",
+            "company_id"=>"required|numeric",
+            "type"=>"required|string",
+            "text"=>"required|string"
         ]);
         $new_chat = Chat::create([
             "engineer_id"=>$validated["engineer_id"],
@@ -78,13 +78,25 @@ class ChatController extends Controller
     public function get_chat(Request $request)
     {
         $validated = $request->validate([
-            "company_id"=>"required",
-            "engineer_id"=>"required",
+            "company_id"=>"required|numeric",
+            "engineer_id"=>"required|numeric",
         ]);
         $chats = Chat::where("company_id",$validated["company_id"])
-            ->where("engineer_id",$validated["engineer_id"]);
+            ->where("engineer_id",$validated["engineer_id"])
+            ->get();
+        $formatted_chats = [];
+        foreach($chats as $chat) {
+            $formatted_chats[] = [
+                "id" => $chat->id,
+                "text" => $chat->text,
+                "createdAt" => $chat->created_at,
+                "updated" => $chat->updated_at,
+                "type" => $chat->type,
+                "readed" => false,
+            ];
+        }
         return response()->json([
-            "chats"=>$chats
+            "chats"=>$formatted_chats,
         ]);
     }
 }
