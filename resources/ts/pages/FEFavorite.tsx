@@ -8,7 +8,7 @@ import { BaseURLContext } from '../app';
 import { useUserContext } from '../UserContext';
 import Chat from '../components/Chat';
 
-const FECompanyProfiles = () => {
+const FEFavorite = () => {
     const { userContext: { userType,id,token,state }, dispatcher: { setUserType, setId,setToken,setState } } = useUserContext();
     const baseURL:string = useContext(BaseURLContext);
 
@@ -118,7 +118,7 @@ const FECompanyProfiles = () => {
                 setCompanies(newCompanies);
                 setOnFavorites(newOnFavorites);
                 setStacksGroup(newStacksGroup);
-                console.log(newStacksGroup);
+                console.log(response.data)
             } catch (error) {
                 console.log(error);
             }
@@ -264,4 +264,4 @@ const FECompanyProfiles = () => {
     )
 }
 
-export default FECompanyProfiles
+export default FEFavorite

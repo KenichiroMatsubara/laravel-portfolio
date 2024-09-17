@@ -3,17 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
-use App\Models\CompanyProfile;
-use App\Models\CompanyUsingStack;
 use App\Models\Engineer;
-use App\Models\EngineerGoodAt;
-use App\Models\EngineerProfile;
-use App\Models\EngineerWantWorkAt;
 use App\Models\Favorite;
-use DB;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\DB as FacadesDB;
 
 class FavoriteController extends Controller
 {
@@ -159,7 +152,7 @@ class FavoriteController extends Controller
                 "company" => $company,
                 "profile" => $company->company_profile,
                 "using_stacks" => $company->company_using_stacks,
-                "company_favorited" => $favorited ? true : false,
+                "engineer_favorited" => $favorited ? true : false,
             ]);
         }
 

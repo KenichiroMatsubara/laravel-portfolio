@@ -9,7 +9,6 @@ import FEHome from "./pages/FEHome";
 import FESearch from "./pages/FESearch";
 import EditHome from "./pages/EditHome";
 import Search from "./pages/Search";
-import FECompanyProfiles from "./pages/FECompanyProfiles";
 import Account from "./pages/Account";
 import FESignIn from "./pages/FESignIn";
 import FCSignIn from "./pages/FCSignIn";
@@ -17,6 +16,7 @@ import FERegister from "./pages/FERegister";
 import FCRegister from "./pages/FCRegister";
 import FEEditProduct from './components/FEEditProduct';
 import FEEditProfile from './pages/FEEditProfile';
+import FEFavorite from './pages/FEFavorite';
 
 const Routings: FC<{path:string}> = ({path}) => {
     const { userContext: { userType,id,token,state }, dispatcher: { setUserType, setId,setToken,setState } } = useUserContext();
@@ -196,10 +196,10 @@ const Routings: FC<{path:string}> = ({path}) => {
     }
 
 
-    else if(path==='/engineer/companylist/'){
+    else if(path==='/engineer/favorite/'){
         if(state==="signin" && id!==-1){
             return(
-                <FECompanyProfiles />
+                <FEFavorite />
             )
         }
         else if(state==="signout"){

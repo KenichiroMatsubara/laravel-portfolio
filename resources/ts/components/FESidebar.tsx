@@ -18,7 +18,7 @@ const FESidebar = () => {
                         <span className='ml-1'>Home</span>
                     </li>
                 </Link>
-                <Link to={"/engineer/companylist"}>
+                <Link to={"/engineer/favorite"}>
                     <li className='flex items-center px-4 py-2 text-2xl text-orange-500 duration-300 border-b border-orange-300 hover:text-orange-300'>
                         <FavoriteIcon fontSize='large' />
                         <span className='ml-1'>Favorite</span>

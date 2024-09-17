@@ -78,8 +78,8 @@ function App() {
                     element={<Routings path="/engineer/make_new/" />}
                 />
                 <Route
-                    path='/engineer/companylist/'
-                    element={<Routings path="/engineer/companylist/" />}
+                    path='/engineer/favorite/'
+                    element={<Routings path="/engineer/favorite/" />}
                 />
                 <Route
                     path='/engineer/search/'
