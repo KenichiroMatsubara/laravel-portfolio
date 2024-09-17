@@ -104,43 +104,33 @@ class CompanyController extends Controller
             "id" => "required",
         ]);
         $company = Company::find($validated['id']);
-        $company_profile = CompanyProfile::where("company_id",$validated["id"])->first();
-        $company_using_stacks = CompanyUsingStack::where("company_id",$validated["id"])->get();
         return response()->json([
             "company_data" => $company,
-            "company_profile" => $company_profile,
-            "company_using_stacks" => $company_using_stacks,
+            "company_profile" => $company->company_profile,
+            "company_using_stacks" => $company->company_using_stacks,
         ]);
     }
     public function update_company_account(Request $request)
     {
         $validated = $request->validate([
             'id' => 'required|numeric',
-            'name' => 'required',
-            'email' => 'required|email',
-            'address' => 'required',
-            'explain' => 'required',
-            'file' => 'required|image',  // 'file' が画像であることを確認
-            'homepageURL' => 'required|url',
-            'stacks' => 'required|array',
+            'name' => 'nullable|string',
+            'address' => 'nullable|string',
+            'explain' => 'nullable|string',
+            'homepageURL' => 'nullable|string',
+            'stacks' => 'nullable|array',
         ]);
 
-        $update_data = [
-            "company_id" => $validated["id"],
-            "name" => $validated['name'] ?? "blank",
-            "address" => $validated['address'] ?? "blank",
-            "explain" => $validated['explain'] ?? "blank",
-            "homepageURL" => $validated['homepageURL'] ?? "blank",
-            "imgURL" => $request->file('img')->store('public/image/'),  // 'file' に変更
+        $new_data = [
+            "company_id" => $validated['id'],
+            "name" => $validated["name"],
+            "address" => $validated["address"],
+            "explain" => $validated["explain"],
+            "homepageURL" => $validated["homepageURL"],
         ];
 
-        $company_profile = CompanyProfile::where("company_id",$validated["id"])->first();
-        if($company_profile){
-            $new_company_profile = $company_profile->update($update_data);
-        }
-        else {
-            $new_company_profile = CompanyProfile::create($update_data);
-        }
+        $company_profile = CompanyProfile::where("company_id",$validated["id"])->delete();
+        $new_company_profile = CompanyProfile::create($new_data);
 
 
         // スタックを削除してから追加

@@ -15,7 +15,9 @@ const FECompanyProfiles = () => {
     const [companies, setCompanies] = useState<Company[]>([]);
     const [onModal, setOnModal] = useState<boolean>(false);
     const [onFavorites, setOnFavorites] = useState<boolean[]>([]);
+    const [stacksGroup,setStacksGroup] = useState<string[][]>([]);
     const [showFavoritedUser,setShowFavoritedUser] = useState<boolean>(true);
+    const [companyId,setCompanyId] = useState<number>(0);
 
     useEffect(() => {
         // お気に入りに登録した会社を返す
@@ -28,11 +30,13 @@ const FECompanyProfiles = () => {
                 console.log(response);
                 const newCompanies: Company[] = [];
                 const newOnFavorites: boolean[] = [];
+                const newStacksGroup: string[][] = [];
                 response.data.companies.forEach((company, index)=> {
                     const newStacks: string[] = [];
                     company.using_stacks.forEach((stack) => {
-                        newStacks.push(stack);
+                        newStacks.push(stack.stack);
                     })
+                    newStacksGroup.push(newStacks);
                     if(company.profile){
                         const newCompany: Company = {
                             company_id: company.id,
@@ -62,6 +66,7 @@ const FECompanyProfiles = () => {
                 });
                 setCompanies(newCompanies);
                 setOnFavorites(newOnFavorites);
+                setStacksGroup(newStacksGroup);
             } catch (error) {
                 console.log(error);
             }
@@ -76,11 +81,13 @@ const FECompanyProfiles = () => {
                 console.log(response.data);
                 const newCompanies: Company[] = [];
                 const newOnFavorites: boolean[] = [];
+                const newStacksGroup: string[][] = [];
                 response.data.companies.forEach((company, index)=> {
                     const newStacks: string[] = [];
                     company.using_stacks.forEach((stack) => {
-                        newStacks.push(stack);
+                        newStacks.push(stack.stack);
                     })
+                    newStacksGroup.push(newStacks);
                     if(company.profile){
                         const newCompany: Company = {
                             company_id: company.id,
@@ -110,6 +117,8 @@ const FECompanyProfiles = () => {
                 });
                 setCompanies(newCompanies);
                 setOnFavorites(newOnFavorites);
+                setStacksGroup(newStacksGroup);
+                console.log(newStacksGroup);
             } catch (error) {
                 console.log(error);
             }
@@ -168,10 +177,11 @@ const FECompanyProfiles = () => {
         }
     };
 
-    const handleOnModal = () => {
+    const handleOnModal = (companyId:number) => {
         if(onModal) {
             return;
         }
+        setCompanyId(companyId);
         setOnModal(true);
     };
     // 一つでもチャットがあったらほかのチャットを開かないようにする
@@ -197,6 +207,7 @@ const FECompanyProfiles = () => {
                         LIKED BY
                     </button>
                 </div>
+                {onModal && <Chat engineerId={id} companyId={companyId} setOnModal={setOnModal} />}
                 {companies.length ? companies.map((company:Company,index:number) => (
                     <div className='border-b pl-4 pr-8 py-4 flex items-center justify-between' key={index}>
                         <div className='flex gap-5'>
@@ -209,7 +220,7 @@ const FECompanyProfiles = () => {
                             <div className='flex flex-col items-start break-words gap-1'>
                                 <span className=''>{company.explain}</span>
                                 <span className=''>使用技術</span>
-                                <Conma Array={company.stacks} />
+                                <Conma Array={stacksGroup[index]} />
                                 <a href={company.homepageURL}
                                     className='text-sm font-light text-blue-500 hover:text-blue-300 duration-300'
                                 >
@@ -217,7 +228,6 @@ const FECompanyProfiles = () => {
                                 </a>
                             </div>
                         </div>
-                        {onModal && <Chat engineerId={id} companyId={company.company_id} setOnModal={setOnModal} />}
                         <div className='flex flex-col items-center gap-3'>
                             {onFavorites[index]===true ?
                                 <div className='p-3 rounded-full hover:bg-gray-200 duration-300'>
@@ -238,7 +248,7 @@ const FECompanyProfiles = () => {
                             }
                             <button
                                 className='text-white bg-orange-500 hover:bg-orange-300 duration-300 py-2 px-3 rounded'
-                                onClick={() => handleOnModal()}
+                                onClick={() => handleOnModal(company.company_id)}
                             >
                                 チャットを見る
                             </button>

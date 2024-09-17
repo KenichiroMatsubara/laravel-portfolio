@@ -1,14 +1,18 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useContext, useEffect, useState } from 'react'
 import type { Chat } from '../types/chat';
 import CloseIcon from '@mui/icons-material/Close';
 import { ChatProps } from '../types/chatProps';
 import SendIcon from '@mui/icons-material/Send';
+import axios from 'axios';
+import { useUserContext } from '../UserContext';
+import { BaseURLContext } from '../app';
 
 const chats: Chat[] =[
     {
         id: 1,
         text: "お元気ですか",
         createdAt: "2024-08-25 03:13:15",
+        updatedAt: "2024-08-25 03:13:15",
         type: "c_to_e",
         read: false,
     },
@@ -16,6 +20,7 @@ const chats: Chat[] =[
         id: 2,
         text: "元気です",
         createdAt: "2024-08-25 03:13:15",
+        updatedAt: "2024-08-25 03:13:15",
         type: "e_to_c",
         read: false,
     },
@@ -23,6 +28,7 @@ const chats: Chat[] =[
         id: 3,
         text: "教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育",
         createdAt: "2024-08-25 03:13:15",
+        updatedAt: "2024-08-25 03:13:15",
         type: "e_to_c",
         read: false,
     },
@@ -30,6 +36,7 @@ const chats: Chat[] =[
         id: 4,
         text: "教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育",
         createdAt: "2024-08-25 03:13:15",
+        updatedAt: "2024-08-25 03:13:15",
         type: "e_to_c",
         read: false,
     },
@@ -37,6 +44,7 @@ const chats: Chat[] =[
         id: 5,
         text: "教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育",
         createdAt: "2024-08-25 03:13:15",
+        updatedAt: "2024-08-25 03:13:15",
         type: "e_to_c",
         read: false,
     },
@@ -44,12 +52,15 @@ const chats: Chat[] =[
         id: 6,
         text: "教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育教育",
         createdAt: "2024-08-25 03:13:15",
+        updatedAt: "2024-08-25 03:13:15",
         type: "e_to_c",
         read: false,
     },
 ];
 
 const Chat: FC<ChatProps> = ({engineerId,companyId,setOnModal}) => {
+    const { userContext: { userType,id,token,state }, dispatcher: { setUserType, setId,setToken,setState } } = useUserContext();
+    const baseURL:string = useContext(BaseURLContext);
 
     const [sendText,setSendText] = useState<string>("");
 
@@ -57,6 +68,24 @@ const Chat: FC<ChatProps> = ({engineerId,companyId,setOnModal}) => {
         setOnModal(false);
         console.log(setOnModal);
     }
+
+    useEffect(() => {
+        const getChat = async() => {
+
+            const sendData = {
+                "engineer_id": engineerId,
+                "company_id": companyId
+            };
+            console.log(sendData);
+            try {
+                const response = await axios.post(`${baseURL}/api/get_chat`,sendData);
+                console.log(response);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        getChat();
+    },[]);
 
     const handleSendText = () => {
     }

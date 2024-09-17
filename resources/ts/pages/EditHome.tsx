@@ -17,22 +17,27 @@ const EditHome = () => {
     const [explain,setExplain] = useState<string>("");
     const [address,setAddress] = useState<string>("");
     const [homepageURL,setHomepageURL] = useState<string>("");
-    const [img,setImg] = useState<any>();
+    const [image,setImage] = useState<any>();
 
-    const sampleProfileData:companyProfile = {
-        name: "matsubaraJapan",
-        homepageURL: "https://www.triple-e.inc/",
-        address: "愛知県岡崎市山綱町",
-        usedStacks: ["php","laravel","aws","docker","github","react","vue"],
-        explain: "バックエンドエンジニアとフロントエンドエンジニアを募集しています。",
-        imgURL: 'https://kohacu.com/wp-content/uploads/2018/06/kohacu.com_001312_20180615.png'
-    }
-
-    const handleSubmit: FormEventHandler<HTMLFormElement> = async(e) => {
-        e.preventDefault();
-        const file:FormData = new FormData();
-        file.append("img",img[0]);
-        console.log({name,explain,address,homepageURL,file});
+    const handleSubmit = async() => {
+        const file = new FormData();
+        // file.append("image",image[0]);
+        const sendData = {
+            "id": id,
+            "name": name,
+            "address": address,
+            "explain": explain,
+            "homepageURL": homepageURL,
+            "stacks": stacks,
+        }
+        console.log(sendData);
+        try {
+            const response = await axios.post(`${baseURL}/api/update_company_account`,sendData);
+            console.log(response.data)
+            window.location.assign(`${baseURL}`);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
 
@@ -49,7 +54,19 @@ const EditHome = () => {
             };
             try {
                 const response = await axios.post(`${baseURL}/api/get_company_info`,sendData);
+                if(response.data.company_profile){
+                    setName(response.data.company_profile.name ? response.data.company_profile.name : "");
+                    setExplain(response.data.company_profile.explain ? response.data.company_profile.explain : "");
+                    setAddress(response.data.company_profile.address ? response.data.company_profile.address : "");
+                    setHomepageURL(response.data.company_profile.homepageURL ? response.data.company_profile.homepageURL : "");
+                }
+                const newStacks: string[] = [];
+                response.data.company_using_stacks.forEach((stack) => {
+                    newStacks.push(stack.stack);
+                })
+                setStacks(newStacks);
                 console.log(response.data);
+                console.log(response)
             } catch (error) {
                 console.log(error);
             }
@@ -66,7 +83,8 @@ const EditHome = () => {
                     <span className='text-2xl'>会社名</span>
                     <input
                         type="text"
-                        name='name'
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                         className='w-64 p-2 border border-gray-500 rounded '
                     />
                 </div>
@@ -76,14 +94,16 @@ const EditHome = () => {
                         rows={10}
                         cols={60}
                         className="h-64 p-2 my-2 border border-gray-500 rounded"
-                        name='explain'
+                        value={explain}
+                        onChange={(e) => setExplain(e.target.value)}
                     />
                 </div>
                 <div className='flex flex-col'>
                     <span className='my-2 text-2xl'>住所</span>
                     <input
                         type="text"
-                        name='githubURL'
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
                         className='w-64 p-2 border border-gray-500 rounded '
                     />
                 </div>
@@ -91,7 +111,8 @@ const EditHome = () => {
                     <span className='my-2 text-2xl'>会社のURL</span>
                     <input
                         type="text"
-                        name='deployURL'
+                        value={homepageURL}
+                        onChange={(e) => setHomepageURL(e.target.value)}
                         className='w-64 p-2 border border-gray-500 rounded '
                     />
                 </div>
@@ -101,13 +122,14 @@ const EditHome = () => {
                     <MultiInputFiled array={stacks} setArray={setStacks} placeholder={"使用技術"} />
                 </div>
                 <div>
-                    <input accept="image/*" multiple type="file" onChange={(e) => setImg(e.target.value)} />
+                    <input accept="image/*" multiple type="file" onChange={(e) => setImage(e.target.value)} />
                 </div>
-                <input
-                    type='submit'
-                    value="送信"
+                <button
                     className='w-32 p-2 mt-5 text-white duration-300 bg-orange-600 rounded hover:bg-orange-400'
-                />
+                    onClick={() => handleSubmit()}
+                >
+                    送信
+                </button>
             </div>
         </div>
     )

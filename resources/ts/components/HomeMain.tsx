@@ -1,28 +1,67 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import type { companyProfile } from '../types/companyProfile'
 import Conma from './Conma'
 import { Link } from 'react-router-dom'
+import { Company } from '../types/company'
+import { BaseURLContext } from '../app'
+import { useUserContext } from '../UserContext'
+import axios from 'axios'
 
 const HomeMain = () => {
-    const sampleProfileData:companyProfile = {
-        name: "matsubaraJapan",
-        homepageURL: "https://www.triple-e.inc/",
-        address: "愛知県岡崎市山綱町",
-        usedStacks: ["php","laravel","aws","docker","github","react","vue"],
-        explain: "バックエンドエンジニアとフロントエンドエンジニアを募集しています。",
-        imgURL: 'https://kohacu.com/wp-content/uploads/2018/06/kohacu.com_001312_20180615.png'
-    }
+    const baseURL:string = useContext(BaseURLContext);
+    const { userContext: { userType,id,token,state } } = useUserContext();
+    const initCompany:Company = {
+        company_id: id,
+        name: "読込中",
+        explain: "未設定",
+        stacks: [],
+        address: "未設定",
+        homepageURL: "未設定",
+        imgURL: "未設定"
+    };
+    const [company,setCompany] = useState<Company>(initCompany);
+
+    useEffect(() => {
+        const getCompany = async() => {
+            const sendData = {
+                id: id,
+            }
+            try {
+                const response = await axios.post(`${baseURL}/api/get_company_info`,sendData);
+                console.log(response);
+                const newCompany:Company = initCompany;
+                if(response.data.company_profile){
+                    newCompany.name=response.data.company_profile.name || "未設定";
+                    newCompany.explain=response.data.company_profile.explain || "未設定";
+                    newCompany.address=response.data.company_profile.address || "未設定";
+                    newCompany.homepageURL=response.data.company_profile.homepageURL || "未設定";
+                    newCompany.imgURL=response.data.company_profile.imgURL || "未設定";
+                    console.log(newCompany);
+                }
+                response.data.company_using_stacks.forEach((stack) => {
+                    newCompany.stacks.push(stack.stack);
+                });
+                console.log("object");
+                setCompany(newCompany);
+                console.log("object");
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        getCompany();
+    },[]);
+
     return (
         <div className='flex w-9/12 m-10'>
             <div className='flex flex-col w-1/2 mr-5'>
-                <span className='text-3xl text-orange-500 underline'>{sampleProfileData.name}</span>
-                <span className='mt-5'>{sampleProfileData.address}</span>
+                <span className='text-3xl text-orange-500 underline'>{company.name}</span>
+                <span className='mt-5'>{company.address}</span>
                 <span className='mt-5'>仕事内容</span>
-                <span className=''>{sampleProfileData.explain}</span>
+                <span className=''>{company.explain}</span>
                 <span className='mt-5'>使用技術</span>
-                <Conma Array={sampleProfileData.usedStacks} />
+                <Conma Array={company.stacks} />
                 <a
-                    href={sampleProfileData.homepageURL}
+                    href={company.homepageURL}
                     className='mt-5 text-blue-500 duration-300 hover:text-blue-300'
                 >
                     ホームページを見る
@@ -33,7 +72,7 @@ const HomeMain = () => {
                     </button>
                 </Link>
             </div>
-            <img src={sampleProfileData.imgURL} alt="" className='w-1/2' />
+            <img src={company.imgURL} alt="" className='w-1/2' />
 
         </div>
     )
