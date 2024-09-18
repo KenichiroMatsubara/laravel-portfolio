@@ -5,7 +5,7 @@
     "src": "resources/css/app.css"
   },
   "resources/ts/app.tsx": {
-    "file": "assets/app-861da48d.js",
+    "file": "assets/app-6bf580c6.js",
     "isEntry": true,
     "src": "resources/ts/app.tsx"
   }

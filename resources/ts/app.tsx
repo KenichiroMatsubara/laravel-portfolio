@@ -106,11 +106,9 @@ function App() {
 
 const root = ReactDOM.createRoot(document.getElementById("app") as HTMLElement);
 root.render(
-    <React.StrictMode>
-        <BaseURLContext.Provider value={"https://xs599932.xsrv.jp"}>
-            <UserContextProvider>
-                <App />
-            </UserContextProvider>
-        </BaseURLContext.Provider>
-    </React.StrictMode>
+    <BaseURLContext.Provider value={"https://xs599932.xsrv.jp"}>
+        <UserContextProvider>
+            <App />
+        </UserContextProvider>
+    </BaseURLContext.Provider>
 );
