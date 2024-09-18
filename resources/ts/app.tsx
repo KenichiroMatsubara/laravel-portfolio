@@ -20,7 +20,7 @@ import { UserContextProvider,useUserContext } from "./UserContext";
 import Routings from "./Routings";
 import Test from "./pages/Test";
 
-export const BaseURLContext = createContext("https://xs599932.xsrv.jp");
+export const BaseURLContext = createContext("http://xs599932.xsrv.jp");
 
 function App() {
     const { userContext: { userType,id,token }, dispatcher: { setUserType, setId,setToken } } = useUserContext();
@@ -106,7 +106,7 @@ function App() {
 
 const root = ReactDOM.createRoot(document.getElementById("app") as HTMLElement);
 root.render(
-    <BaseURLContext.Provider value={"https://xs599932.xsrv.jp"}>
+    <BaseURLContext.Provider value={"http://xs599932.xsrv.jp"}>
         <UserContextProvider>
             <App />
         </UserContextProvider>
