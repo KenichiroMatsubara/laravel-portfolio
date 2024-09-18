@@ -25,7 +25,7 @@ export const BaseURLContext = createContext("http://xs599932.xsrv.jp");
 function App() {
     const { userContext: { userType,id,token }, dispatcher: { setUserType, setId,setToken } } = useUserContext();
     return (
-        <BrowserRouter>
+        <BrowserRouter basename="/">
             <Routes>
                 <Route
                     path='/account/'
