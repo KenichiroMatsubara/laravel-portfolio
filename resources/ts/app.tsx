@@ -23,7 +23,6 @@ import Test from "./pages/Test";
 export const BaseURLContext = createContext("https://xs599932.xsrv.jp");
 
 function App() {
-    const { userContext: { userType,id,token }, dispatcher: { setUserType, setId,setToken } } = useUserContext();
     return (
         <BrowserRouter basename="/">
             <Routes>

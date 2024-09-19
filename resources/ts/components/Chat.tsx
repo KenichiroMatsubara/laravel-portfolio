@@ -90,7 +90,7 @@ const Chat: FC<ChatProps> = ({engineerId,companyId,setOnModal}) => {
                 returnClass='ml-4 mr-1 rounded-xl bg-white my-2 py-5 px-2';
             }
             else {
-                returnClass='mr-4 ml-1 rounded-xl bg-orange-400 text-white my-2 py-5 px-2';
+                returnClass='mr-4 ml-1 rounded-xl bg-orange-300 text-white my-2 py-5 px-2';
             }
         }
         return returnClass;

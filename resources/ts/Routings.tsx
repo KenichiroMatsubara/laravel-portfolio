@@ -45,7 +45,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
 
     else if(path==='/account/signin_for_engineer/'){
-        if(state==="signin" && id!==-1){
+        if(state==="signin" && id!==-1 && userType==="engineer"){
             return (
                 <Navigate to={`/engineer/`} />
             );
@@ -59,7 +59,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
 
     else if(path==='/account/register_for_engineer/'){
-        if(state==="signin" && id!==-1){
+        if(state==="signin" && id!==-1 && userType==="engineer"){
             return (
                 <Navigate to={`/engineer/`} />
             );
@@ -73,7 +73,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
 
     else if(path==='/account/signin_for_company/'){
-        if(state==="signin" && id!==-1){
+        if(state==="signin" && id!==-1 && userType==="company"){
             return (
                 <Navigate to={`/`} />
             );
@@ -87,7 +87,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
 
     else if(path==='/account/register_for_company/'){
-        if(state==="signin" && id!==-1){
+        if(state==="signin" && id!==-1 && userType==="company"){
             return (
                 <Navigate to={`/`} />
             );
@@ -101,8 +101,8 @@ const Routings: FC<{path:string}> = ({path}) => {
 
 
     // Company系列のページのルーティング
-    if(path==='/'){
-        if(state==="signin" && id!==-1){
+    else if(path==='/'){
+        if(state==="signin" && id!==-1 && userType==="company"){
             return(
                 <Home />
             )
@@ -115,7 +115,7 @@ const Routings: FC<{path:string}> = ({path}) => {
     }
 
     else if(path==='/search/'){
-        if(state==="signin" && id!==-1){
+        if(state==="signin" && id!==-1 && userType==="company"){
             return(
                 <Search />
             )
@@ -129,7 +129,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
 
     else if(path==='/profile/:engineer_id/'){
-        if(state==="signin" && id!==-1){
+        if(state==="signin" && id!==-1 && userType==="company"){
             return(
                 <Profile />
             )
@@ -143,7 +143,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
 
     else if(path==='/favorite/'){
-        if(state==="signin" && id!==-1){
+        if(state==="signin" && id!==-1 && userType==="company"){
             return(
                 <Favorite />
             )
@@ -157,7 +157,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
 
     else if(path==='/edit_home/'){
-        if(state==="signin" && id!==-1){
+        if(state==="signin" && id!==-1 && userType==="company"){
             return(
                 <EditHome />
             )
@@ -171,7 +171,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
     // ここからエンジニアサイドのルーティング
     else if(path=='/engineer/'){
-        if(state==="signin" && id!==-1){
+        if(state==="signin" && id!==-1 && userType==="engineer"){
             return (
                 <FEHome />
             )
@@ -183,7 +183,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
 
     else if(path==='/engineer/make_new/'){
-        if(state==="signin" && id!==-1){
+        if(state==="signin" && id!==-1 && userType==="engineer"){
             return(
                 <FEMakeNew />
             )
@@ -197,7 +197,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
 
     else if(path==='/engineer/favorite/'){
-        if(state==="signin" && id!==-1){
+        if(state==="signin" && id!==-1 && userType==="engineer"){
             return(
                 <FEFavorite />
             )
@@ -211,7 +211,7 @@ const Routings: FC<{path:string}> = ({path}) => {
 
 
     else if(path==='/engineer/search/'){
-        if(state==="signin" && id!==-1){
+        if(state==="signin" && id!==-1 && userType==="engineer"){
             return(
                 <FESearch />
             )
@@ -224,7 +224,7 @@ const Routings: FC<{path:string}> = ({path}) => {
     }
 
     else if(path==="/engineer/edit_portfolio/:productId/"){
-        if(state==="signin" && id!==-1){
+        if(state==="signin" && id!==-1 && userType==="engineer"){
             return(
                 <FEEditProduct />
             )
@@ -237,7 +237,7 @@ const Routings: FC<{path:string}> = ({path}) => {
     }
 
     else if(path==="/engineer/edit_profile/"){
-        if(state==="signin" && id!==-1){
+        if(state==="signin" && id!==-1 && userType==="engineer"){
             return(
                 <FEEditProfile />
             )
