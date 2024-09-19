@@ -70,6 +70,7 @@ const FESignIn = () => {
             "autoSignin": autoSignin,
         }
         console.log(sendData);
+        console.log(baseURL);
         try {
             const response = await axios.post(`${baseURL}/api/signin_engineer_account_by_password`,sendData);
             if(response.data.result==="password is wrong"){

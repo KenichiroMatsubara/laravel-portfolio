@@ -20,7 +20,7 @@ const Chat: FC<ChatProps> = ({engineerId,companyId,setOnModal}) => {
         const interval = setInterval(() => {
           setTrigger(prev => prev + 1); // 状態を更新して`useEffect`を発火させる
         }, 3000); // 3秒ごと
-        return () => clearInterval(interval); 
+        return () => clearInterval(interval);
     },[]);
 
     // Triggerの変化のたびにチャットを更新
@@ -28,6 +28,15 @@ const Chat: FC<ChatProps> = ({engineerId,companyId,setOnModal}) => {
         getChat();
         console.log("GET CHAT FIRE!!!");
     },[trigger]);
+
+    // チャットの開始位置を調整
+    useEffect(() => {
+        const targetIndex: number = chats.length-1;
+        const element = document.getElementById(`item-${targetIndex}`);
+        if(element){
+            element.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+        }
+    },[chats]);
 
     const closeThisModal = () => {
         setOnModal(false);
@@ -50,7 +59,8 @@ const Chat: FC<ChatProps> = ({engineerId,companyId,setOnModal}) => {
     }
 
 
-    const handleSendText = async() => {
+    const handleSendText = async(e) => {
+        e.preventDefault();
         if(sendText.trim()===""){
             return;
         }
@@ -102,26 +112,28 @@ const Chat: FC<ChatProps> = ({engineerId,companyId,setOnModal}) => {
                 className='absolute top-0 right-0 p-1 ml-auto text-white duration-300 bg-red-500 hover:bg-red-300'
                 onClick={() => setOnModal(false)}
             />
-            <div className='flex-1 flex flex-col overflow-y-scroll bg-orange-100'>
-                {chats.length>0 ?chats.map((chat) => (
-                    <div className={handleChatClass(chat.type)}>
-                    <span className=''>{chat.text}</span>
-                </div>)):
+            <div className='flex-1 flex flex-col overflow-y-scroll bg-orange-100 pb-5'>
+                {chats.length>0 ? chats.map((chat,index) => (
+                    <div className={handleChatClass(chat.type)} key={index} id={`item-${index}`}>
+                        <span className=''>{chat.text}</span>
+                    </div>))
+                :
                 <span className='text-center p-3'>ここにチャットは送受信されていません
                 </span>}
             </div>
-            <div className='flex items-center w-full h-12 bg-white outline-none'>
+            <form className='flex items-center w-full h-12 bg-white outline-none' onSubmit={(e) => handleSendText(e)}>
                 <input
                     type="text"
                     className='px-2 py-1 m-1 w-60'
                     value={sendText}
                     onChange={(e) => setSendText(e.target.value)}
                     />
-                <SendIcon
-                    className='text-orange-400 duration-300 hover:text-orange-100'
-                    onClick={() => handleSendText()}
-                />
-            </div>
+                <button type='submit' className='flex items-center justify-center'>
+                    <SendIcon
+                        className='text-orange-400 duration-300 hover:text-orange-100'
+                    />
+                </button>
+            </form>
         </div>
     )
 }
