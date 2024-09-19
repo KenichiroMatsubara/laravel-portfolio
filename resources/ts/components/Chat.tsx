@@ -14,6 +14,7 @@ const Chat: FC<ChatProps> = ({engineerId,companyId,setOnModal}) => {
 
     const [sendText,setSendText] = useState<string>("");
     const [chats, setChats] = useState<Chat[]>([]);
+    const [targetIndex, setTargetIndex] = useState<number|undefined>();
     const [trigger,setTrigger] = useState<number>(0);
     // Triggerを変化させる
     useEffect(() => {
@@ -31,11 +32,12 @@ const Chat: FC<ChatProps> = ({engineerId,companyId,setOnModal}) => {
 
     // チャットの開始位置を調整
     useEffect(() => {
-        const targetIndex: number = chats.length-1;
-        const element = document.getElementById(`item-${targetIndex}`);
+        const newTargetIndex: number = chats.length-1;
+        const element = document.getElementById(`item-${newTargetIndex}`);
         if(element){
             element.scrollIntoView({behavior: 'smooth', block: 'nearest'});
         }
+        setTargetIndex(newTargetIndex);
     },[chats]);
 
     const closeThisModal = () => {
@@ -114,10 +116,15 @@ const Chat: FC<ChatProps> = ({engineerId,companyId,setOnModal}) => {
             />
             <div className='flex-1 flex flex-col overflow-y-scroll bg-orange-100 pb-5'>
                 {chats.length>0 ? chats.map((chat,index) => (
-                    <div className={handleChatClass(chat.type)} key={index} id={`item-${index}`}>
-                        <span className=''>{chat.text}</span>
-                    </div>))
-                :
+                    <>
+                        <div className={handleChatClass(chat.type)} key={index} id={`item-${index}`}>
+                            <span className=''>{chat.text}</span>
+                        </div>
+                        {index===targetIndex && index!==chats.length-1 &&
+                        (<span className='mx-auto bg-orange-50 w-10/12 text-center rounded text-gray-500 text-xs'>新着</span>)
+                        }
+                    </>
+                )):
                 <span className='text-center p-3'>ここにチャットは送受信されていません
                 </span>}
             </div>
