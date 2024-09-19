@@ -15,15 +15,18 @@ const Chat: FC<ChatProps> = ({engineerId,companyId,setOnModal}) => {
     const [sendText,setSendText] = useState<string>("");
     const [chats, setChats] = useState<Chat[]>([]);
     const [trigger,setTrigger] = useState<number>(0);
+    // Triggerを変化させる
     useEffect(() => {
         const interval = setInterval(() => {
           setTrigger(prev => prev + 1); // 状態を更新して`useEffect`を発火させる
-        }, 10000); // 10秒ごと
+        }, 3000); // 3秒ごと
         return () => clearInterval(interval); 
     },[]);
 
+    // Triggerの変化のたびにチャットを更新
     useEffect(() => {
         getChat();
+        console.log("GET CHAT FIRE!!!");
     },[trigger]);
 
     const closeThisModal = () => {
